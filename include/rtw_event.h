@@ -1,6 +1,6 @@
 /******************************************************************************
  *
- * Copyright(c) 2007 - 2017 Realtek Corporation.
+ * Copyright(c) 2007 - 2011 Realtek Corporation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -11,19 +11,24 @@
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
  * more details.
  *
- *****************************************************************************/
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
+ *
+ *
+ ******************************************************************************/
 #ifndef _RTW_EVENT_H_
 #define _RTW_EVENT_H_
 
 #ifdef CONFIG_H2CLBK
-	#include <h2clbk.h>
+#include <h2clbk.h>
 #endif
 
 /*
 Used to report a bss has been scanned
 
 */
-struct survey_event	{
+struct survey_event {
 	WLAN_BSSID_EX bss;
 };
 
@@ -61,12 +66,14 @@ It is used in AP/Ad-HoC(M) mode.
 */
 struct stassoc_event {
 	unsigned char macaddr[6];
+	unsigned char rsvd[2];
+	int    cam_id;
+
 };
 
 struct stadel_event {
 	unsigned char macaddr[6];
-	unsigned char rsvd[2]; /* for reason */
-	unsigned char locally_generated;
+	unsigned char rsvd[2]; //for reason
 	int mac_id;
 };
 
@@ -89,7 +96,7 @@ struct c2hlbk_event {
 	unsigned char	b1;
 	unsigned int	w1;
 };
-#endif/* CONFIG_H2CLBK */
+#endif//CONFIG_H2CLBK
 
 #define GEN_EVT_CODE(event)	event ## _EVT_
 
@@ -127,4 +134,5 @@ struct network_queue {
 };
 
 
-#endif /* _WLANEVENT_H_ */
+#endif // _WLANEVENT_H_
+
