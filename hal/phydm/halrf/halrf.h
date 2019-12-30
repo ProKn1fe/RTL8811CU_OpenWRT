@@ -29,7 +29,44 @@
 /*============================================================*/
 /*include files*/
 /*============================================================*/
-#include "halrf/halrf_psd.h"
+#ifndef __HALRF_PSD_H__
+#define __HALRF_PSD_H__
+
+#if (DM_ODM_SUPPORT_TYPE & ODM_WIN)
+
+struct _halrf_psd_data {
+	u32 point;
+	u32 start_point;
+	u32 stop_point;
+	u32 average;
+	u32 buf_size;
+	u32 psd_data[256];
+	u32 psd_progress;
+};
+
+enum rt_status
+	halrf_psd_init(
+		struct dm_struct* dm);
+
+enum rt_status
+	halrf_psd_query(
+		struct dm_struct* dm,
+		u32* outbuf,
+		u32 buf_size);
+
+enum rt_status
+	halrf_psd_init_query(
+		struct dm_struct* dm,
+		u32* outbuf,
+		u32 point,
+		u32 start_point,
+		u32 stop_point,
+		u32 average,
+		u32 buf_size);
+
+#endif /*#if (DM_ODM_SUPPORT_TYPE & ODM_WIN)*/
+#endif /*#ifndef __HALRF_PSD_H__*/
+//#include "halrf/halrf_psd.h"
 #if (RTL8822B_SUPPORT == 1)
 #include "halrf/rtl8822b/halrf_rfk_init_8822b.h"
 #endif
