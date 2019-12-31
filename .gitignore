@@ -37,8 +37,4 @@ cscope.*
 
 # Debug files
 *.dSYM/
-.vs/ProjectSettings.json
-.vs/RTL8811CU_OpenWRT/v16/.suo
-.vs/RTL8811CU_OpenWRT/v16/Browse.VC.db
-.vs/RTL8811CU_OpenWRT/v16/Browse.VC.opendb
-.vs/slnx.sqlite
+/.vs
