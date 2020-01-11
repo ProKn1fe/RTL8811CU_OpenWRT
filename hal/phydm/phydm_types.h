@@ -33,6 +33,8 @@
 /*BIT(4)*/		/*already combine with ODM_AP, and is nouse now*/
 #define	ODM_IOT		0x20	/*BIT(5)*/
 
+#define	DM_ODM_SUPPORT_TYPE			ODM_CE
+
 /*For FW API*/
 #define	__iram_odm_func__
 #define	__odm_func__
