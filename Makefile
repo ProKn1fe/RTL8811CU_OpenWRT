@@ -175,7 +175,12 @@ _OS_INTFS_FILES :=	os_dep/osdep_service.o \
 			os_dep/linux/rtw_cfgvendor.o \
 			os_dep/linux/wifi_regd.o \
 			os_dep/linux/rtw_android.o \
-			os_dep/linux/rtw_proc.o
+			os_dep/linux/rtw_proc.o \
+			os_dep/linux/rtw_rhashtable.o
+
+ifeq ($(CONFIG_MP_INCLUDED), y)
+_OS_INTFS_FILES += os_dep/linux/ioctl_mp.o
+endif
 
 ifeq ($(CONFIG_SDIO_HCI), y)
 _OS_INTFS_FILES += os_dep/linux/custom_gpio_linux.o
@@ -193,48 +198,20 @@ _HAL_INTFS_FILES :=	hal/hal_intf.o \
 			hal/hal_com_phycfg.o \
 			hal/hal_phy.o \
 			hal/hal_dm.o \
+			hal/hal_dm_acs.o \
+			hal/hal_btcoex_wifionly.o \
 			hal/hal_btcoex.o \
+			hal/hal_mp.o \
+			hal/hal_mcc.o \
 			hal/hal_hci/hal_$(HCI_NAME).o \
+			hal/led/hal_led.o \
 			hal/led/hal_$(HCI_NAME)_led.o
 
-_OUTSRC_FILES := hal/OUTSRC/phydm_debug.o	\
-		hal/OUTSRC/phydm_AntDiv.o\
-		hal/OUTSRC/phydm_AntDect.o\
-		hal/OUTSRC/phydm_interface.o\
-		hal/OUTSRC/phydm_HWConfig.o\
-		hal/OUTSRC/phydm.o\
-		hal/OUTSRC/HalPhyRf.o\
-		hal/OUTSRC/phydm_EdcaTurboCheck.o\
-		hal/OUTSRC/phydm_DIG.o\
-		hal/OUTSRC/phydm_PathDiv.o\
-		hal/OUTSRC/phydm_RaInfo.o\
-		hal/OUTSRC/phydm_DynamicBBPowerSaving.o\
-		hal/OUTSRC/phydm_PowerTracking.o\
-		hal/OUTSRC/phydm_DynamicTxPower.o\
-		hal/OUTSRC/PhyDM_Adaptivity.o\
-		hal/OUTSRC/phydm_CfoTracking.o\
-		hal/OUTSRC/phydm_NoiseMonitor.o\
-		hal/OUTSRC/phydm_ACS.o
 
 EXTRA_CFLAGS += -I$(src)/platform
 _PLATFORM_FILES := platform/platform_ops.o
 
-ifeq ($(CONFIG_BT_COEXIST), y)
-EXTRA_CFLAGS += -I$(src)/hal/OUTSRC-BTCoexist
-_OUTSRC_FILES += hal/OUTSRC-BTCoexist/HalBtc8188c2Ant.o \
-				hal/OUTSRC-BTCoexist/HalBtc8192d2Ant.o \
-				hal/OUTSRC-BTCoexist/HalBtc8192e1Ant.o \
-				hal/OUTSRC-BTCoexist/HalBtc8192e2Ant.o \
-				hal/OUTSRC-BTCoexist/HalBtc8723a1Ant.o \
-				hal/OUTSRC-BTCoexist/HalBtc8723a2Ant.o \
-				hal/OUTSRC-BTCoexist/HalBtc8723b1Ant.o \
-				hal/OUTSRC-BTCoexist/HalBtc8723b2Ant.o \
-				hal/OUTSRC-BTCoexist/HalBtc8812a1Ant.o \
-				hal/OUTSRC-BTCoexist/HalBtc8812a2Ant.o \
-				hal/OUTSRC-BTCoexist/HalBtc8821a1Ant.o \
-				hal/OUTSRC-BTCoexist/HalBtc8821a2Ant.o \
-				hal/OUTSRC-BTCoexist/HalBtc8821aCsr2Ant.o
-endif
+EXTRA_CFLAGS += -I$(src)/hal/btc
 
 ########### HAL_RTL8192C #################################
 
