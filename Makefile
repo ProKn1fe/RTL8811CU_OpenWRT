@@ -1,21 +1,25 @@
 EXTRA_CFLAGS += $(USER_EXTRA_CFLAGS)
 EXTRA_CFLAGS += -O1
 #EXTRA_CFLAGS += -O3
-EXTRA_CFLAGS += -Wall
+#EXTRA_CFLAGS += -Wall
 #EXTRA_CFLAGS += -Wextra
-EXTRA_CFLAGS += -Werror
+#EXTRA_CFLAGS += -Werror
 #EXTRA_CFLAGS += -pedantic
 #EXTRA_CFLAGS += -Wshadow -Wpointer-arith -Wcast-qual -Wstrict-prototypes -Wmissing-prototypes
-EXTRA_CFLAGS += -Wframe-larger-than=1536
 
-#EXTRA_CFLAGS += -Wno-unused-variable
-#EXTRA_CFLAGS += -Wno-unused-value
-#EXTRA_CFLAGS += -Wno-unused-label
+EXTRA_CFLAGS += -Wno-unused-variable
+EXTRA_CFLAGS += -Wno-unused-value
+EXTRA_CFLAGS += -Wno-unused-label
 EXTRA_CFLAGS += -Wno-unused-parameter
-#EXTRA_CFLAGS += -Wno-unused-function
-#EXTRA_CFLAGS += -Wno-unused
-
+EXTRA_CFLAGS += -Wno-unused-function
+EXTRA_CFLAGS += -Wno-unused
 #EXTRA_CFLAGS += -Wno-uninitialized
+EXTRA_CFLAGS += -Wno-implicit-fallthrough
+
+GCC_VER_49 := $(shell echo `$(CC) -dumpversion | cut -f1-2 -d.` \>= 4.9 | bc )
+ifeq ($(GCC_VER_49),1)
+EXTRA_CFLAGS += -Wno-date-time	# Fix compile error && warning on gcc 4.9 and later
+endif
 
 EXTRA_CFLAGS += -I$(src)/include
 
@@ -245,6 +249,7 @@ endif
 
 ########### HAL_RTL8821C #################################
 ifeq ($(CONFIG_RTL8821C), y)
+
 EXTRA_CFLAGS += -DCONFIG_RTL8821C
 
 ifeq ($(CONFIG_USB_HCI), y)
@@ -317,6 +322,7 @@ ifeq ($(CONFIG_BT_COEXIST), y)
 _BTC_FILES += hal/btc/halbtc8821c1ant.o \
 				hal/btc/halbtc8821c2ant.o
 endif
+
 endif
 
 ########### HAL_RTL8192C #################################
@@ -1653,6 +1659,9 @@ ifeq ($(DCONFIG_DEBUG_RTL871X), y)
 EXTRA_CFLAGS += -DCONFIG_DEBUG_RTL871X
 endif
 
+########### this part for *.mk ############################
+include $(src)/hal/phydm/phydm.mk
+
 rtk_core :=	core/rtw_cmd.o \
 		core/rtw_security.o \
 		core/rtw_debug.o \
@@ -1662,6 +1671,7 @@ rtk_core :=	core/rtw_cmd.o \
 		core/rtw_ieee80211.o \
 		core/rtw_mlme.o \
 		core/rtw_mlme_ext.o \
+		core/rtw_mi.o \
 		core/rtw_wlan_util.o \
 		core/rtw_vht.o \
 		core/rtw_pwrctrl.o \
@@ -1669,16 +1679,23 @@ rtk_core :=	core/rtw_cmd.o \
 		core/rtw_recv.o \
 		core/rtw_sta_mgt.o \
 		core/rtw_ap.o \
+		core/mesh/rtw_mesh.o \
+		core/mesh/rtw_mesh_pathtbl.o \
+		core/mesh/rtw_mesh_hwmp.o \
 		core/rtw_xmit.o	\
 		core/rtw_p2p.o \
+		core/rtw_rson.o \
 		core/rtw_tdls.o \
 		core/rtw_br_ext.o \
 		core/rtw_iol.o \
 		core/rtw_sreset.o \
+		core/rtw_btcoex_wifionly.o \
 		core/rtw_btcoex.o \
 		core/rtw_beamforming.o \
 		core/rtw_odm.o \
-		core/efuse/rtw_efuse.o
+		core/rtw_rm.o \
+		core/rtw_rm_fsm.o \
+		core/efuse/rtw_efuse.o 
 
 $(MODULE_NAME)-y += $(rtk_core)
 
