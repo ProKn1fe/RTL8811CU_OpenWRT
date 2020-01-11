@@ -65,28 +65,28 @@ If you want to change this file please make sure notify all driver teams maintai
 #define	BI_DIRECTION_STATE	2
 
 /*--------------------Define Enum-----------------------------------*/
-//enum channel_width {
-//	CHANNEL_WIDTH_20		= 0,
-//	CHANNEL_WIDTH_40		= 1,
-//	CHANNEL_WIDTH_80		= 2,
-//	CHANNEL_WIDTH_160		= 3,
-//	CHANNEL_WIDTH_80_80	= 4,
-//	CHANNEL_WIDTH_5		= 5,
-//	CHANNEL_WIDTH_10	= 6,
-//	CHANNEL_WIDTH_MAX	= 7,
-//};
+enum channel_width {
+	CHANNEL_WIDTH_20		= 0,
+	CHANNEL_WIDTH_40		= 1,
+	CHANNEL_WIDTH_80		= 2,
+	CHANNEL_WIDTH_160		= 3,
+	CHANNEL_WIDTH_80_80	= 4,
+	CHANNEL_WIDTH_5		= 5,
+	CHANNEL_WIDTH_10	= 6,
+	CHANNEL_WIDTH_MAX	= 7,
+};
 
-//enum rf_type {
-//	RF_1T1R			= 0,
-//	RF_1T2R			= 1,
-//	RF_2T2R			= 2,
-//	RF_2T3R			= 3,
-//	RF_2T4R			= 4,
-//	RF_3T3R			= 5,
-//	RF_3T4R			= 6,
-//	RF_4T4R			= 7,
-//	RF_TYPE_MAX,
-//};
+enum rf_type {
+	RF_1T1R			= 0,
+	RF_1T2R			= 1,
+	RF_2T2R			= 2,
+	RF_2T3R			= 3,
+	RF_2T4R			= 4,
+	RF_3T3R			= 5,
+	RF_3T4R			= 6,
+	RF_4T4R			= 7,
+	RF_TYPE_MAX,
+};
 
 enum bb_path {
 	BB_PATH_A = 0x00000001,
