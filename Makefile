@@ -1691,11 +1691,11 @@ $(MODULE_NAME)-$(CONFIG_WAPI_SUPPORT) += core/rtw_wapi.o	\
 
 $(MODULE_NAME)-y += $(_OS_INTFS_FILES)
 $(MODULE_NAME)-y += $(_HAL_INTFS_FILES)
-$(MODULE_NAME)-y += $(_OUTSRC_FILES)
+$(MODULE_NAME)-y += $(_PHYDM_FILES)
+$(MODULE_NAME)-y += $(_BTC_FILES)
 $(MODULE_NAME)-y += $(_PLATFORM_FILES)
 
-$(MODULE_NAME)-$(CONFIG_MP_INCLUDED) += core/rtw_mp.o \
-					core/rtw_mp_ioctl.o
+$(MODULE_NAME)-$(CONFIG_MP_INCLUDED) += core/rtw_mp.o
 
 ifeq ($(CONFIG_RTL8723A), y)
 $(MODULE_NAME)-$(CONFIG_MP_INCLUDED)+= core/rtw_bt_mp.o
