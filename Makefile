@@ -69,7 +69,7 @@ CONFIG_BR_EXT = y
 CONFIG_ANTENNA_DIVERSITY = n
 CONFIG_TDLS = n
 ########################## Debug ###########################
-CONFIG_RTW_DEBUG = n
+CONFIG_RTW_DEBUG = y
 # default log level is _DRV_INFO_ = 4,
 # please refer to "How_to_set_driver_debug_log_level.doc" to set the available level.
 CONFIG_RTW_LOG_LEVEL = 3
@@ -1567,6 +1567,11 @@ EXTRA_CFLAGS += -DCONFIG_DEBUG_CFG80211
 endif
 ifeq ($(DCONFIG_DEBUG_RTL871X), y)
 EXTRA_CFLAGS += -DCONFIG_DEBUG_RTL871X
+endif
+
+ifeq ($(CONFIG_RTW_DEBUG), y)
+EXTRA_CFLAGS += -DCONFIG_RTW_DEBUG
+EXTRA_CFLAGS += -DRTW_LOG_LEVEL=$(CONFIG_RTW_LOG_LEVEL)
 endif
 
 ########### this part for *.mk ############################
