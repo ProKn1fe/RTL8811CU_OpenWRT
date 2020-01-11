@@ -1687,6 +1687,8 @@ EXTRA_CFLAGS += -DCONFIG_RTW_DEBUG
 EXTRA_CFLAGS += -DRTW_LOG_LEVEL=$(CONFIG_RTW_LOG_LEVEL)
 endif
 
+ifneq ($(KERNELRELEASE),)
+
 ########### this part for *.mk ############################
 include $(src)/hal/phydm/phydm.mk
 
@@ -1813,6 +1815,10 @@ $(MODULE_NAME)-$(CONFIG_MP_INCLUDED)+= core/rtw_bt_mp.o
 endif
 
 obj-$(CONFIG_RTL8821CU) := $(MODULE_NAME).o
+
+else
+
+export CONFIG_RTL8821CU = m
 
 all: modules
 
