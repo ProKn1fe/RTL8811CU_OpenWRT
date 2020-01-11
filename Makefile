@@ -48,23 +48,25 @@ CONFIG_GSPI_HCI = n
 ########################## Features ###########################
 CONFIG_MP_INCLUDED = y
 CONFIG_POWER_SAVING = n
+CONFIG_IPS_MODE = default
+CONFIG_LPS_MODE = default
 CONFIG_USB_AUTOSUSPEND = n
 CONFIG_HW_PWRP_DETECTION = n
-CONFIG_WIFI_TEST = n
 CONFIG_BT_COEXIST = y
-CONFIG_INTEL_WIDI = n
 CONFIG_WAPI_SUPPORT = n
 CONFIG_EFUSE_CONFIG_FILE = y
 CONFIG_EXT_CLK = n
 CONFIG_TRAFFIC_PROTECT = n
 CONFIG_LOAD_PHY_PARA_FROM_FILE = y
-CONFIG_TXPWR_BY_RATE_EN = y
+CONFIG_TXPWR_BY_RATE = n
+CONFIG_TXPWR_BY_RATE_EN = n
+CONFIG_TXPWR_LIMIT = n
 CONFIG_TXPWR_LIMIT_EN = n
 CONFIG_RTW_CHPLAN = 0xFF
 CONFIG_RTW_ADAPTIVITY_EN = disable
 CONFIG_RTW_ADAPTIVITY_MODE = normal
 CONFIG_SIGNAL_SCALE_MAPPING = n
-CONFIG_80211W = n
+CONFIG_80211W = y
 CONFIG_REDUCE_TX_CPU_LOADING = n
 CONFIG_BR_EXT = y
 CONFIG_TDLS = n
@@ -77,6 +79,10 @@ CONFIG_RTW_NETIF_SG = y
 CONFIG_RTW_IPCAM_APPLICATION = n
 CONFIG_RTW_REPEATER_SON = n
 CONFIG_RTW_WIFI_HAL = n
+CONFIG_ICMP_VOQ = n
+CONFIG_IP_R_MONITOR = n #arp VOQ and high rate
+# user priority mapping rule : tos, dscp
+CONFIG_RTW_UP_MAPPING_RULE = tos
 ########################## Debug ###########################
 CONFIG_RTW_DEBUG = y
 # default log level is _DRV_INFO_ = 4,
@@ -734,6 +740,15 @@ EXTRA_CFLAGS += -DCONFIG_MP_INCLUDED
 endif
 
 ifeq ($(CONFIG_POWER_SAVING), y)
+ifneq ($(CONFIG_IPS_MODE), default)
+EXTRA_CFLAGS += -DRTW_IPS_MODE=$(CONFIG_IPS_MODE)
+endif
+ifneq ($(CONFIG_LPS_MODE), default)
+EXTRA_CFLAGS += -DRTW_LPS_MODE=$(CONFIG_LPS_MODE)
+endif
+ifneq ($(CONFIG_WOW_LPS_MODE), default)
+EXTRA_CFLAGS += -DRTW_WOW_LPS_MODE=$(CONFIG_WOW_LPS_MODE)
+endif
 EXTRA_CFLAGS += -DCONFIG_POWER_SAVING
 endif
 
@@ -847,6 +862,46 @@ ifeq ($(CONFIG_LOAD_PHY_PARA_FROM_FILE), y)
 EXTRA_CFLAGS += -DCONFIG_LOAD_PHY_PARA_FROM_FILE
 #EXTRA_CFLAGS += -DREALTEK_CONFIG_PATH_WITH_IC_NAME_FOLDER
 EXTRA_CFLAGS += -DREALTEK_CONFIG_PATH=\"/lib/firmware/\"
+endif
+
+ifeq ($(CONFIG_TXPWR_BY_RATE), n)
+EXTRA_CFLAGS += -DCONFIG_TXPWR_BY_RATE=0
+else ifeq ($(CONFIG_TXPWR_BY_RATE), y)
+EXTRA_CFLAGS += -DCONFIG_TXPWR_BY_RATE=1
+endif
+ifeq ($(CONFIG_TXPWR_BY_RATE_EN), n)
+EXTRA_CFLAGS += -DCONFIG_TXPWR_BY_RATE_EN=0
+else ifeq ($(CONFIG_TXPWR_BY_RATE_EN), y)
+EXTRA_CFLAGS += -DCONFIG_TXPWR_BY_RATE_EN=1
+else ifeq ($(CONFIG_TXPWR_BY_RATE_EN), auto)
+EXTRA_CFLAGS += -DCONFIG_TXPWR_BY_RATE_EN=2
+endif
+
+ifeq ($(CONFIG_TXPWR_LIMIT), n)
+EXTRA_CFLAGS += -DCONFIG_TXPWR_LIMIT=0
+else ifeq ($(CONFIG_TXPWR_LIMIT), y)
+EXTRA_CFLAGS += -DCONFIG_TXPWR_LIMIT=1
+endif
+ifeq ($(CONFIG_TXPWR_LIMIT_EN), n)
+EXTRA_CFLAGS += -DCONFIG_TXPWR_LIMIT_EN=0
+else ifeq ($(CONFIG_TXPWR_LIMIT_EN), y)
+EXTRA_CFLAGS += -DCONFIG_TXPWR_LIMIT_EN=1
+else ifeq ($(CONFIG_TXPWR_LIMIT_EN), auto)
+EXTRA_CFLAGS += -DCONFIG_TXPWR_LIMIT_EN=2
+endif
+
+ifeq ($(CONFIG_ICMP_VOQ), y)
+EXTRA_CFLAGS += -DCONFIG_ICMP_VOQ
+endif
+
+ifeq ($(CONFIG_IP_R_MONITOR), y)
+EXTRA_CFLAGS += -DCONFIG_IP_R_MONITOR
+endif
+
+ifeq ($(CONFIG_RTW_UP_MAPPING_RULE), dscp)
+EXTRA_CFLAGS += -DCONFIG_RTW_UP_MAPPING_RULE=1
+else
+EXTRA_CFLAGS += -DCONFIG_RTW_UP_MAPPING_RULE=0
 endif
 
 #END OWN
@@ -1665,33 +1720,6 @@ ifeq ($(CONFIG_SDIO_HCI), y)
 FILE_NAME = 8821cs
 endif
 
-_HAL_HALMAC_FILES +=	hal/halmac/halmac_api.o
-
-_HAL_HALMAC_FILES +=	hal/halmac/halmac_88xx/halmac_bb_rf_88xx.o \
-			hal/halmac/halmac_88xx/halmac_cfg_wmac_88xx.o \
-			hal/halmac/halmac_88xx/halmac_common_88xx.o \
-			hal/halmac/halmac_88xx/halmac_efuse_88xx.o \
-			hal/halmac/halmac_88xx/halmac_flash_88xx.o \
-			hal/halmac/halmac_88xx/halmac_fw_88xx.o \
-			hal/halmac/halmac_88xx/halmac_gpio_88xx.o \
-			hal/halmac/halmac_88xx/halmac_init_88xx.o \
-			hal/halmac/halmac_88xx/halmac_mimo_88xx.o \
-			hal/halmac/halmac_88xx/halmac_pcie_88xx.o \
-			hal/halmac/halmac_88xx/halmac_sdio_88xx.o \
-			hal/halmac/halmac_88xx/halmac_usb_88xx.o
-
-_HAL_HALMAC_FILES +=	hal/halmac/halmac_88xx/halmac_8821c/halmac_cfg_wmac_8821c.o \
-			hal/halmac/halmac_88xx/halmac_8821c/halmac_common_8821c.o \
-			hal/halmac/halmac_88xx/halmac_8821c/halmac_gpio_8821c.o \
-			hal/halmac/halmac_88xx/halmac_8821c/halmac_init_8821c.o \
-			hal/halmac/halmac_88xx/halmac_8821c/halmac_pcie_8821c.o \
-			hal/halmac/halmac_88xx/halmac_8821c/halmac_phy_8821c.o \
-			hal/halmac/halmac_88xx/halmac_8821c/halmac_pwr_seq_8821c.o \
-			hal/halmac/halmac_88xx/halmac_8821c/halmac_sdio_8821c.o \
-			hal/halmac/halmac_88xx/halmac_8821c/halmac_usb_8821c.o
-
-_HAL_INTFS_FILES +=	hal/hal_halmac.o
-
 _HAL_INTFS_FILES +=	hal/rtl8821c/rtl8821c_halinit.o \
 			hal/rtl8821c/rtl8821c_mac.o \
 			hal/rtl8821c/rtl8821c_cmd.o \
@@ -1718,7 +1746,7 @@ ifeq ($(CONFIG_PCI_HCI), y)
 _HAL_INTFS_FILES +=hal/efuse/$(RTL871X)/HalEfuseMask8821C_PCIE.o
 endif
 
-_HAL_INTFS_FILES += $(_HAL_HALMAC_FILES)
+include $(src)/halmac.mk
 
 _BTC_FILES += hal/btc/halbtc8821cwifionly.o
 ifeq ($(CONFIG_BT_COEXIST), y)
@@ -1727,6 +1755,8 @@ _BTC_FILES += hal/btc/halbtc8821c1ant.o \
 endif
 
 endif
+
+########### END #################################
 
 rtk_core :=	core/rtw_cmd.o \
 		core/rtw_security.o \
@@ -1742,6 +1772,7 @@ rtk_core :=	core/rtw_cmd.o \
 		core/rtw_vht.o \
 		core/rtw_pwrctrl.o \
 		core/rtw_rf.o \
+		core/rtw_chplan.o \
 		core/rtw_recv.o \
 		core/rtw_sta_mgt.o \
 		core/rtw_ap.o \
@@ -1761,11 +1792,10 @@ rtk_core :=	core/rtw_cmd.o \
 		core/rtw_odm.o \
 		core/rtw_rm.o \
 		core/rtw_rm_fsm.o \
+		core/rtw_rm_util.o \
 		core/efuse/rtw_efuse.o 
 
 $(MODULE_NAME)-y += $(rtk_core)
-
-$(MODULE_NAME)-$(CONFIG_INTEL_WIDI) += core/rtw_intel_widi.o
 
 $(MODULE_NAME)-$(CONFIG_WAPI_SUPPORT) += core/rtw_wapi.o	\
 					core/rtw_wapi_sms4.o
@@ -1778,20 +1808,15 @@ $(MODULE_NAME)-y += $(_PLATFORM_FILES)
 
 $(MODULE_NAME)-$(CONFIG_MP_INCLUDED) += core/rtw_mp.o
 
-ifeq ($(CONFIG_RTL8723A), y)
-$(MODULE_NAME)-$(CONFIG_MP_INCLUDED)+= core/rtw_bt_mp.o
-endif
 ifeq ($(CONFIG_RTL8723B), y)
 $(MODULE_NAME)-$(CONFIG_MP_INCLUDED)+= core/rtw_bt_mp.o
 endif
-ifeq ($(CONFIG_RTL8821A), y)
-$(MODULE_NAME)-$(CONFIG_MP_INCLUDED)+= core/rtw_bt_mp.o
-endif
 
-ifneq ($(CONFIG_RTL8812AU),)
-obj-$(CONFIG_RTL8812AU) := $(MODULE_NAME).o
+obj-$(CONFIG_RTL8821CU) := $(MODULE_NAME).o
+
 else
-obj-m := $(MODULE_NAME).o
+
+export CONFIG_RTL8821CU = m
 
 all: modules
 
