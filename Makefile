@@ -1687,8 +1687,6 @@ EXTRA_CFLAGS += -DCONFIG_RTW_DEBUG
 EXTRA_CFLAGS += -DRTW_LOG_LEVEL=$(CONFIG_RTW_LOG_LEVEL)
 endif
 
-ifneq ($(KERNELRELEASE),)
-
 ########### this part for *.mk ############################
 include $(src)/hal/phydm/phydm.mk
 
@@ -1810,15 +1808,20 @@ $(MODULE_NAME)-y += $(_PLATFORM_FILES)
 
 $(MODULE_NAME)-$(CONFIG_MP_INCLUDED) += core/rtw_mp.o
 
+ifeq ($(CONFIG_RTL8723A), y)
+$(MODULE_NAME)-$(CONFIG_MP_INCLUDED)+= core/rtw_bt_mp.o
+endif
 ifeq ($(CONFIG_RTL8723B), y)
 $(MODULE_NAME)-$(CONFIG_MP_INCLUDED)+= core/rtw_bt_mp.o
 endif
+ifeq ($(CONFIG_RTL8821A), y)
+$(MODULE_NAME)-$(CONFIG_MP_INCLUDED)+= core/rtw_bt_mp.o
+endif
 
-obj-$(CONFIG_RTL8821CU) := $(MODULE_NAME).o
-
+ifneq ($(CONFIG_RTL8812AU),)
+obj-$(CONFIG_RTL8812AU) := $(MODULE_NAME).o
 else
-
-export CONFIG_RTL8821CU = m
+obj-m := $(MODULE_NAME).o
 
 all: modules
 
