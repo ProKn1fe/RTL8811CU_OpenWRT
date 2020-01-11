@@ -1814,10 +1814,6 @@ endif
 
 obj-$(CONFIG_RTL8821CU) := $(MODULE_NAME).o
 
-else
-
-export CONFIG_RTL8821CU = m
-
 all: modules
 
 modules:
