@@ -151,8 +151,8 @@ CONFIG_PLATFORM_MOZART = n
 CONFIG_PLATFORM_RTK119X = n
 CONFIG_PLATFORM_NOVATEK_NT72668 = n
 ########################## DEBUG ##############################
-CONFIG_DEBUG = y
-CONFIG_DEBUG_CFG80211 = y
+CONFIG_DEBUG = n
+CONFIG_DEBUG_CFG80211 = n
 CONFIG_DEBUG_RTL871X = n
 ###############################################################
 
