@@ -30,7 +30,6 @@ u32 rtl8821c_power_on(PADAPTER);
 void rtl8821c_power_off(PADAPTER);
 u8 rtl8821c_mac_init(PADAPTER);
 u8 rtl8821c_mac_verify(PADAPTER);
-void rtl8821c_hal_init_channel_setting(PADAPTER adapter);
 void rtl8821c_hal_init_misc(PADAPTER padapter);
 u32 rtl8821c_hal_init(PADAPTER);
 u32 rtl8821c_hal_deinit(PADAPTER);
@@ -39,6 +38,9 @@ u8 rtl8821c_phy_init(PADAPTER adapter);
 u8 rtl8821c_init_phy_parameter_mac(PADAPTER adapter);
 
 /* rtl8821c_mac.c */
+#ifdef CONFIG_XMIT_ACK
+u8 rtl8821c_set_mgnt_xmit_ack(_adapter *adapter);
+#endif
 u8 rtl8821c_rx_ba_ssn_appended(PADAPTER);
 u8 rtl8821c_rx_fcs_append_switch(PADAPTER, u8 enable);
 u8 rtl8821c_rx_fcs_appended(PADAPTER);
@@ -100,9 +102,7 @@ u32 rtl8821c_read_rf_reg(PADAPTER adapter, enum rf_path path, u32 addr, u32 mask
 void rtl8821c_write_rf_reg(PADAPTER adapter, enum rf_path path, u32 addr, u32 mask, u32 val);
 void rtl8821c_set_channel_bw(PADAPTER adapter, u8 center_ch, enum channel_width, u8 offset40, u8 offset80);
 void rtl8821c_set_tx_power_level(PADAPTER, u8 channel);
-void rtl8821c_get_tx_power_level(PADAPTER, s32 *power);
 void rtl8821c_set_tx_power_index(PADAPTER adapter, u32 powerindex, enum rf_path rfpath, u8 rate);
-u8 rtl8821c_get_tx_power_index(PADAPTER adapter, enum rf_path rfpath, u8 rate, u8 bandwidth, u8 channel, struct txpwr_idx_comp *tic);
 void rtl8821c_notch_filter_switch(PADAPTER, bool enable);
 #ifdef CONFIG_BEAMFORMING
 void rtl8821c_phy_bf_init(PADAPTER);

@@ -32,7 +32,9 @@ void init_hal_spec_rtl8821c(PADAPTER adapter)
 
 	hal_spec->rfpath_num_2g = 2;
 	hal_spec->rfpath_num_5g = 1;
+	hal_spec->rf_reg_path_num = 1;
 	hal_spec->max_tx_cnt = 1;
+
 	hal_spec->tx_nss_num = 1;
 	hal_spec->rx_nss_num = 1;
 	hal_spec->band_cap = BAND_CAP_2G | BAND_CAP_5G;
@@ -41,15 +43,23 @@ void init_hal_spec_rtl8821c(PADAPTER adapter)
 	hal_spec->hci_type = 0;
 	hal_spec->proto_cap = PROTO_CAP_11B | PROTO_CAP_11G | PROTO_CAP_11N | PROTO_CAP_11AC;
 
+	hal_spec->txgi_max = 63;
+	hal_spec->txgi_pdbm = 2;
+
 	hal_spec->wl_func = 0
 			    | WL_FUNC_P2P
 			    | WL_FUNC_MIRACAST
 			    | WL_FUNC_TDLS
 			    ;
 
+#if CONFIG_TX_AC_LIFETIME
+	hal_spec->tx_aclt_unit_factor = 8;
+#endif
+
 	hal_spec->rx_tsf_filter = 1;
 
 	hal_spec->pg_txpwr_saddr = 0x10;
+	hal_spec->pg_txgi_diff_factor = 1;
 
 	rtw_macid_ctl_init_sleep_reg(adapter_to_macidctl(adapter)
 		, REG_MACID_SLEEP_8821C
@@ -183,16 +193,6 @@ u8 rtl8821c_mac_verify(PADAPTER adapter)
 	return _TRUE;
 }
 
-void rtl8821c_hal_init_channel_setting(PADAPTER adapter)
-{
-	PHAL_DATA_TYPE hal_data = GET_HAL_DATA(adapter);
-
-	/* initial channel setting */
-	hal_data->current_channel = 0;
-	hal_data->current_channel_bw = CHANNEL_WIDTH_MAX;
-	hal_data->current_band_type = BAND_MAX;
-}
-
 void rtl8821c_hal_init_misc(PADAPTER adapter)
 {
 	PHAL_DATA_TYPE hal_data = GET_HAL_DATA(adapter);
@@ -231,6 +231,10 @@ void rtl8821c_hal_init_misc(PADAPTER adapter)
 #endif
 
 	rtw_hal_set_hwreg(adapter, HW_VAR_RCR, (u8 *)&rcr_bits);
+
+#ifdef CONFIG_XMIT_ACK
+	rtl8821c_set_mgnt_xmit_ack(adapter);
+#endif /*CONFIG_XMIT_ACK*/
 
 	/*Disable BAR, suggested by Scott */
 	rtw_write32(adapter, REG_BAR_MODE_CTRL_8821C, 0x0201ffff);
@@ -281,8 +285,6 @@ u32 rtl8821c_hal_init(PADAPTER adapter)
 	} else
 #endif /* CONFIG_BT_COEXIST */
 		rtw_btcoex_wifionly_hw_config(adapter);
-
-	rtl8821c_hal_init_channel_setting(adapter);
 
 	return _SUCCESS;
 }

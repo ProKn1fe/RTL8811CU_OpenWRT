@@ -23,24 +23,39 @@
  *
  *****************************************************************************/
 
-/*Image2HeaderVersion: R3 1.0*/
+/*Image2HeaderVersion: R3 1.5.5*/
 #include "mp_precomp.h"
+
+#if (DM_ODM_SUPPORT_TYPE == ODM_WIN)
+#if RT_PLATFORM == PLATFORM_MACOSX
+#include "phydm_precomp.h"
+#else
 #include "../phydm_precomp.h"
+#endif
+#else
+#include "../../phydm_precomp.h"
+#endif
+
+#define D_S_SIZE DELTA_SWINGIDX_SIZE
+#define D_ST_SIZE DELTA_SWINTSSI_SIZE
 
 #if (RTL8821C_SUPPORT == 1)
 static boolean
-check_positive(
-	struct dm_struct *dm,
-	const u32	condition1,
-	const u32	condition2,
-	const u32	condition3,
-	const u32	condition4
+check_positive(struct dm_struct *dm,
+	       const u32	condition1,
+	       const u32	condition2,
+	       const u32	condition3,
+	       const u32	condition4
 )
 {
-	u32	cond1 = condition1, cond2 = condition2, cond3 = condition3, cond4 = condition4;
+	u32	cond1 = condition1, cond2 = condition2,
+		cond3 = condition3, cond4 = condition4;
 
-	u8	cut_version_for_para = (dm->cut_version ==  ODM_CUT_A) ? 15 : dm->cut_version;
-	u8	pkg_type_for_para = (dm->package_type == 0) ? 15 : dm->package_type;
+	u8	cut_version_for_para =
+		(dm->cut_version ==  ODM_CUT_A) ? 15 : dm->cut_version;
+
+	u8	pkg_type_for_para =
+		(dm->package_type == 0) ? 15 : dm->package_type;
 
 	u32	driver1 = cut_version_for_para << 24 |
 			(dm->support_interface & 0xF0) << 16 |
@@ -74,18 +89,20 @@ check_positive(
 	PHYDM_DBG(dm, ODM_COMP_INIT, "	(RFE, Package) = (0x%X, 0x%X)\n",
 		  dm->rfe_type, dm->package_type);
 
-
 	/*============== value Defined Check ===============*/
 	/*cut version [27:24] need to do value check*/
-	if (((cond1 & 0x0F000000) != 0) && ((cond1 & 0x0F000000) != (driver1 & 0x0F000000)))
+	if (((cond1 & 0x0F000000) != 0) &&
+	    ((cond1 & 0x0F000000) != (driver1 & 0x0F000000)))
 		return false;
 
 	/*pkg type [15:12] need to do value check*/
-	if (((cond1 & 0x0000F000) != 0) && ((cond1 & 0x0000F000) != (driver1 & 0x0000F000)))
+	if (((cond1 & 0x0000F000) != 0) &&
+	    ((cond1 & 0x0000F000) != (driver1 & 0x0000F000)))
 		return false;
 
 	/*interface [11:8] need to do value check*/
-	if (((cond1 & 0x00000F00) != 0) && ((cond1 & 0x00000F00) != (driver1 & 0x00000F00)))
+	if (((cond1 & 0x00000F00) != 0) &&
+	    ((cond1 & 0x00000F00) != (driver1 & 0x00000F00)))
 		return false;
 	/*=============== Bit Defined Check ================*/
 	/* We don't care [31:28] */
@@ -98,21 +115,13 @@ check_positive(
 	else
 		return false;
 }
-static boolean
-check_negative(
-	struct dm_struct *dm,
-	const u32	condition1,
-	const u32	condition2
-)
-{
-	return true;
-}
+
 
 /******************************************************************************
-*                           radioa.TXT
-******************************************************************************/
+ *                           radioa.TXT
+ ******************************************************************************/
 
-u32 array_mp_8821c_radioa[] = {
+const u32 array_mp_8821c_radioa[] = {
 	0x80001005,	0x00000000,	0x40000000,	0x00000000,
 		0x000, 0x00010000,
 		0x018, 0x00010D24,
@@ -1320,13 +1329,13 @@ u32 array_mp_8821c_radioa[] = {
 	0x90001004,	0x00000000,	0x40000000,	0x00000000,
 		0x0EF, 0x00000200,
 		0x030, 0x00000000,
-		0x03F, 0x00033303,
+		0x03F, 0x000333A3,
 		0x030, 0x00001000,
-		0x03F, 0x00033303,
+		0x03F, 0x000333A3,
 		0x030, 0x00002000,
-		0x03F, 0x00033303,
+		0x03F, 0x000333A3,
 		0x030, 0x00003000,
-		0x03F, 0x00033303,
+		0x03F, 0x000333A3,
 		0x030, 0x00004000,
 		0x03F, 0x000313A3,
 		0x030, 0x00005000,
@@ -1443,21 +1452,21 @@ u32 array_mp_8821c_radioa[] = {
 	0x90001004,	0x00000000,	0x40000000,	0x00000000,
 		0x0EF, 0x00000080,
 		0x033, 0x00000000,
-		0x03F, 0x00033303,
+		0x03F, 0x000333A3,
 		0x033, 0x00000001,
-		0x03F, 0x00033303,
+		0x03F, 0x000333A3,
 		0x033, 0x00000002,
-		0x03F, 0x00033303,
+		0x03F, 0x000333A3,
 		0x033, 0x00000003,
-		0x03F, 0x00033303,
+		0x03F, 0x000333A3,
 		0x033, 0x00000004,
-		0x03F, 0x00033303,
+		0x03F, 0x000333A3,
 		0x033, 0x00000005,
-		0x03F, 0x00033303,
+		0x03F, 0x000333A3,
 		0x033, 0x00000006,
-		0x03F, 0x00033303,
+		0x03F, 0x000333A3,
 		0x033, 0x00000007,
-		0x03F, 0x00033303,
+		0x03F, 0x000333A3,
 		0x033, 0x00000008,
 		0x03F, 0x000313A3,
 		0x033, 0x00000009,
@@ -2687,10 +2696,12 @@ odm_read_and_config_mp_8821c_radioa(struct dm_struct *dm)
 	u32	i = 0;
 	u8	c_cond;
 	boolean	is_matched = true, is_skipped = false;
-	u32	array_len = sizeof(array_mp_8821c_radioa) / sizeof(u32);
-	u32	*array = array_mp_8821c_radioa;
+	u32	array_len =
+			sizeof(array_mp_8821c_radioa) / sizeof(u32);
+	u32	*array = (u32 *)array_mp_8821c_radioa;
 
 	u32	v1 = 0, v2 = 0, pre_v1 = 0, pre_v2 = 0;
+	u32	a1 = 0, a2 = 0, a3 = 0, a4 = 0;
 
 	PHYDM_DBG(dm, ODM_COMP_INIT, "===> %s\n", __func__);
 
@@ -2700,7 +2711,8 @@ odm_read_and_config_mp_8821c_radioa(struct dm_struct *dm)
 
 		if (v1 & (BIT(31) | BIT(30))) {/*positive & negative condition*/
 			if (v1 & BIT(31)) {/* positive condition*/
-				c_cond  = (u8)((v1 & (BIT(29) | BIT(28))) >> 28);
+				c_cond  =
+					(u8)((v1 & (BIT(29) | BIT(28))) >> 28);
 				if (c_cond == COND_ENDIF) {/*end*/
 					is_matched = true;
 					is_skipped = false;
@@ -2711,19 +2723,24 @@ odm_read_and_config_mp_8821c_radioa(struct dm_struct *dm)
 				} else {/*if , else if*/
 					pre_v1 = v1;
 					pre_v2 = v2;
-					PHYDM_DBG(dm, ODM_COMP_INIT, "IF or ELSE IF\n");
+					PHYDM_DBG(dm, ODM_COMP_INIT,
+						  "IF or ELSE IF\n");
 				}
 			} else if (v1 & BIT(30)) { /*negative condition*/
-				if (is_skipped == false) {
-					if (check_positive(dm, pre_v1, pre_v2, v1, v2)) {
+				if (!is_skipped) {
+					a1 = pre_v1; a2 = pre_v2;
+					a3 = v1; a4 = v2;
+					if (check_positive(dm,
+							   a1, a2, a3, a4)) {
 						is_matched = true;
 						is_skipped = true;
 					} else {
 						is_matched = false;
 						is_skipped = false;
 					}
-				} else
+				} else {
 					is_matched = false;
+				}
 			}
 		} else {
 			if (is_matched)
@@ -2736,184 +2753,365 @@ odm_read_and_config_mp_8821c_radioa(struct dm_struct *dm)
 u32
 odm_get_version_mp_8821c_radioa(void)
 {
-		return 49;
+		return 54;
 }
 
 /******************************************************************************
-*                           txpowertrack.TXT
-******************************************************************************/
+ *                           txpowertrack.TXT
+ ******************************************************************************/
 
-u8 delta_swingidx_mp_5gb_n_txpwrtrk_8821c[][DELTA_SWINGIDX_SIZE] = {
-	{0, 1, 1, 2, 3, 3, 3, 4, 4, 5, 5, 6, 6, 6, 7, 8, 8, 8, 9, 9, 9, 10, 10, 11, 11, 12, 12, 12, 12, 12},
-	{0, 1, 1, 1, 2, 3, 3, 4, 4, 5, 5, 5, 6, 6, 7, 8, 8, 9, 9, 10, 10, 11, 11, 12, 12, 12, 12, 12, 12, 12},
-	{0, 1, 2, 2, 3, 4, 4, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 9, 10, 10, 11, 11, 12, 12, 12, 12, 12, 12},
+#ifdef CONFIG_8821C
+const u8 delta_swingidx_mp_5gb_n_txpwrtrk_8821c[][D_S_SIZE] = {
+	{0, 1, 1, 2, 3, 3, 3, 4, 4, 5, 5, 6, 6, 6, 7, 8, 8,
+	 8, 9, 9, 9, 10, 10, 11, 11, 12, 12, 12, 12, 12},
+	{0, 1, 1, 1, 2, 3, 3, 4, 4, 5, 5, 5, 6, 6, 7, 8, 8,
+	 9, 9, 10, 10, 11, 11, 12, 12, 12, 12, 12, 12, 12},
+	{0, 1, 2, 2, 3, 4, 4, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8,
+	 9, 9, 9, 10, 10, 11, 11, 12, 12, 12, 12, 12, 12},
 };
-u8 delta_swingidx_mp_5gb_p_txpwrtrk_8821c[][DELTA_SWINGIDX_SIZE] = {
-	{0, 1, 1, 2, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 11, 11, 12, 12, 12, 12, 12, 12, 12},
-	{0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 5, 6, 7, 7, 8, 8, 9, 10, 10, 11, 11, 12, 12, 12, 12, 12, 12, 12, 12},
-	{0, 1, 1, 1, 2, 3, 3, 3, 4, 4, 4, 5, 6, 6, 7, 7, 8, 8, 9, 10, 10, 11, 11, 12, 12, 12, 12, 12, 12, 12},
+
+const u8 delta_swingidx_mp_5gb_p_txpwrtrk_8821c[][D_S_SIZE] = {
+	{0, 1, 1, 2, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8,
+	 8, 9, 9, 10, 11, 11, 12, 12, 12, 12, 12, 12, 12},
+	{0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 5, 6, 7, 7, 8, 8, 9,
+	 10, 10, 11, 11, 12, 12, 12, 12, 12, 12, 12, 12},
+	{0, 1, 1, 1, 2, 3, 3, 3, 4, 4, 4, 5, 6, 6, 7, 7, 8,
+	 8, 9, 10, 10, 11, 11, 12, 12, 12, 12, 12, 12, 12},
 };
-u8 delta_swingidx_mp_5ga_n_txpwrtrk_8821c[][DELTA_SWINGIDX_SIZE] = {
-	{0, 1, 1, 2, 3, 3, 3, 4, 4, 5, 5, 6, 6, 6, 7, 8, 8, 8, 9, 9, 9, 10, 10, 11, 11, 12, 12, 12, 12, 12},
-	{0, 1, 1, 1, 2, 3, 3, 4, 4, 5, 5, 5, 6, 6, 7, 8, 8, 9, 9, 10, 10, 11, 11, 12, 12, 12, 12, 12, 12, 12},
-	{0, 1, 2, 2, 3, 4, 4, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 9, 10, 10, 11, 11, 12, 12, 12, 12, 12, 12},
+
+const u8 delta_swingidx_mp_5ga_n_txpwrtrk_8821c[][D_S_SIZE] = {
+	{0, 1, 1, 2, 3, 3, 3, 4, 4, 5, 5, 6, 6, 6, 7, 8, 8,
+	 8, 9, 9, 9, 10, 10, 11, 11, 12, 12, 12, 12, 12},
+	{0, 1, 1, 1, 2, 3, 3, 4, 4, 5, 5, 5, 6, 6, 7, 8, 8,
+	 9, 9, 10, 10, 11, 11, 12, 12, 12, 12, 12, 12, 12},
+	{0, 1, 2, 2, 3, 4, 4, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8,
+	 9, 9, 9, 10, 10, 11, 11, 12, 12, 12, 12, 12, 12},
 };
-u8 delta_swingidx_mp_5ga_p_txpwrtrk_8821c[][DELTA_SWINGIDX_SIZE] = {
-	{0, 1, 1, 2, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 11, 11, 12, 12, 12, 12, 12, 12, 12},
-	{0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 5, 6, 7, 7, 8, 8, 9, 10, 10, 11, 11, 12, 12, 12, 12, 12, 12, 12, 12},
-	{0, 1, 1, 1, 2, 3, 3, 3, 4, 4, 4, 5, 6, 6, 7, 7, 8, 8, 9, 10, 10, 11, 11, 12, 12, 12, 12, 12, 12, 12},
+
+const u8 delta_swingidx_mp_5ga_p_txpwrtrk_8821c[][D_S_SIZE] = {
+	{0, 1, 1, 2, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8,
+	 8, 9, 9, 10, 11, 11, 12, 12, 12, 12, 12, 12, 12},
+	{0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 5, 6, 7, 7, 8, 8, 9,
+	 10, 10, 11, 11, 12, 12, 12, 12, 12, 12, 12, 12},
+	{0, 1, 1, 1, 2, 3, 3, 3, 4, 4, 4, 5, 6, 6, 7, 7, 8,
+	 8, 9, 10, 10, 11, 11, 12, 12, 12, 12, 12, 12, 12},
 };
-u8 delta_swingidx_mp_2gb_n_txpwrtrk_8821c[]    = {0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 7, 7, 8, 8, 9};
-u8 delta_swingidx_mp_2gb_p_txpwrtrk_8821c[]    = {0, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 3, 4, 4, 5, 5, 5, 5, 6, 6, 6, 7, 7, 7, 8, 8, 9, 9, 9, 9};
-u8 delta_swingidx_mp_2ga_n_txpwrtrk_8821c[]    = {0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 7, 7, 8, 8, 9};
-u8 delta_swingidx_mp_2ga_p_txpwrtrk_8821c[]    = {0, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 3, 4, 4, 5, 5, 5, 5, 6, 6, 6, 7, 7, 7, 8, 8, 9, 9, 9, 9};
-u8 delta_swingidx_mp_2g_cck_b_n_txpwrtrk_8821c[] = {0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 5, 5, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 9};
-u8 delta_swingidx_mp_2g_cck_b_p_txpwrtrk_8821c[] = {0, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 5, 6, 6, 7, 7, 7, 8, 8, 9, 9, 9, 9, 9, 9};
-u8 delta_swingidx_mp_2g_cck_a_n_txpwrtrk_8821c[] = {0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 5, 5, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 9};
-u8 delta_swingidx_mp_2g_cck_a_p_txpwrtrk_8821c[] = {0, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 5, 6, 6, 7, 7, 7, 8, 8, 9, 9, 9, 9, 9, 9};
+
+const u8 delta_swingidx_mp_2gb_n_txpwrtrk_8821c[]    = {
+	0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3, 3, 3, 4, 4,
+	 4, 4, 5, 5, 5, 5, 6, 6, 6, 7, 7, 8, 8, 9};
+const u8 delta_swingidx_mp_2gb_p_txpwrtrk_8821c[]    = {
+	0, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 3, 4, 4, 5, 5,
+	 5, 5, 6, 6, 6, 7, 7, 7, 8, 8, 9, 9, 9, 9};
+const u8 delta_swingidx_mp_2ga_n_txpwrtrk_8821c[]    = {
+	0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3, 3, 3, 4, 4,
+	 4, 4, 5, 5, 5, 5, 6, 6, 6, 7, 7, 8, 8, 9};
+const u8 delta_swingidx_mp_2ga_p_txpwrtrk_8821c[]    = {
+	0, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 3, 4, 4, 5, 5,
+	 5, 5, 6, 6, 6, 7, 7, 7, 8, 8, 9, 9, 9, 9};
+const u8 delta_swingidx_mp_2g_cck_b_n_txpwrtrk_8821c[] = {
+	0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4,
+	 4, 5, 5, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 9};
+const u8 delta_swingidx_mp_2g_cck_b_p_txpwrtrk_8821c[] = {
+	0, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5,
+	 5, 6, 6, 7, 7, 7, 8, 8, 9, 9, 9, 9, 9, 9};
+const u8 delta_swingidx_mp_2g_cck_a_n_txpwrtrk_8821c[] = {
+	0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4,
+	 4, 5, 5, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 9};
+const u8 delta_swingidx_mp_2g_cck_a_p_txpwrtrk_8821c[] = {
+	0, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5,
+	 5, 6, 6, 7, 7, 7, 8, 8, 9, 9, 9, 9, 9, 9};
+#endif
 
 void
 odm_read_and_config_mp_8821c_txpowertrack(struct dm_struct *dm)
 {
-	struct dm_rf_calibration_struct  *cali_info = &dm->rf_calibrate_info;
+#ifdef CONFIG_8821C
 
-	PHYDM_DBG(dm, ODM_COMP_INIT, "===> ODM_ReadAndConfig_MP_mp_8821c\n");
+struct dm_rf_calibration_struct  *cali_info = &dm->rf_calibrate_info;
 
+PHYDM_DBG(dm, ODM_COMP_INIT, "===> ODM_ReadAndConfig_MP_mp_8821c\n");
 
-	odm_move_memory(dm, cali_info->delta_swing_table_idx_2ga_p, delta_swingidx_mp_2ga_p_txpwrtrk_8821c, DELTA_SWINGIDX_SIZE);
-	odm_move_memory(dm, cali_info->delta_swing_table_idx_2ga_n, delta_swingidx_mp_2ga_n_txpwrtrk_8821c, DELTA_SWINGIDX_SIZE);
-	odm_move_memory(dm, cali_info->delta_swing_table_idx_2gb_p, delta_swingidx_mp_2gb_p_txpwrtrk_8821c, DELTA_SWINGIDX_SIZE);
-	odm_move_memory(dm, cali_info->delta_swing_table_idx_2gb_n, delta_swingidx_mp_2gb_n_txpwrtrk_8821c, DELTA_SWINGIDX_SIZE);
+odm_move_memory(dm, cali_info->delta_swing_table_idx_2ga_p,
+		(void *)delta_swingidx_mp_2ga_p_txpwrtrk_8821c,
+		DELTA_SWINGIDX_SIZE);
+odm_move_memory(dm, cali_info->delta_swing_table_idx_2ga_n,
+		(void *)delta_swingidx_mp_2ga_n_txpwrtrk_8821c,
+		DELTA_SWINGIDX_SIZE);
+odm_move_memory(dm, cali_info->delta_swing_table_idx_2gb_p,
+		(void *)delta_swingidx_mp_2gb_p_txpwrtrk_8821c,
+		DELTA_SWINGIDX_SIZE);
+odm_move_memory(dm, cali_info->delta_swing_table_idx_2gb_n,
+		(void *)delta_swingidx_mp_2gb_n_txpwrtrk_8821c,
+		DELTA_SWINGIDX_SIZE);
 
-	odm_move_memory(dm, cali_info->delta_swing_table_idx_2g_cck_a_p, delta_swingidx_mp_2g_cck_a_p_txpwrtrk_8821c, DELTA_SWINGIDX_SIZE);
-	odm_move_memory(dm, cali_info->delta_swing_table_idx_2g_cck_a_n, delta_swingidx_mp_2g_cck_a_n_txpwrtrk_8821c, DELTA_SWINGIDX_SIZE);
-	odm_move_memory(dm, cali_info->delta_swing_table_idx_2g_cck_b_p, delta_swingidx_mp_2g_cck_b_p_txpwrtrk_8821c, DELTA_SWINGIDX_SIZE);
-	odm_move_memory(dm, cali_info->delta_swing_table_idx_2g_cck_b_n, delta_swingidx_mp_2g_cck_b_n_txpwrtrk_8821c, DELTA_SWINGIDX_SIZE);
+odm_move_memory(dm, cali_info->delta_swing_table_idx_2g_cck_a_p,
+		(void *)delta_swingidx_mp_2g_cck_a_p_txpwrtrk_8821c,
+		DELTA_SWINGIDX_SIZE);
+odm_move_memory(dm, cali_info->delta_swing_table_idx_2g_cck_a_n,
+		(void *)delta_swingidx_mp_2g_cck_a_n_txpwrtrk_8821c,
+		DELTA_SWINGIDX_SIZE);
+odm_move_memory(dm, cali_info->delta_swing_table_idx_2g_cck_b_p,
+		(void *)delta_swingidx_mp_2g_cck_b_p_txpwrtrk_8821c,
+		DELTA_SWINGIDX_SIZE);
+odm_move_memory(dm, cali_info->delta_swing_table_idx_2g_cck_b_n,
+		(void *)delta_swingidx_mp_2g_cck_b_n_txpwrtrk_8821c,
+		DELTA_SWINGIDX_SIZE);
 
-	odm_move_memory(dm, cali_info->delta_swing_table_idx_5ga_p, delta_swingidx_mp_5ga_p_txpwrtrk_8821c, DELTA_SWINGIDX_SIZE * 3);
-	odm_move_memory(dm, cali_info->delta_swing_table_idx_5ga_n, delta_swingidx_mp_5ga_n_txpwrtrk_8821c, DELTA_SWINGIDX_SIZE * 3);
-	odm_move_memory(dm, cali_info->delta_swing_table_idx_5gb_p, delta_swingidx_mp_5gb_p_txpwrtrk_8821c, DELTA_SWINGIDX_SIZE * 3);
-	odm_move_memory(dm, cali_info->delta_swing_table_idx_5gb_n, delta_swingidx_mp_5gb_n_txpwrtrk_8821c, DELTA_SWINGIDX_SIZE * 3);
+odm_move_memory(dm, cali_info->delta_swing_table_idx_5ga_p,
+		(void *)delta_swingidx_mp_5ga_p_txpwrtrk_8821c,
+		DELTA_SWINGIDX_SIZE * 3);
+odm_move_memory(dm, cali_info->delta_swing_table_idx_5ga_n,
+		(void *)delta_swingidx_mp_5ga_n_txpwrtrk_8821c,
+		DELTA_SWINGIDX_SIZE * 3);
+odm_move_memory(dm, cali_info->delta_swing_table_idx_5gb_p,
+		(void *)delta_swingidx_mp_5gb_p_txpwrtrk_8821c,
+		DELTA_SWINGIDX_SIZE * 3);
+odm_move_memory(dm, cali_info->delta_swing_table_idx_5gb_n,
+		(void *)delta_swingidx_mp_5gb_n_txpwrtrk_8821c,
+		DELTA_SWINGIDX_SIZE * 3);
+#endif
 }
 
 /******************************************************************************
-*                           txpowertrack_type0x20.TXT
-******************************************************************************/
+ *                           txpowertrack_type0x20.TXT
+ ******************************************************************************/
 
-u8 delta_swingidx_mp_5gb_n_txpwrtrk_type0x20_8821c[][DELTA_SWINGIDX_SIZE] = {
-	{0, 1, 1, 2, 3, 3, 3, 4, 4, 5, 5, 6, 6, 6, 7, 8, 8, 8, 9, 9, 9, 10, 10, 11, 11, 12, 12, 12, 12, 12},
-	{0, 1, 1, 1, 2, 3, 3, 4, 4, 5, 5, 5, 6, 6, 7, 8, 8, 9, 9, 10, 10, 11, 11, 12, 12, 12, 12, 12, 12, 12},
-	{0, 1, 2, 2, 3, 4, 4, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 9, 10, 10, 11, 11, 12, 12, 12, 12, 12, 12},
+#ifdef CONFIG_8821C_TYPE0X20
+const u8 delta_swingidx_mp_5gb_n_txpwrtrk_type0x20_8821c[][D_S_SIZE] = {
+	{0, 1, 1, 2, 3, 3, 3, 4, 4, 5, 5, 6, 6, 6, 7, 8, 8,
+	 8, 9, 9, 9, 10, 10, 11, 11, 12, 12, 12, 12, 12},
+	{0, 1, 1, 1, 2, 3, 3, 4, 4, 5, 5, 5, 6, 6, 7, 8, 8,
+	 9, 9, 10, 10, 11, 11, 12, 12, 12, 12, 12, 12, 12},
+	{0, 1, 2, 2, 3, 4, 4, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8,
+	 9, 9, 9, 10, 10, 11, 11, 12, 12, 12, 12, 12, 12},
 };
-u8 delta_swingidx_mp_5gb_p_txpwrtrk_type0x20_8821c[][DELTA_SWINGIDX_SIZE] = {
-	{0, 1, 1, 2, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 11, 11, 12, 12, 12, 12, 12, 12, 12},
-	{0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 5, 6, 7, 7, 8, 8, 9, 10, 10, 11, 11, 12, 12, 12, 12, 12, 12, 12, 12},
-	{0, 1, 1, 1, 2, 3, 3, 3, 4, 4, 4, 5, 6, 6, 7, 7, 8, 8, 9, 10, 10, 11, 11, 12, 12, 12, 12, 12, 12, 12},
+
+const u8 delta_swingidx_mp_5gb_p_txpwrtrk_type0x20_8821c[][D_S_SIZE] = {
+	{0, 1, 1, 2, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8,
+	 8, 9, 9, 10, 11, 11, 12, 12, 12, 12, 12, 12, 12},
+	{0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 5, 6, 7, 7, 8, 8, 9,
+	 10, 10, 11, 11, 12, 12, 12, 12, 12, 12, 12, 12},
+	{0, 1, 1, 1, 2, 3, 3, 3, 4, 4, 4, 5, 6, 6, 7, 7, 8,
+	 8, 9, 10, 10, 11, 11, 12, 12, 12, 12, 12, 12, 12},
 };
-u8 delta_swingidx_mp_5ga_n_txpwrtrk_type0x20_8821c[][DELTA_SWINGIDX_SIZE] = {
-	{0, 0, 1, 1, 2, 3, 3, 4, 4, 5, 5, 6, 6, 6, 7, 8, 8, 8, 9, 9, 9, 10, 10, 11, 11, 12, 12, 12, 12, 12},
-	{0, 0, 1, 1, 2, 2, 3, 3, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10, 11, 11, 12, 12, 12, 12, 12, 12, 12},
-	{0, 1, 2, 3, 4, 4, 4, 5, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 9, 10, 10, 11, 11, 12, 12, 12, 12, 12, 12, 12},
+
+const u8 delta_swingidx_mp_5ga_n_txpwrtrk_type0x20_8821c[][D_S_SIZE] = {
+	{0, 0, 1, 1, 2, 3, 3, 4, 4, 5, 5, 6, 6, 6, 7, 8, 8,
+	 8, 9, 9, 9, 10, 10, 11, 11, 12, 12, 12, 12, 12},
+	{0, 0, 1, 1, 2, 2, 3, 3, 4, 5, 5, 6, 6, 7, 7, 8, 8,
+	 9, 9, 10, 10, 11, 11, 12, 12, 12, 12, 12, 12, 12},
+	{0, 1, 2, 3, 4, 4, 4, 5, 5, 5, 6, 6, 7, 7, 8, 8, 9,
+	 9, 9, 10, 10, 11, 11, 12, 12, 12, 12, 12, 12, 12},
 };
-u8 delta_swingidx_mp_5ga_p_txpwrtrk_type0x20_8821c[][DELTA_SWINGIDX_SIZE] = {
-	{1, 1, 2, 2, 2, 3, 3, 4, 5, 5, 5, 6, 6, 7, 8, 8, 8, 9, 9, 10, 11, 11, 12, 12, 12, 12, 12, 12, 12, 12},
-	{0, 1, 2, 2, 3, 4, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 8, 9, 10, 10, 11, 11, 12, 12, 12, 12, 12, 12, 12, 12},
-	{0, 1, 1, 1, 2, 3, 3, 3, 4, 4, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10, 11, 11, 12, 12, 12, 12, 12, 12, 12},
+
+const u8 delta_swingidx_mp_5ga_p_txpwrtrk_type0x20_8821c[][D_S_SIZE] = {
+	{1, 1, 2, 2, 2, 3, 3, 4, 5, 5, 5, 6, 6, 7, 8, 8, 8,
+	 9, 9, 10, 11, 11, 12, 12, 12, 12, 12, 12, 12, 12},
+	{0, 1, 2, 2, 3, 4, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 8, 9,
+	 10, 10, 11, 11, 12, 12, 12, 12, 12, 12, 12, 12},
+	{0, 1, 1, 1, 2, 3, 3, 3, 4, 4, 5, 6, 6, 7, 7, 8, 8,
+	 9, 9, 10, 10, 11, 11, 12, 12, 12, 12, 12, 12, 12},
 };
-u8 delta_swingidx_mp_2gb_n_txpwrtrk_type0x20_8821c[]    = {0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 7, 7, 8, 8, 9};
-u8 delta_swingidx_mp_2gb_p_txpwrtrk_type0x20_8821c[]    = {0, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 3, 4, 4, 5, 5, 5, 5, 6, 6, 6, 7, 7, 7, 8, 8, 9, 9, 9, 9};
-u8 delta_swingidx_mp_2ga_n_txpwrtrk_type0x20_8821c[]    = {0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 7, 7, 8, 8, 9};
-u8 delta_swingidx_mp_2ga_p_txpwrtrk_type0x20_8821c[]    = {0, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 3, 4, 4, 5, 5, 5, 5, 6, 6, 6, 7, 7, 7, 8, 8, 9, 9, 9, 9};
-u8 delta_swingidx_mp_2g_cck_b_n_txpwrtrk_type0x20_8821c[] = {0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 5, 5, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 9};
-u8 delta_swingidx_mp_2g_cck_b_p_txpwrtrk_type0x20_8821c[] = {0, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 5, 6, 6, 7, 7, 7, 8, 8, 9, 9, 9, 9, 9, 9};
-u8 delta_swingidx_mp_2g_cck_a_n_txpwrtrk_type0x20_8821c[] = {0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 5, 5, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 9};
-u8 delta_swingidx_mp_2g_cck_a_p_txpwrtrk_type0x20_8821c[] = {0, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 5, 6, 6, 7, 7, 7, 8, 8, 9, 9, 9, 9, 9, 9};
+
+const u8 delta_swingidx_mp_2gb_n_txpwrtrk_type0x20_8821c[]    = {
+	0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3, 3, 3, 4, 4,
+	 4, 4, 5, 5, 5, 5, 6, 6, 6, 7, 7, 8, 8, 9};
+const u8 delta_swingidx_mp_2gb_p_txpwrtrk_type0x20_8821c[]    = {
+	0, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 3, 4, 4, 5, 5,
+	 5, 5, 6, 6, 6, 7, 7, 7, 8, 8, 9, 9, 9, 9};
+const u8 delta_swingidx_mp_2ga_n_txpwrtrk_type0x20_8821c[]    = {
+	0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3, 3, 3, 4, 4,
+	 4, 4, 5, 5, 5, 5, 6, 6, 6, 7, 7, 8, 8, 9};
+const u8 delta_swingidx_mp_2ga_p_txpwrtrk_type0x20_8821c[]    = {
+	0, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 3, 4, 4, 5, 5,
+	 5, 5, 6, 6, 6, 7, 7, 7, 8, 8, 9, 9, 9, 9};
+const u8 delta_swingidx_mp_2g_cck_b_n_txpwrtrk_type0x20_8821c[] = {
+	0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4,
+	 4, 5, 5, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 9};
+const u8 delta_swingidx_mp_2g_cck_b_p_txpwrtrk_type0x20_8821c[] = {
+	0, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5,
+	 5, 6, 6, 7, 7, 7, 8, 8, 9, 9, 9, 9, 9, 9};
+const u8 delta_swingidx_mp_2g_cck_a_n_txpwrtrk_type0x20_8821c[] = {
+	0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4,
+	 4, 5, 5, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 9};
+const u8 delta_swingidx_mp_2g_cck_a_p_txpwrtrk_type0x20_8821c[] = {
+	0, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5,
+	 5, 6, 6, 7, 7, 7, 8, 8, 9, 9, 9, 9, 9, 9};
+#endif
 
 void
 odm_read_and_config_mp_8821c_txpowertrack_type0x20(struct dm_struct *dm)
 {
-	struct dm_rf_calibration_struct  *cali_info = &dm->rf_calibrate_info;
+#ifdef CONFIG_8821C_TYPE0X20
 
-	PHYDM_DBG(dm, ODM_COMP_INIT, "===> ODM_ReadAndConfig_MP_mp_8821c\n");
+struct dm_rf_calibration_struct  *cali_info = &dm->rf_calibrate_info;
 
+PHYDM_DBG(dm, ODM_COMP_INIT, "===> ODM_ReadAndConfig_MP_mp_8821c\n");
 
-	odm_move_memory(dm, cali_info->delta_swing_table_idx_2ga_p, delta_swingidx_mp_2ga_p_txpwrtrk_type0x20_8821c, DELTA_SWINGIDX_SIZE);
-	odm_move_memory(dm, cali_info->delta_swing_table_idx_2ga_n, delta_swingidx_mp_2ga_n_txpwrtrk_type0x20_8821c, DELTA_SWINGIDX_SIZE);
-	odm_move_memory(dm, cali_info->delta_swing_table_idx_2gb_p, delta_swingidx_mp_2gb_p_txpwrtrk_type0x20_8821c, DELTA_SWINGIDX_SIZE);
-	odm_move_memory(dm, cali_info->delta_swing_table_idx_2gb_n, delta_swingidx_mp_2gb_n_txpwrtrk_type0x20_8821c, DELTA_SWINGIDX_SIZE);
+odm_move_memory(dm, cali_info->delta_swing_table_idx_2ga_p,
+		(void *)delta_swingidx_mp_2ga_p_txpwrtrk_type0x20_8821c,
+		DELTA_SWINGIDX_SIZE);
+odm_move_memory(dm, cali_info->delta_swing_table_idx_2ga_n,
+		(void *)delta_swingidx_mp_2ga_n_txpwrtrk_type0x20_8821c,
+		DELTA_SWINGIDX_SIZE);
+odm_move_memory(dm, cali_info->delta_swing_table_idx_2gb_p,
+		(void *)delta_swingidx_mp_2gb_p_txpwrtrk_type0x20_8821c,
+		DELTA_SWINGIDX_SIZE);
+odm_move_memory(dm, cali_info->delta_swing_table_idx_2gb_n,
+		(void *)delta_swingidx_mp_2gb_n_txpwrtrk_type0x20_8821c,
+		DELTA_SWINGIDX_SIZE);
 
-	odm_move_memory(dm, cali_info->delta_swing_table_idx_2g_cck_a_p, delta_swingidx_mp_2g_cck_a_p_txpwrtrk_type0x20_8821c, DELTA_SWINGIDX_SIZE);
-	odm_move_memory(dm, cali_info->delta_swing_table_idx_2g_cck_a_n, delta_swingidx_mp_2g_cck_a_n_txpwrtrk_type0x20_8821c, DELTA_SWINGIDX_SIZE);
-	odm_move_memory(dm, cali_info->delta_swing_table_idx_2g_cck_b_p, delta_swingidx_mp_2g_cck_b_p_txpwrtrk_type0x20_8821c, DELTA_SWINGIDX_SIZE);
-	odm_move_memory(dm, cali_info->delta_swing_table_idx_2g_cck_b_n, delta_swingidx_mp_2g_cck_b_n_txpwrtrk_type0x20_8821c, DELTA_SWINGIDX_SIZE);
+odm_move_memory(dm, cali_info->delta_swing_table_idx_2g_cck_a_p,
+		(void *)delta_swingidx_mp_2g_cck_a_p_txpwrtrk_type0x20_8821c,
+		DELTA_SWINGIDX_SIZE);
+odm_move_memory(dm, cali_info->delta_swing_table_idx_2g_cck_a_n,
+		(void *)delta_swingidx_mp_2g_cck_a_n_txpwrtrk_type0x20_8821c,
+		DELTA_SWINGIDX_SIZE);
+odm_move_memory(dm, cali_info->delta_swing_table_idx_2g_cck_b_p,
+		(void *)delta_swingidx_mp_2g_cck_b_p_txpwrtrk_type0x20_8821c,
+		DELTA_SWINGIDX_SIZE);
+odm_move_memory(dm, cali_info->delta_swing_table_idx_2g_cck_b_n,
+		(void *)delta_swingidx_mp_2g_cck_b_n_txpwrtrk_type0x20_8821c,
+		DELTA_SWINGIDX_SIZE);
 
-	odm_move_memory(dm, cali_info->delta_swing_table_idx_5ga_p, delta_swingidx_mp_5ga_p_txpwrtrk_type0x20_8821c, DELTA_SWINGIDX_SIZE * 3);
-	odm_move_memory(dm, cali_info->delta_swing_table_idx_5ga_n, delta_swingidx_mp_5ga_n_txpwrtrk_type0x20_8821c, DELTA_SWINGIDX_SIZE * 3);
-	odm_move_memory(dm, cali_info->delta_swing_table_idx_5gb_p, delta_swingidx_mp_5gb_p_txpwrtrk_type0x20_8821c, DELTA_SWINGIDX_SIZE * 3);
-	odm_move_memory(dm, cali_info->delta_swing_table_idx_5gb_n, delta_swingidx_mp_5gb_n_txpwrtrk_type0x20_8821c, DELTA_SWINGIDX_SIZE * 3);
+odm_move_memory(dm, cali_info->delta_swing_table_idx_5ga_p,
+		(void *)delta_swingidx_mp_5ga_p_txpwrtrk_type0x20_8821c,
+		DELTA_SWINGIDX_SIZE * 3);
+odm_move_memory(dm, cali_info->delta_swing_table_idx_5ga_n,
+		(void *)delta_swingidx_mp_5ga_n_txpwrtrk_type0x20_8821c,
+		DELTA_SWINGIDX_SIZE * 3);
+odm_move_memory(dm, cali_info->delta_swing_table_idx_5gb_p,
+		(void *)delta_swingidx_mp_5gb_p_txpwrtrk_type0x20_8821c,
+		DELTA_SWINGIDX_SIZE * 3);
+odm_move_memory(dm, cali_info->delta_swing_table_idx_5gb_n,
+		(void *)delta_swingidx_mp_5gb_n_txpwrtrk_type0x20_8821c,
+		DELTA_SWINGIDX_SIZE * 3);
+#endif
 }
 
 /******************************************************************************
-*                           txpowertrack_type0x28.TXT
-******************************************************************************/
+ *                           txpowertrack_type0x28.TXT
+ ******************************************************************************/
 
-u8 delta_swingidx_mp_5gb_n_txpwrtrk_type0x28_8821c[][DELTA_SWINGIDX_SIZE] = {
-	{0, 1, 1, 2, 3, 3, 3, 4, 4, 5, 5, 6, 6, 6, 7, 8, 8, 8, 9, 9, 9, 10, 10, 11, 11, 12, 12, 12, 12, 12},
-	{0, 1, 1, 1, 2, 3, 3, 4, 4, 5, 5, 5, 6, 6, 7, 8, 8, 9, 9, 10, 10, 11, 11, 12, 12, 12, 12, 12, 12, 12},
-	{0, 1, 2, 2, 3, 4, 4, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 9, 10, 10, 11, 11, 12, 12, 12, 12, 12, 12},
+#ifdef CONFIG_8821C_TYPE0X28
+const u8 delta_swingidx_mp_5gb_n_txpwrtrk_type0x28_8821c[][D_S_SIZE] = {
+	{0, 1, 1, 2, 3, 3, 3, 4, 4, 5, 5, 6, 6, 6, 7, 8, 8,
+	 8, 9, 9, 9, 10, 10, 11, 11, 12, 12, 12, 12, 12},
+	{0, 1, 1, 1, 2, 3, 3, 4, 4, 5, 5, 5, 6, 6, 7, 8, 8,
+	 9, 9, 10, 10, 11, 11, 12, 12, 12, 12, 12, 12, 12},
+	{0, 1, 2, 2, 3, 4, 4, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8,
+	 9, 9, 9, 10, 10, 11, 11, 12, 12, 12, 12, 12, 12},
 };
-u8 delta_swingidx_mp_5gb_p_txpwrtrk_type0x28_8821c[][DELTA_SWINGIDX_SIZE] = {
-	{0, 1, 1, 2, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 11, 11, 12, 12, 12, 12, 12, 12, 12},
-	{0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 5, 6, 7, 7, 8, 8, 9, 10, 10, 11, 11, 12, 12, 12, 12, 12, 12, 12, 12},
-	{0, 1, 1, 1, 2, 3, 3, 3, 4, 4, 4, 5, 6, 6, 7, 7, 8, 8, 9, 10, 10, 11, 11, 12, 12, 12, 12, 12, 12, 12},
+
+const u8 delta_swingidx_mp_5gb_p_txpwrtrk_type0x28_8821c[][D_S_SIZE] = {
+	{0, 1, 1, 2, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8,
+	 8, 9, 9, 10, 11, 11, 12, 12, 12, 12, 12, 12, 12},
+	{0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 5, 6, 7, 7, 8, 8, 9,
+	 10, 10, 11, 11, 12, 12, 12, 12, 12, 12, 12, 12},
+	{0, 1, 1, 1, 2, 3, 3, 3, 4, 4, 4, 5, 6, 6, 7, 7, 8,
+	 8, 9, 10, 10, 11, 11, 12, 12, 12, 12, 12, 12, 12},
 };
-u8 delta_swingidx_mp_5ga_n_txpwrtrk_type0x28_8821c[][DELTA_SWINGIDX_SIZE] = {
-	{0, 1, 3, 3, 4, 5, 5, 6, 7, 8, 8, 9, 10, 10, 11, 12, 12, 12, 14, 15, 15, 16, 16, 17, 18, 18, 18, 18, 18, 18},
-	{0, 1, 2, 3, 4, 4, 5, 7, 7, 8, 8, 9, 10, 10, 11, 12, 12, 13, 14, 14, 15, 16, 16, 17, 18, 18, 18, 18, 18, 18},
-	{0, 1, 2, 3, 4, 6, 6, 6, 6, 7, 8, 9, 10, 11, 11, 12, 12, 13, 14, 14, 15, 16, 16, 17, 18, 18, 18, 18, 18, 18},
+
+const u8 delta_swingidx_mp_5ga_n_txpwrtrk_type0x28_8821c[][D_S_SIZE] = {
+	{0, 1, 3, 3, 4, 5, 5, 6, 7, 8, 8, 9, 10, 10, 11, 12, 12,
+	 12, 14, 15, 15, 16, 16, 17, 18, 18, 18, 18, 18, 18},
+	{0, 1, 2, 3, 4, 4, 5, 7, 7, 8, 8, 9, 10, 10, 11, 12, 12,
+	 13, 14, 14, 15, 16, 16, 17, 18, 18, 18, 18, 18, 18},
+	{0, 1, 2, 3, 4, 6, 6, 6, 6, 7, 8, 9, 10, 11, 11, 12, 12,
+	 13, 14, 14, 15, 16, 16, 17, 18, 18, 18, 18, 18, 18},
 };
-u8 delta_swingidx_mp_5ga_p_txpwrtrk_type0x28_8821c[][DELTA_SWINGIDX_SIZE] = {
-	{0, 1, 2, 3, 3, 3, 4, 5, 7, 7, 8, 8, 9, 9, 10, 11, 12, 12, 13, 14, 15, 16, 16, 17, 17, 17, 17, 17, 17, 17},
-	{0, 1, 2, 3, 3, 4, 4, 5, 6, 7, 8, 9, 10, 10, 11, 13, 13, 14, 15, 15, 16, 16, 17, 17, 17, 17, 17, 17, 17, 17},
-	{0, 1, 2, 2, 3, 4, 4, 5, 6, 7, 7, 8, 8, 9, 10, 10, 11, 12, 13, 14, 14, 14, 14, 15, 16, 16, 16, 16, 16, 16},
+
+const u8 delta_swingidx_mp_5ga_p_txpwrtrk_type0x28_8821c[][D_S_SIZE] = {
+	{0, 1, 2, 3, 3, 3, 4, 5, 7, 7, 8, 8, 9, 9, 10, 11, 12,
+	 12, 13, 14, 15, 16, 16, 17, 17, 17, 17, 17, 17, 17},
+	{0, 1, 2, 3, 3, 4, 4, 5, 6, 7, 8, 9, 10, 10, 11, 13, 13,
+	 14, 15, 15, 16, 16, 17, 17, 17, 17, 17, 17, 17, 17},
+	{0, 1, 2, 2, 3, 4, 4, 5, 6, 7, 7, 8, 8, 9, 10, 10, 11,
+	 12, 13, 14, 14, 14, 14, 15, 16, 16, 16, 16, 16, 16},
 };
-u8 delta_swingidx_mp_2gb_n_txpwrtrk_type0x28_8821c[]    = {0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 7, 7, 8, 8, 9};
-u8 delta_swingidx_mp_2gb_p_txpwrtrk_type0x28_8821c[]    = {0, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 3, 4, 4, 5, 5, 5, 5, 6, 6, 6, 7, 7, 7, 8, 8, 9, 9, 9, 9};
-u8 delta_swingidx_mp_2ga_n_txpwrtrk_type0x28_8821c[]    = {0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 7, 7, 8, 8, 9};
-u8 delta_swingidx_mp_2ga_p_txpwrtrk_type0x28_8821c[]    = {0, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 3, 4, 4, 5, 5, 5, 5, 6, 6, 6, 7, 7, 7, 8, 8, 9, 9, 9, 9};
-u8 delta_swingidx_mp_2g_cck_b_n_txpwrtrk_type0x28_8821c[] = {0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 5, 5, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 9};
-u8 delta_swingidx_mp_2g_cck_b_p_txpwrtrk_type0x28_8821c[] = {0, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 5, 6, 6, 7, 7, 7, 8, 8, 9, 9, 9, 9, 9, 9};
-u8 delta_swingidx_mp_2g_cck_a_n_txpwrtrk_type0x28_8821c[] = {0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 5, 5, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 9};
-u8 delta_swingidx_mp_2g_cck_a_p_txpwrtrk_type0x28_8821c[] = {0, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 5, 6, 6, 7, 7, 7, 8, 8, 9, 9, 9, 9, 9, 9};
+
+const u8 delta_swingidx_mp_2gb_n_txpwrtrk_type0x28_8821c[]    = {
+	0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3, 3, 3, 4, 4,
+	 4, 4, 5, 5, 5, 5, 6, 6, 6, 7, 7, 8, 8, 9};
+const u8 delta_swingidx_mp_2gb_p_txpwrtrk_type0x28_8821c[]    = {
+	0, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 3, 4, 4, 5, 5,
+	 5, 5, 6, 6, 6, 7, 7, 7, 8, 8, 9, 9, 9, 9};
+const u8 delta_swingidx_mp_2ga_n_txpwrtrk_type0x28_8821c[]    = {
+	0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3, 3, 3, 4, 4,
+	 4, 4, 5, 5, 5, 5, 6, 6, 6, 7, 7, 8, 8, 9};
+const u8 delta_swingidx_mp_2ga_p_txpwrtrk_type0x28_8821c[]    = {
+	0, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 3, 4, 4, 5, 5,
+	 5, 5, 6, 6, 6, 7, 7, 7, 8, 8, 9, 9, 9, 9};
+const u8 delta_swingidx_mp_2g_cck_b_n_txpwrtrk_type0x28_8821c[] = {
+	0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4,
+	 4, 5, 5, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 9};
+const u8 delta_swingidx_mp_2g_cck_b_p_txpwrtrk_type0x28_8821c[] = {
+	0, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5,
+	 5, 6, 6, 7, 7, 7, 8, 8, 9, 9, 9, 9, 9, 9};
+const u8 delta_swingidx_mp_2g_cck_a_n_txpwrtrk_type0x28_8821c[] = {
+	0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4,
+	 4, 5, 5, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 9};
+const u8 delta_swingidx_mp_2g_cck_a_p_txpwrtrk_type0x28_8821c[] = {
+	0, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5,
+	 5, 6, 6, 7, 7, 7, 8, 8, 9, 9, 9, 9, 9, 9};
+#endif
 
 void
 odm_read_and_config_mp_8821c_txpowertrack_type0x28(struct dm_struct *dm)
 {
-	struct dm_rf_calibration_struct  *cali_info = &dm->rf_calibrate_info;
+#ifdef CONFIG_8821C_TYPE0X28
 
-	PHYDM_DBG(dm, ODM_COMP_INIT, "===> ODM_ReadAndConfig_MP_mp_8821c\n");
+struct dm_rf_calibration_struct  *cali_info = &dm->rf_calibrate_info;
 
+PHYDM_DBG(dm, ODM_COMP_INIT, "===> ODM_ReadAndConfig_MP_mp_8821c\n");
 
-	odm_move_memory(dm, cali_info->delta_swing_table_idx_2ga_p, delta_swingidx_mp_2ga_p_txpwrtrk_type0x28_8821c, DELTA_SWINGIDX_SIZE);
-	odm_move_memory(dm, cali_info->delta_swing_table_idx_2ga_n, delta_swingidx_mp_2ga_n_txpwrtrk_type0x28_8821c, DELTA_SWINGIDX_SIZE);
-	odm_move_memory(dm, cali_info->delta_swing_table_idx_2gb_p, delta_swingidx_mp_2gb_p_txpwrtrk_type0x28_8821c, DELTA_SWINGIDX_SIZE);
-	odm_move_memory(dm, cali_info->delta_swing_table_idx_2gb_n, delta_swingidx_mp_2gb_n_txpwrtrk_type0x28_8821c, DELTA_SWINGIDX_SIZE);
+odm_move_memory(dm, cali_info->delta_swing_table_idx_2ga_p,
+		(void *)delta_swingidx_mp_2ga_p_txpwrtrk_type0x28_8821c,
+		DELTA_SWINGIDX_SIZE);
+odm_move_memory(dm, cali_info->delta_swing_table_idx_2ga_n,
+		(void *)delta_swingidx_mp_2ga_n_txpwrtrk_type0x28_8821c,
+		DELTA_SWINGIDX_SIZE);
+odm_move_memory(dm, cali_info->delta_swing_table_idx_2gb_p,
+		(void *)delta_swingidx_mp_2gb_p_txpwrtrk_type0x28_8821c,
+		DELTA_SWINGIDX_SIZE);
+odm_move_memory(dm, cali_info->delta_swing_table_idx_2gb_n,
+		(void *)delta_swingidx_mp_2gb_n_txpwrtrk_type0x28_8821c,
+		DELTA_SWINGIDX_SIZE);
 
-	odm_move_memory(dm, cali_info->delta_swing_table_idx_2g_cck_a_p, delta_swingidx_mp_2g_cck_a_p_txpwrtrk_type0x28_8821c, DELTA_SWINGIDX_SIZE);
-	odm_move_memory(dm, cali_info->delta_swing_table_idx_2g_cck_a_n, delta_swingidx_mp_2g_cck_a_n_txpwrtrk_type0x28_8821c, DELTA_SWINGIDX_SIZE);
-	odm_move_memory(dm, cali_info->delta_swing_table_idx_2g_cck_b_p, delta_swingidx_mp_2g_cck_b_p_txpwrtrk_type0x28_8821c, DELTA_SWINGIDX_SIZE);
-	odm_move_memory(dm, cali_info->delta_swing_table_idx_2g_cck_b_n, delta_swingidx_mp_2g_cck_b_n_txpwrtrk_type0x28_8821c, DELTA_SWINGIDX_SIZE);
+odm_move_memory(dm, cali_info->delta_swing_table_idx_2g_cck_a_p,
+		(void *)delta_swingidx_mp_2g_cck_a_p_txpwrtrk_type0x28_8821c,
+		DELTA_SWINGIDX_SIZE);
+odm_move_memory(dm, cali_info->delta_swing_table_idx_2g_cck_a_n,
+		(void *)delta_swingidx_mp_2g_cck_a_n_txpwrtrk_type0x28_8821c,
+		DELTA_SWINGIDX_SIZE);
+odm_move_memory(dm, cali_info->delta_swing_table_idx_2g_cck_b_p,
+		(void *)delta_swingidx_mp_2g_cck_b_p_txpwrtrk_type0x28_8821c,
+		DELTA_SWINGIDX_SIZE);
+odm_move_memory(dm, cali_info->delta_swing_table_idx_2g_cck_b_n,
+		(void *)delta_swingidx_mp_2g_cck_b_n_txpwrtrk_type0x28_8821c,
+		DELTA_SWINGIDX_SIZE);
 
-	odm_move_memory(dm, cali_info->delta_swing_table_idx_5ga_p, delta_swingidx_mp_5ga_p_txpwrtrk_type0x28_8821c, DELTA_SWINGIDX_SIZE * 3);
-	odm_move_memory(dm, cali_info->delta_swing_table_idx_5ga_n, delta_swingidx_mp_5ga_n_txpwrtrk_type0x28_8821c, DELTA_SWINGIDX_SIZE * 3);
-	odm_move_memory(dm, cali_info->delta_swing_table_idx_5gb_p, delta_swingidx_mp_5gb_p_txpwrtrk_type0x28_8821c, DELTA_SWINGIDX_SIZE * 3);
-	odm_move_memory(dm, cali_info->delta_swing_table_idx_5gb_n, delta_swingidx_mp_5gb_n_txpwrtrk_type0x28_8821c, DELTA_SWINGIDX_SIZE * 3);
+odm_move_memory(dm, cali_info->delta_swing_table_idx_5ga_p,
+		(void *)delta_swingidx_mp_5ga_p_txpwrtrk_type0x28_8821c,
+		DELTA_SWINGIDX_SIZE * 3);
+odm_move_memory(dm, cali_info->delta_swing_table_idx_5ga_n,
+		(void *)delta_swingidx_mp_5ga_n_txpwrtrk_type0x28_8821c,
+		DELTA_SWINGIDX_SIZE * 3);
+odm_move_memory(dm, cali_info->delta_swing_table_idx_5gb_p,
+		(void *)delta_swingidx_mp_5gb_p_txpwrtrk_type0x28_8821c,
+		DELTA_SWINGIDX_SIZE * 3);
+odm_move_memory(dm, cali_info->delta_swing_table_idx_5gb_n,
+		(void *)delta_swingidx_mp_5gb_n_txpwrtrk_type0x28_8821c,
+		DELTA_SWINGIDX_SIZE * 3);
+#endif
 }
 
 /******************************************************************************
-*                           txpwr_lmt.TXT
-******************************************************************************/
+ *                           txpwr_lmt.TXT
+ ******************************************************************************/
 
+#ifdef CONFIG_8821C
 const char *array_mp_8821c_txpwr_lmt[] = {
 	"FCC", "2.4G", "20M", "CCK", "1T", "01", "30",
 	"ETSI", "2.4G", "20M", "CCK", "1T", "01", "30",
@@ -2922,6 +3120,7 @@ const char *array_mp_8821c_txpwr_lmt[] = {
 	"KCC", "2.4G", "20M", "CCK", "1T", "01", "34",
 	"ACMA", "2.4G", "20M", "CCK", "1T", "01", "30",
 	"CHILE", "2.4G", "20M", "CCK", "1T", "01", "30",
+	"UKRAINE", "2.4G", "20M", "CCK", "1T", "01", "30",
 	"FCC", "2.4G", "20M", "CCK", "1T", "02", "32",
 	"ETSI", "2.4G", "20M", "CCK", "1T", "02", "30",
 	"MKK", "2.4G", "20M", "CCK", "1T", "02", "34",
@@ -2929,6 +3128,7 @@ const char *array_mp_8821c_txpwr_lmt[] = {
 	"KCC", "2.4G", "20M", "CCK", "1T", "02", "34",
 	"ACMA", "2.4G", "20M", "CCK", "1T", "02", "30",
 	"CHILE", "2.4G", "20M", "CCK", "1T", "02", "32",
+	"UKRAINE", "2.4G", "20M", "CCK", "1T", "02", "30",
 	"FCC", "2.4G", "20M", "CCK", "1T", "03", "32",
 	"ETSI", "2.4G", "20M", "CCK", "1T", "03", "30",
 	"MKK", "2.4G", "20M", "CCK", "1T", "03", "34",
@@ -2936,6 +3136,7 @@ const char *array_mp_8821c_txpwr_lmt[] = {
 	"KCC", "2.4G", "20M", "CCK", "1T", "03", "34",
 	"ACMA", "2.4G", "20M", "CCK", "1T", "03", "30",
 	"CHILE", "2.4G", "20M", "CCK", "1T", "03", "32",
+	"UKRAINE", "2.4G", "20M", "CCK", "1T", "03", "30",
 	"FCC", "2.4G", "20M", "CCK", "1T", "04", "32",
 	"ETSI", "2.4G", "20M", "CCK", "1T", "04", "30",
 	"MKK", "2.4G", "20M", "CCK", "1T", "04", "34",
@@ -2943,6 +3144,7 @@ const char *array_mp_8821c_txpwr_lmt[] = {
 	"KCC", "2.4G", "20M", "CCK", "1T", "04", "34",
 	"ACMA", "2.4G", "20M", "CCK", "1T", "04", "30",
 	"CHILE", "2.4G", "20M", "CCK", "1T", "04", "32",
+	"UKRAINE", "2.4G", "20M", "CCK", "1T", "04", "30",
 	"FCC", "2.4G", "20M", "CCK", "1T", "05", "32",
 	"ETSI", "2.4G", "20M", "CCK", "1T", "05", "30",
 	"MKK", "2.4G", "20M", "CCK", "1T", "05", "34",
@@ -2950,6 +3152,7 @@ const char *array_mp_8821c_txpwr_lmt[] = {
 	"KCC", "2.4G", "20M", "CCK", "1T", "05", "34",
 	"ACMA", "2.4G", "20M", "CCK", "1T", "05", "30",
 	"CHILE", "2.4G", "20M", "CCK", "1T", "05", "32",
+	"UKRAINE", "2.4G", "20M", "CCK", "1T", "05", "30",
 	"FCC", "2.4G", "20M", "CCK", "1T", "06", "32",
 	"ETSI", "2.4G", "20M", "CCK", "1T", "06", "30",
 	"MKK", "2.4G", "20M", "CCK", "1T", "06", "34",
@@ -2957,6 +3160,7 @@ const char *array_mp_8821c_txpwr_lmt[] = {
 	"KCC", "2.4G", "20M", "CCK", "1T", "06", "34",
 	"ACMA", "2.4G", "20M", "CCK", "1T", "06", "30",
 	"CHILE", "2.4G", "20M", "CCK", "1T", "06", "32",
+	"UKRAINE", "2.4G", "20M", "CCK", "1T", "06", "30",
 	"FCC", "2.4G", "20M", "CCK", "1T", "07", "32",
 	"ETSI", "2.4G", "20M", "CCK", "1T", "07", "30",
 	"MKK", "2.4G", "20M", "CCK", "1T", "07", "34",
@@ -2964,6 +3168,7 @@ const char *array_mp_8821c_txpwr_lmt[] = {
 	"KCC", "2.4G", "20M", "CCK", "1T", "07", "34",
 	"ACMA", "2.4G", "20M", "CCK", "1T", "07", "30",
 	"CHILE", "2.4G", "20M", "CCK", "1T", "07", "32",
+	"UKRAINE", "2.4G", "20M", "CCK", "1T", "07", "30",
 	"FCC", "2.4G", "20M", "CCK", "1T", "08", "32",
 	"ETSI", "2.4G", "20M", "CCK", "1T", "08", "30",
 	"MKK", "2.4G", "20M", "CCK", "1T", "08", "34",
@@ -2971,6 +3176,7 @@ const char *array_mp_8821c_txpwr_lmt[] = {
 	"KCC", "2.4G", "20M", "CCK", "1T", "08", "34",
 	"ACMA", "2.4G", "20M", "CCK", "1T", "08", "30",
 	"CHILE", "2.4G", "20M", "CCK", "1T", "08", "32",
+	"UKRAINE", "2.4G", "20M", "CCK", "1T", "08", "30",
 	"FCC", "2.4G", "20M", "CCK", "1T", "09", "32",
 	"ETSI", "2.4G", "20M", "CCK", "1T", "09", "30",
 	"MKK", "2.4G", "20M", "CCK", "1T", "09", "34",
@@ -2978,6 +3184,7 @@ const char *array_mp_8821c_txpwr_lmt[] = {
 	"KCC", "2.4G", "20M", "CCK", "1T", "09", "34",
 	"ACMA", "2.4G", "20M", "CCK", "1T", "09", "30",
 	"CHILE", "2.4G", "20M", "CCK", "1T", "09", "32",
+	"UKRAINE", "2.4G", "20M", "CCK", "1T", "09", "30",
 	"FCC", "2.4G", "20M", "CCK", "1T", "10", "32",
 	"ETSI", "2.4G", "20M", "CCK", "1T", "10", "30",
 	"MKK", "2.4G", "20M", "CCK", "1T", "10", "34",
@@ -2985,6 +3192,7 @@ const char *array_mp_8821c_txpwr_lmt[] = {
 	"KCC", "2.4G", "20M", "CCK", "1T", "10", "34",
 	"ACMA", "2.4G", "20M", "CCK", "1T", "10", "30",
 	"CHILE", "2.4G", "20M", "CCK", "1T", "10", "32",
+	"UKRAINE", "2.4G", "20M", "CCK", "1T", "10", "30",
 	"FCC", "2.4G", "20M", "CCK", "1T", "11", "32",
 	"ETSI", "2.4G", "20M", "CCK", "1T", "11", "30",
 	"MKK", "2.4G", "20M", "CCK", "1T", "11", "34",
@@ -2992,6 +3200,7 @@ const char *array_mp_8821c_txpwr_lmt[] = {
 	"KCC", "2.4G", "20M", "CCK", "1T", "11", "34",
 	"ACMA", "2.4G", "20M", "CCK", "1T", "11", "30",
 	"CHILE", "2.4G", "20M", "CCK", "1T", "11", "32",
+	"UKRAINE", "2.4G", "20M", "CCK", "1T", "11", "30",
 	"FCC", "2.4G", "20M", "CCK", "1T", "12", "24",
 	"ETSI", "2.4G", "20M", "CCK", "1T", "12", "30",
 	"MKK", "2.4G", "20M", "CCK", "1T", "12", "34",
@@ -2999,6 +3208,7 @@ const char *array_mp_8821c_txpwr_lmt[] = {
 	"KCC", "2.4G", "20M", "CCK", "1T", "12", "34",
 	"ACMA", "2.4G", "20M", "CCK", "1T", "12", "30",
 	"CHILE", "2.4G", "20M", "CCK", "1T", "12", "24",
+	"UKRAINE", "2.4G", "20M", "CCK", "1T", "12", "30",
 	"FCC", "2.4G", "20M", "CCK", "1T", "13", "16",
 	"ETSI", "2.4G", "20M", "CCK", "1T", "13", "30",
 	"MKK", "2.4G", "20M", "CCK", "1T", "13", "34",
@@ -3006,6 +3216,7 @@ const char *array_mp_8821c_txpwr_lmt[] = {
 	"KCC", "2.4G", "20M", "CCK", "1T", "13", "34",
 	"ACMA", "2.4G", "20M", "CCK", "1T", "13", "30",
 	"CHILE", "2.4G", "20M", "CCK", "1T", "13", "16",
+	"UKRAINE", "2.4G", "20M", "CCK", "1T", "13", "30",
 	"FCC", "2.4G", "20M", "CCK", "1T", "14", "63",
 	"ETSI", "2.4G", "20M", "CCK", "1T", "14", "63",
 	"MKK", "2.4G", "20M", "CCK", "1T", "14", "34",
@@ -3013,6 +3224,7 @@ const char *array_mp_8821c_txpwr_lmt[] = {
 	"KCC", "2.4G", "20M", "CCK", "1T", "14", "63",
 	"ACMA", "2.4G", "20M", "CCK", "1T", "14", "63",
 	"CHILE", "2.4G", "20M", "CCK", "1T", "14", "63",
+	"UKRAINE", "2.4G", "20M", "CCK", "1T", "14", "63",
 	"FCC", "2.4G", "20M", "OFDM", "1T", "01", "30",
 	"ETSI", "2.4G", "20M", "OFDM", "1T", "01", "30",
 	"MKK", "2.4G", "20M", "OFDM", "1T", "01", "34",
@@ -3020,6 +3232,7 @@ const char *array_mp_8821c_txpwr_lmt[] = {
 	"KCC", "2.4G", "20M", "OFDM", "1T", "01", "32",
 	"ACMA", "2.4G", "20M", "OFDM", "1T", "01", "30",
 	"CHILE", "2.4G", "20M", "OFDM", "1T", "01", "30",
+	"UKRAINE", "2.4G", "20M", "OFDM", "1T", "01", "30",
 	"FCC", "2.4G", "20M", "OFDM", "1T", "02", "32",
 	"ETSI", "2.4G", "20M", "OFDM", "1T", "02", "30",
 	"MKK", "2.4G", "20M", "OFDM", "1T", "02", "34",
@@ -3027,6 +3240,7 @@ const char *array_mp_8821c_txpwr_lmt[] = {
 	"KCC", "2.4G", "20M", "OFDM", "1T", "02", "34",
 	"ACMA", "2.4G", "20M", "OFDM", "1T", "02", "30",
 	"CHILE", "2.4G", "20M", "OFDM", "1T", "02", "32",
+	"UKRAINE", "2.4G", "20M", "OFDM", "1T", "02", "30",
 	"FCC", "2.4G", "20M", "OFDM", "1T", "03", "34",
 	"ETSI", "2.4G", "20M", "OFDM", "1T", "03", "30",
 	"MKK", "2.4G", "20M", "OFDM", "1T", "03", "34",
@@ -3034,6 +3248,7 @@ const char *array_mp_8821c_txpwr_lmt[] = {
 	"KCC", "2.4G", "20M", "OFDM", "1T", "03", "34",
 	"ACMA", "2.4G", "20M", "OFDM", "1T", "03", "30",
 	"CHILE", "2.4G", "20M", "OFDM", "1T", "03", "34",
+	"UKRAINE", "2.4G", "20M", "OFDM", "1T", "03", "30",
 	"FCC", "2.4G", "20M", "OFDM", "1T", "04", "34",
 	"ETSI", "2.4G", "20M", "OFDM", "1T", "04", "30",
 	"MKK", "2.4G", "20M", "OFDM", "1T", "04", "34",
@@ -3041,6 +3256,7 @@ const char *array_mp_8821c_txpwr_lmt[] = {
 	"KCC", "2.4G", "20M", "OFDM", "1T", "04", "34",
 	"ACMA", "2.4G", "20M", "OFDM", "1T", "04", "30",
 	"CHILE", "2.4G", "20M", "OFDM", "1T", "04", "34",
+	"UKRAINE", "2.4G", "20M", "OFDM", "1T", "04", "30",
 	"FCC", "2.4G", "20M", "OFDM", "1T", "05", "34",
 	"ETSI", "2.4G", "20M", "OFDM", "1T", "05", "30",
 	"MKK", "2.4G", "20M", "OFDM", "1T", "05", "34",
@@ -3048,6 +3264,7 @@ const char *array_mp_8821c_txpwr_lmt[] = {
 	"KCC", "2.4G", "20M", "OFDM", "1T", "05", "34",
 	"ACMA", "2.4G", "20M", "OFDM", "1T", "05", "30",
 	"CHILE", "2.4G", "20M", "OFDM", "1T", "05", "34",
+	"UKRAINE", "2.4G", "20M", "OFDM", "1T", "05", "30",
 	"FCC", "2.4G", "20M", "OFDM", "1T", "06", "34",
 	"ETSI", "2.4G", "20M", "OFDM", "1T", "06", "30",
 	"MKK", "2.4G", "20M", "OFDM", "1T", "06", "34",
@@ -3055,6 +3272,7 @@ const char *array_mp_8821c_txpwr_lmt[] = {
 	"KCC", "2.4G", "20M", "OFDM", "1T", "06", "34",
 	"ACMA", "2.4G", "20M", "OFDM", "1T", "06", "30",
 	"CHILE", "2.4G", "20M", "OFDM", "1T", "06", "34",
+	"UKRAINE", "2.4G", "20M", "OFDM", "1T", "06", "30",
 	"FCC", "2.4G", "20M", "OFDM", "1T", "07", "34",
 	"ETSI", "2.4G", "20M", "OFDM", "1T", "07", "30",
 	"MKK", "2.4G", "20M", "OFDM", "1T", "07", "34",
@@ -3062,6 +3280,7 @@ const char *array_mp_8821c_txpwr_lmt[] = {
 	"KCC", "2.4G", "20M", "OFDM", "1T", "07", "34",
 	"ACMA", "2.4G", "20M", "OFDM", "1T", "07", "30",
 	"CHILE", "2.4G", "20M", "OFDM", "1T", "07", "34",
+	"UKRAINE", "2.4G", "20M", "OFDM", "1T", "07", "30",
 	"FCC", "2.4G", "20M", "OFDM", "1T", "08", "34",
 	"ETSI", "2.4G", "20M", "OFDM", "1T", "08", "30",
 	"MKK", "2.4G", "20M", "OFDM", "1T", "08", "34",
@@ -3069,6 +3288,7 @@ const char *array_mp_8821c_txpwr_lmt[] = {
 	"KCC", "2.4G", "20M", "OFDM", "1T", "08", "34",
 	"ACMA", "2.4G", "20M", "OFDM", "1T", "08", "30",
 	"CHILE", "2.4G", "20M", "OFDM", "1T", "08", "34",
+	"UKRAINE", "2.4G", "20M", "OFDM", "1T", "08", "30",
 	"FCC", "2.4G", "20M", "OFDM", "1T", "09", "34",
 	"ETSI", "2.4G", "20M", "OFDM", "1T", "09", "30",
 	"MKK", "2.4G", "20M", "OFDM", "1T", "09", "34",
@@ -3076,6 +3296,7 @@ const char *array_mp_8821c_txpwr_lmt[] = {
 	"KCC", "2.4G", "20M", "OFDM", "1T", "09", "34",
 	"ACMA", "2.4G", "20M", "OFDM", "1T", "09", "30",
 	"CHILE", "2.4G", "20M", "OFDM", "1T", "09", "34",
+	"UKRAINE", "2.4G", "20M", "OFDM", "1T", "09", "30",
 	"FCC", "2.4G", "20M", "OFDM", "1T", "10", "32",
 	"ETSI", "2.4G", "20M", "OFDM", "1T", "10", "30",
 	"MKK", "2.4G", "20M", "OFDM", "1T", "10", "34",
@@ -3083,6 +3304,7 @@ const char *array_mp_8821c_txpwr_lmt[] = {
 	"KCC", "2.4G", "20M", "OFDM", "1T", "10", "34",
 	"ACMA", "2.4G", "20M", "OFDM", "1T", "10", "30",
 	"CHILE", "2.4G", "20M", "OFDM", "1T", "10", "32",
+	"UKRAINE", "2.4G", "20M", "OFDM", "1T", "10", "30",
 	"FCC", "2.4G", "20M", "OFDM", "1T", "11", "30",
 	"ETSI", "2.4G", "20M", "OFDM", "1T", "11", "30",
 	"MKK", "2.4G", "20M", "OFDM", "1T", "11", "34",
@@ -3090,6 +3312,7 @@ const char *array_mp_8821c_txpwr_lmt[] = {
 	"KCC", "2.4G", "20M", "OFDM", "1T", "11", "34",
 	"ACMA", "2.4G", "20M", "OFDM", "1T", "11", "30",
 	"CHILE", "2.4G", "20M", "OFDM", "1T", "11", "30",
+	"UKRAINE", "2.4G", "20M", "OFDM", "1T", "11", "30",
 	"FCC", "2.4G", "20M", "OFDM", "1T", "12", "28",
 	"ETSI", "2.4G", "20M", "OFDM", "1T", "12", "30",
 	"MKK", "2.4G", "20M", "OFDM", "1T", "12", "34",
@@ -3097,6 +3320,7 @@ const char *array_mp_8821c_txpwr_lmt[] = {
 	"KCC", "2.4G", "20M", "OFDM", "1T", "12", "34",
 	"ACMA", "2.4G", "20M", "OFDM", "1T", "12", "30",
 	"CHILE", "2.4G", "20M", "OFDM", "1T", "12", "28",
+	"UKRAINE", "2.4G", "20M", "OFDM", "1T", "12", "30",
 	"FCC", "2.4G", "20M", "OFDM", "1T", "13", "16",
 	"ETSI", "2.4G", "20M", "OFDM", "1T", "13", "30",
 	"MKK", "2.4G", "20M", "OFDM", "1T", "13", "34",
@@ -3104,6 +3328,7 @@ const char *array_mp_8821c_txpwr_lmt[] = {
 	"KCC", "2.4G", "20M", "OFDM", "1T", "13", "32",
 	"ACMA", "2.4G", "20M", "OFDM", "1T", "13", "30",
 	"CHILE", "2.4G", "20M", "OFDM", "1T", "13", "16",
+	"UKRAINE", "2.4G", "20M", "OFDM", "1T", "13", "30",
 	"FCC", "2.4G", "20M", "OFDM", "1T", "14", "63",
 	"ETSI", "2.4G", "20M", "OFDM", "1T", "14", "63",
 	"MKK", "2.4G", "20M", "OFDM", "1T", "14", "63",
@@ -3111,6 +3336,7 @@ const char *array_mp_8821c_txpwr_lmt[] = {
 	"KCC", "2.4G", "20M", "OFDM", "1T", "14", "63",
 	"ACMA", "2.4G", "20M", "OFDM", "1T", "14", "63",
 	"CHILE", "2.4G", "20M", "OFDM", "1T", "14", "63",
+	"UKRAINE", "2.4G", "20M", "OFDM", "1T", "14", "63",
 	"FCC", "2.4G", "20M", "HT", "1T", "01", "26",
 	"ETSI", "2.4G", "20M", "HT", "1T", "01", "30",
 	"MKK", "2.4G", "20M", "HT", "1T", "01", "34",
@@ -3118,6 +3344,7 @@ const char *array_mp_8821c_txpwr_lmt[] = {
 	"KCC", "2.4G", "20M", "HT", "1T", "01", "32",
 	"ACMA", "2.4G", "20M", "HT", "1T", "01", "30",
 	"CHILE", "2.4G", "20M", "HT", "1T", "01", "26",
+	"UKRAINE", "2.4G", "20M", "HT", "1T", "01", "30",
 	"FCC", "2.4G", "20M", "HT", "1T", "02", "30",
 	"ETSI", "2.4G", "20M", "HT", "1T", "02", "30",
 	"MKK", "2.4G", "20M", "HT", "1T", "02", "34",
@@ -3125,6 +3352,7 @@ const char *array_mp_8821c_txpwr_lmt[] = {
 	"KCC", "2.4G", "20M", "HT", "1T", "02", "34",
 	"ACMA", "2.4G", "20M", "HT", "1T", "02", "30",
 	"CHILE", "2.4G", "20M", "HT", "1T", "02", "30",
+	"UKRAINE", "2.4G", "20M", "HT", "1T", "02", "30",
 	"FCC", "2.4G", "20M", "HT", "1T", "03", "32",
 	"ETSI", "2.4G", "20M", "HT", "1T", "03", "30",
 	"MKK", "2.4G", "20M", "HT", "1T", "03", "34",
@@ -3132,6 +3360,7 @@ const char *array_mp_8821c_txpwr_lmt[] = {
 	"KCC", "2.4G", "20M", "HT", "1T", "03", "34",
 	"ACMA", "2.4G", "20M", "HT", "1T", "03", "30",
 	"CHILE", "2.4G", "20M", "HT", "1T", "03", "32",
+	"UKRAINE", "2.4G", "20M", "HT", "1T", "03", "30",
 	"FCC", "2.4G", "20M", "HT", "1T", "04", "34",
 	"ETSI", "2.4G", "20M", "HT", "1T", "04", "30",
 	"MKK", "2.4G", "20M", "HT", "1T", "04", "34",
@@ -3139,6 +3368,7 @@ const char *array_mp_8821c_txpwr_lmt[] = {
 	"KCC", "2.4G", "20M", "HT", "1T", "04", "34",
 	"ACMA", "2.4G", "20M", "HT", "1T", "04", "30",
 	"CHILE", "2.4G", "20M", "HT", "1T", "04", "34",
+	"UKRAINE", "2.4G", "20M", "HT", "1T", "04", "30",
 	"FCC", "2.4G", "20M", "HT", "1T", "05", "34",
 	"ETSI", "2.4G", "20M", "HT", "1T", "05", "30",
 	"MKK", "2.4G", "20M", "HT", "1T", "05", "34",
@@ -3146,6 +3376,7 @@ const char *array_mp_8821c_txpwr_lmt[] = {
 	"KCC", "2.4G", "20M", "HT", "1T", "05", "34",
 	"ACMA", "2.4G", "20M", "HT", "1T", "05", "30",
 	"CHILE", "2.4G", "20M", "HT", "1T", "05", "34",
+	"UKRAINE", "2.4G", "20M", "HT", "1T", "05", "30",
 	"FCC", "2.4G", "20M", "HT", "1T", "06", "34",
 	"ETSI", "2.4G", "20M", "HT", "1T", "06", "30",
 	"MKK", "2.4G", "20M", "HT", "1T", "06", "34",
@@ -3153,6 +3384,7 @@ const char *array_mp_8821c_txpwr_lmt[] = {
 	"KCC", "2.4G", "20M", "HT", "1T", "06", "34",
 	"ACMA", "2.4G", "20M", "HT", "1T", "06", "30",
 	"CHILE", "2.4G", "20M", "HT", "1T", "06", "34",
+	"UKRAINE", "2.4G", "20M", "HT", "1T", "06", "30",
 	"FCC", "2.4G", "20M", "HT", "1T", "07", "34",
 	"ETSI", "2.4G", "20M", "HT", "1T", "07", "30",
 	"MKK", "2.4G", "20M", "HT", "1T", "07", "34",
@@ -3160,6 +3392,7 @@ const char *array_mp_8821c_txpwr_lmt[] = {
 	"KCC", "2.4G", "20M", "HT", "1T", "07", "34",
 	"ACMA", "2.4G", "20M", "HT", "1T", "07", "30",
 	"CHILE", "2.4G", "20M", "HT", "1T", "07", "34",
+	"UKRAINE", "2.4G", "20M", "HT", "1T", "07", "30",
 	"FCC", "2.4G", "20M", "HT", "1T", "08", "34",
 	"ETSI", "2.4G", "20M", "HT", "1T", "08", "30",
 	"MKK", "2.4G", "20M", "HT", "1T", "08", "34",
@@ -3167,6 +3400,7 @@ const char *array_mp_8821c_txpwr_lmt[] = {
 	"KCC", "2.4G", "20M", "HT", "1T", "08", "34",
 	"ACMA", "2.4G", "20M", "HT", "1T", "08", "30",
 	"CHILE", "2.4G", "20M", "HT", "1T", "08", "34",
+	"UKRAINE", "2.4G", "20M", "HT", "1T", "08", "30",
 	"FCC", "2.4G", "20M", "HT", "1T", "09", "32",
 	"ETSI", "2.4G", "20M", "HT", "1T", "09", "30",
 	"MKK", "2.4G", "20M", "HT", "1T", "09", "34",
@@ -3174,6 +3408,7 @@ const char *array_mp_8821c_txpwr_lmt[] = {
 	"KCC", "2.4G", "20M", "HT", "1T", "09", "34",
 	"ACMA", "2.4G", "20M", "HT", "1T", "09", "30",
 	"CHILE", "2.4G", "20M", "HT", "1T", "09", "32",
+	"UKRAINE", "2.4G", "20M", "HT", "1T", "09", "30",
 	"FCC", "2.4G", "20M", "HT", "1T", "10", "30",
 	"ETSI", "2.4G", "20M", "HT", "1T", "10", "30",
 	"MKK", "2.4G", "20M", "HT", "1T", "10", "34",
@@ -3181,6 +3416,7 @@ const char *array_mp_8821c_txpwr_lmt[] = {
 	"KCC", "2.4G", "20M", "HT", "1T", "10", "34",
 	"ACMA", "2.4G", "20M", "HT", "1T", "10", "30",
 	"CHILE", "2.4G", "20M", "HT", "1T", "10", "30",
+	"UKRAINE", "2.4G", "20M", "HT", "1T", "10", "30",
 	"FCC", "2.4G", "20M", "HT", "1T", "11", "28",
 	"ETSI", "2.4G", "20M", "HT", "1T", "11", "30",
 	"MKK", "2.4G", "20M", "HT", "1T", "11", "34",
@@ -3188,6 +3424,7 @@ const char *array_mp_8821c_txpwr_lmt[] = {
 	"KCC", "2.4G", "20M", "HT", "1T", "11", "34",
 	"ACMA", "2.4G", "20M", "HT", "1T", "11", "30",
 	"CHILE", "2.4G", "20M", "HT", "1T", "11", "28",
+	"UKRAINE", "2.4G", "20M", "HT", "1T", "11", "30",
 	"FCC", "2.4G", "20M", "HT", "1T", "12", "26",
 	"ETSI", "2.4G", "20M", "HT", "1T", "12", "30",
 	"MKK", "2.4G", "20M", "HT", "1T", "12", "34",
@@ -3195,6 +3432,7 @@ const char *array_mp_8821c_txpwr_lmt[] = {
 	"KCC", "2.4G", "20M", "HT", "1T", "12", "34",
 	"ACMA", "2.4G", "20M", "HT", "1T", "12", "30",
 	"CHILE", "2.4G", "20M", "HT", "1T", "12", "26",
+	"UKRAINE", "2.4G", "20M", "HT", "1T", "12", "30",
 	"FCC", "2.4G", "20M", "HT", "1T", "13", "12",
 	"ETSI", "2.4G", "20M", "HT", "1T", "13", "30",
 	"MKK", "2.4G", "20M", "HT", "1T", "13", "34",
@@ -3202,6 +3440,7 @@ const char *array_mp_8821c_txpwr_lmt[] = {
 	"KCC", "2.4G", "20M", "HT", "1T", "13", "32",
 	"ACMA", "2.4G", "20M", "HT", "1T", "13", "30",
 	"CHILE", "2.4G", "20M", "HT", "1T", "13", "12",
+	"UKRAINE", "2.4G", "20M", "HT", "1T", "13", "30",
 	"FCC", "2.4G", "20M", "HT", "1T", "14", "63",
 	"ETSI", "2.4G", "20M", "HT", "1T", "14", "63",
 	"MKK", "2.4G", "20M", "HT", "1T", "14", "63",
@@ -3209,6 +3448,7 @@ const char *array_mp_8821c_txpwr_lmt[] = {
 	"KCC", "2.4G", "20M", "HT", "1T", "14", "63",
 	"ACMA", "2.4G", "20M", "HT", "1T", "14", "63",
 	"CHILE", "2.4G", "20M", "HT", "1T", "14", "63",
+	"UKRAINE", "2.4G", "20M", "HT", "1T", "14", "63",
 	"FCC", "2.4G", "40M", "HT", "1T", "01", "63",
 	"ETSI", "2.4G", "40M", "HT", "1T", "01", "63",
 	"MKK", "2.4G", "40M", "HT", "1T", "01", "63",
@@ -3216,6 +3456,7 @@ const char *array_mp_8821c_txpwr_lmt[] = {
 	"KCC", "2.4G", "40M", "HT", "1T", "01", "63",
 	"ACMA", "2.4G", "40M", "HT", "1T", "01", "63",
 	"CHILE", "2.4G", "40M", "HT", "1T", "01", "63",
+	"UKRAINE", "2.4G", "40M", "HT", "1T", "01", "63",
 	"FCC", "2.4G", "40M", "HT", "1T", "02", "63",
 	"ETSI", "2.4G", "40M", "HT", "1T", "02", "63",
 	"MKK", "2.4G", "40M", "HT", "1T", "02", "63",
@@ -3223,6 +3464,7 @@ const char *array_mp_8821c_txpwr_lmt[] = {
 	"KCC", "2.4G", "40M", "HT", "1T", "02", "63",
 	"ACMA", "2.4G", "40M", "HT", "1T", "02", "63",
 	"CHILE", "2.4G", "40M", "HT", "1T", "02", "63",
+	"UKRAINE", "2.4G", "40M", "HT", "1T", "02", "63",
 	"FCC", "2.4G", "40M", "HT", "1T", "03", "26",
 	"ETSI", "2.4G", "40M", "HT", "1T", "03", "30",
 	"MKK", "2.4G", "40M", "HT", "1T", "03", "30",
@@ -3230,6 +3472,7 @@ const char *array_mp_8821c_txpwr_lmt[] = {
 	"KCC", "2.4G", "40M", "HT", "1T", "03", "30",
 	"ACMA", "2.4G", "40M", "HT", "1T", "03", "30",
 	"CHILE", "2.4G", "40M", "HT", "1T", "03", "26",
+	"UKRAINE", "2.4G", "40M", "HT", "1T", "03", "30",
 	"FCC", "2.4G", "40M", "HT", "1T", "04", "26",
 	"ETSI", "2.4G", "40M", "HT", "1T", "04", "30",
 	"MKK", "2.4G", "40M", "HT", "1T", "04", "30",
@@ -3237,6 +3480,7 @@ const char *array_mp_8821c_txpwr_lmt[] = {
 	"KCC", "2.4G", "40M", "HT", "1T", "04", "30",
 	"ACMA", "2.4G", "40M", "HT", "1T", "04", "30",
 	"CHILE", "2.4G", "40M", "HT", "1T", "04", "26",
+	"UKRAINE", "2.4G", "40M", "HT", "1T", "04", "30",
 	"FCC", "2.4G", "40M", "HT", "1T", "05", "30",
 	"ETSI", "2.4G", "40M", "HT", "1T", "05", "30",
 	"MKK", "2.4G", "40M", "HT", "1T", "05", "30",
@@ -3244,6 +3488,7 @@ const char *array_mp_8821c_txpwr_lmt[] = {
 	"KCC", "2.4G", "40M", "HT", "1T", "05", "30",
 	"ACMA", "2.4G", "40M", "HT", "1T", "05", "30",
 	"CHILE", "2.4G", "40M", "HT", "1T", "05", "30",
+	"UKRAINE", "2.4G", "40M", "HT", "1T", "05", "30",
 	"FCC", "2.4G", "40M", "HT", "1T", "06", "30",
 	"ETSI", "2.4G", "40M", "HT", "1T", "06", "30",
 	"MKK", "2.4G", "40M", "HT", "1T", "06", "30",
@@ -3251,6 +3496,7 @@ const char *array_mp_8821c_txpwr_lmt[] = {
 	"KCC", "2.4G", "40M", "HT", "1T", "06", "30",
 	"ACMA", "2.4G", "40M", "HT", "1T", "06", "30",
 	"CHILE", "2.4G", "40M", "HT", "1T", "06", "30",
+	"UKRAINE", "2.4G", "40M", "HT", "1T", "06", "30",
 	"FCC", "2.4G", "40M", "HT", "1T", "07", "30",
 	"ETSI", "2.4G", "40M", "HT", "1T", "07", "30",
 	"MKK", "2.4G", "40M", "HT", "1T", "07", "30",
@@ -3258,6 +3504,7 @@ const char *array_mp_8821c_txpwr_lmt[] = {
 	"KCC", "2.4G", "40M", "HT", "1T", "07", "30",
 	"ACMA", "2.4G", "40M", "HT", "1T", "07", "30",
 	"CHILE", "2.4G", "40M", "HT", "1T", "07", "30",
+	"UKRAINE", "2.4G", "40M", "HT", "1T", "07", "30",
 	"FCC", "2.4G", "40M", "HT", "1T", "08", "26",
 	"ETSI", "2.4G", "40M", "HT", "1T", "08", "30",
 	"MKK", "2.4G", "40M", "HT", "1T", "08", "30",
@@ -3265,6 +3512,7 @@ const char *array_mp_8821c_txpwr_lmt[] = {
 	"KCC", "2.4G", "40M", "HT", "1T", "08", "30",
 	"ACMA", "2.4G", "40M", "HT", "1T", "08", "30",
 	"CHILE", "2.4G", "40M", "HT", "1T", "08", "26",
+	"UKRAINE", "2.4G", "40M", "HT", "1T", "08", "30",
 	"FCC", "2.4G", "40M", "HT", "1T", "09", "26",
 	"ETSI", "2.4G", "40M", "HT", "1T", "09", "30",
 	"MKK", "2.4G", "40M", "HT", "1T", "09", "30",
@@ -3272,6 +3520,7 @@ const char *array_mp_8821c_txpwr_lmt[] = {
 	"KCC", "2.4G", "40M", "HT", "1T", "09", "30",
 	"ACMA", "2.4G", "40M", "HT", "1T", "09", "30",
 	"CHILE", "2.4G", "40M", "HT", "1T", "09", "26",
+	"UKRAINE", "2.4G", "40M", "HT", "1T", "09", "30",
 	"FCC", "2.4G", "40M", "HT", "1T", "10", "28",
 	"ETSI", "2.4G", "40M", "HT", "1T", "10", "30",
 	"MKK", "2.4G", "40M", "HT", "1T", "10", "30",
@@ -3279,6 +3528,7 @@ const char *array_mp_8821c_txpwr_lmt[] = {
 	"KCC", "2.4G", "40M", "HT", "1T", "10", "30",
 	"ACMA", "2.4G", "40M", "HT", "1T", "10", "30",
 	"CHILE", "2.4G", "40M", "HT", "1T", "10", "28",
+	"UKRAINE", "2.4G", "40M", "HT", "1T", "10", "30",
 	"FCC", "2.4G", "40M", "HT", "1T", "11", "20",
 	"ETSI", "2.4G", "40M", "HT", "1T", "11", "30",
 	"MKK", "2.4G", "40M", "HT", "1T", "11", "30",
@@ -3286,6 +3536,7 @@ const char *array_mp_8821c_txpwr_lmt[] = {
 	"KCC", "2.4G", "40M", "HT", "1T", "11", "30",
 	"ACMA", "2.4G", "40M", "HT", "1T", "11", "30",
 	"CHILE", "2.4G", "40M", "HT", "1T", "11", "20",
+	"UKRAINE", "2.4G", "40M", "HT", "1T", "11", "30",
 	"FCC", "2.4G", "40M", "HT", "1T", "12", "63",
 	"ETSI", "2.4G", "40M", "HT", "1T", "12", "63",
 	"MKK", "2.4G", "40M", "HT", "1T", "12", "63",
@@ -3293,6 +3544,7 @@ const char *array_mp_8821c_txpwr_lmt[] = {
 	"KCC", "2.4G", "40M", "HT", "1T", "12", "63",
 	"ACMA", "2.4G", "40M", "HT", "1T", "12", "63",
 	"CHILE", "2.4G", "40M", "HT", "1T", "12", "63",
+	"UKRAINE", "2.4G", "40M", "HT", "1T", "12", "63",
 	"FCC", "2.4G", "40M", "HT", "1T", "13", "63",
 	"ETSI", "2.4G", "40M", "HT", "1T", "13", "63",
 	"MKK", "2.4G", "40M", "HT", "1T", "13", "63",
@@ -3300,6 +3552,7 @@ const char *array_mp_8821c_txpwr_lmt[] = {
 	"KCC", "2.4G", "40M", "HT", "1T", "13", "63",
 	"ACMA", "2.4G", "40M", "HT", "1T", "13", "63",
 	"CHILE", "2.4G", "40M", "HT", "1T", "13", "63",
+	"UKRAINE", "2.4G", "40M", "HT", "1T", "13", "63",
 	"FCC", "2.4G", "40M", "HT", "1T", "14", "63",
 	"ETSI", "2.4G", "40M", "HT", "1T", "14", "63",
 	"MKK", "2.4G", "40M", "HT", "1T", "14", "63",
@@ -3307,6 +3560,7 @@ const char *array_mp_8821c_txpwr_lmt[] = {
 	"KCC", "2.4G", "40M", "HT", "1T", "14", "63",
 	"ACMA", "2.4G", "40M", "HT", "1T", "14", "63",
 	"CHILE", "2.4G", "40M", "HT", "1T", "14", "63",
+	"UKRAINE", "2.4G", "40M", "HT", "1T", "14", "63",
 	"FCC", "5G", "20M", "OFDM", "1T", "36", "31",
 	"ETSI", "5G", "20M", "OFDM", "1T", "36", "32",
 	"MKK", "5G", "20M", "OFDM", "1T", "36", "33",
@@ -3314,6 +3568,7 @@ const char *array_mp_8821c_txpwr_lmt[] = {
 	"KCC", "5G", "20M", "OFDM", "1T", "36", "29",
 	"ACMA", "5G", "20M", "OFDM", "1T", "36", "32",
 	"CHILE", "5G", "20M", "OFDM", "1T", "36", "29",
+	"UKRAINE", "5G", "20M", "OFDM", "1T", "36", "27",
 	"FCC", "5G", "20M", "OFDM", "1T", "40", "33",
 	"ETSI", "5G", "20M", "OFDM", "1T", "40", "32",
 	"MKK", "5G", "20M", "OFDM", "1T", "40", "33",
@@ -3321,6 +3576,7 @@ const char *array_mp_8821c_txpwr_lmt[] = {
 	"KCC", "5G", "20M", "OFDM", "1T", "40", "28",
 	"ACMA", "5G", "20M", "OFDM", "1T", "40", "32",
 	"CHILE", "5G", "20M", "OFDM", "1T", "40", "29",
+	"UKRAINE", "5G", "20M", "OFDM", "1T", "40", "27",
 	"FCC", "5G", "20M", "OFDM", "1T", "44", "33",
 	"ETSI", "5G", "20M", "OFDM", "1T", "44", "32",
 	"MKK", "5G", "20M", "OFDM", "1T", "44", "33",
@@ -3328,6 +3584,7 @@ const char *array_mp_8821c_txpwr_lmt[] = {
 	"KCC", "5G", "20M", "OFDM", "1T", "44", "28",
 	"ACMA", "5G", "20M", "OFDM", "1T", "44", "32",
 	"CHILE", "5G", "20M", "OFDM", "1T", "44", "30",
+	"UKRAINE", "5G", "20M", "OFDM", "1T", "44", "27",
 	"FCC", "5G", "20M", "OFDM", "1T", "48", "31",
 	"ETSI", "5G", "20M", "OFDM", "1T", "48", "32",
 	"MKK", "5G", "20M", "OFDM", "1T", "48", "33",
@@ -3335,6 +3592,7 @@ const char *array_mp_8821c_txpwr_lmt[] = {
 	"KCC", "5G", "20M", "OFDM", "1T", "48", "27",
 	"ACMA", "5G", "20M", "OFDM", "1T", "48", "32",
 	"CHILE", "5G", "20M", "OFDM", "1T", "48", "30",
+	"UKRAINE", "5G", "20M", "OFDM", "1T", "48", "27",
 	"FCC", "5G", "20M", "OFDM", "1T", "52", "33",
 	"ETSI", "5G", "20M", "OFDM", "1T", "52", "32",
 	"MKK", "5G", "20M", "OFDM", "1T", "52", "33",
@@ -3342,6 +3600,7 @@ const char *array_mp_8821c_txpwr_lmt[] = {
 	"KCC", "5G", "20M", "OFDM", "1T", "52", "16",
 	"ACMA", "5G", "20M", "OFDM", "1T", "52", "32",
 	"CHILE", "5G", "20M", "OFDM", "1T", "52", "30",
+	"UKRAINE", "5G", "20M", "OFDM", "1T", "52", "27",
 	"FCC", "5G", "20M", "OFDM", "1T", "56", "33",
 	"ETSI", "5G", "20M", "OFDM", "1T", "56", "32",
 	"MKK", "5G", "20M", "OFDM", "1T", "56", "33",
@@ -3349,6 +3608,7 @@ const char *array_mp_8821c_txpwr_lmt[] = {
 	"KCC", "5G", "20M", "OFDM", "1T", "56", "33",
 	"ACMA", "5G", "20M", "OFDM", "1T", "56", "32",
 	"CHILE", "5G", "20M", "OFDM", "1T", "56", "30",
+	"UKRAINE", "5G", "20M", "OFDM", "1T", "56", "27",
 	"FCC", "5G", "20M", "OFDM", "1T", "60", "33",
 	"ETSI", "5G", "20M", "OFDM", "1T", "60", "32",
 	"MKK", "5G", "20M", "OFDM", "1T", "60", "33",
@@ -3356,6 +3616,7 @@ const char *array_mp_8821c_txpwr_lmt[] = {
 	"KCC", "5G", "20M", "OFDM", "1T", "60", "33",
 	"ACMA", "5G", "20M", "OFDM", "1T", "60", "32",
 	"CHILE", "5G", "20M", "OFDM", "1T", "60", "30",
+	"UKRAINE", "5G", "20M", "OFDM", "1T", "60", "27",
 	"FCC", "5G", "20M", "OFDM", "1T", "64", "30",
 	"ETSI", "5G", "20M", "OFDM", "1T", "64", "32",
 	"MKK", "5G", "20M", "OFDM", "1T", "64", "33",
@@ -3363,6 +3624,7 @@ const char *array_mp_8821c_txpwr_lmt[] = {
 	"KCC", "5G", "20M", "OFDM", "1T", "64", "33",
 	"ACMA", "5G", "20M", "OFDM", "1T", "64", "32",
 	"CHILE", "5G", "20M", "OFDM", "1T", "64", "29",
+	"UKRAINE", "5G", "20M", "OFDM", "1T", "64", "27",
 	"FCC", "5G", "20M", "OFDM", "1T", "100", "30",
 	"ETSI", "5G", "20M", "OFDM", "1T", "100", "32",
 	"MKK", "5G", "20M", "OFDM", "1T", "100", "33",
@@ -3370,6 +3632,7 @@ const char *array_mp_8821c_txpwr_lmt[] = {
 	"KCC", "5G", "20M", "OFDM", "1T", "100", "33",
 	"ACMA", "5G", "20M", "OFDM", "1T", "100", "32",
 	"CHILE", "5G", "20M", "OFDM", "1T", "100", "30",
+	"UKRAINE", "5G", "20M", "OFDM", "1T", "100", "27",
 	"FCC", "5G", "20M", "OFDM", "1T", "104", "33",
 	"ETSI", "5G", "20M", "OFDM", "1T", "104", "32",
 	"MKK", "5G", "20M", "OFDM", "1T", "104", "33",
@@ -3377,6 +3640,7 @@ const char *array_mp_8821c_txpwr_lmt[] = {
 	"KCC", "5G", "20M", "OFDM", "1T", "104", "33",
 	"ACMA", "5G", "20M", "OFDM", "1T", "104", "32",
 	"CHILE", "5G", "20M", "OFDM", "1T", "104", "30",
+	"UKRAINE", "5G", "20M", "OFDM", "1T", "104", "27",
 	"FCC", "5G", "20M", "OFDM", "1T", "108", "33",
 	"ETSI", "5G", "20M", "OFDM", "1T", "108", "32",
 	"MKK", "5G", "20M", "OFDM", "1T", "108", "33",
@@ -3384,6 +3648,7 @@ const char *array_mp_8821c_txpwr_lmt[] = {
 	"KCC", "5G", "20M", "OFDM", "1T", "108", "33",
 	"ACMA", "5G", "20M", "OFDM", "1T", "108", "32",
 	"CHILE", "5G", "20M", "OFDM", "1T", "108", "30",
+	"UKRAINE", "5G", "20M", "OFDM", "1T", "108", "27",
 	"FCC", "5G", "20M", "OFDM", "1T", "112", "33",
 	"ETSI", "5G", "20M", "OFDM", "1T", "112", "32",
 	"MKK", "5G", "20M", "OFDM", "1T", "112", "33",
@@ -3391,6 +3656,7 @@ const char *array_mp_8821c_txpwr_lmt[] = {
 	"KCC", "5G", "20M", "OFDM", "1T", "112", "33",
 	"ACMA", "5G", "20M", "OFDM", "1T", "112", "32",
 	"CHILE", "5G", "20M", "OFDM", "1T", "112", "30",
+	"UKRAINE", "5G", "20M", "OFDM", "1T", "112", "27",
 	"FCC", "5G", "20M", "OFDM", "1T", "116", "33",
 	"ETSI", "5G", "20M", "OFDM", "1T", "116", "32",
 	"MKK", "5G", "20M", "OFDM", "1T", "116", "33",
@@ -3398,90 +3664,103 @@ const char *array_mp_8821c_txpwr_lmt[] = {
 	"KCC", "5G", "20M", "OFDM", "1T", "116", "33",
 	"ACMA", "5G", "20M", "OFDM", "1T", "116", "32",
 	"CHILE", "5G", "20M", "OFDM", "1T", "116", "30",
+	"UKRAINE", "5G", "20M", "OFDM", "1T", "116", "27",
 	"FCC", "5G", "20M", "OFDM", "1T", "120", "33",
 	"ETSI", "5G", "20M", "OFDM", "1T", "120", "32",
 	"MKK", "5G", "20M", "OFDM", "1T", "120", "33",
 	"IC", "5G", "20M", "OFDM", "1T", "120", "63",
 	"KCC", "5G", "20M", "OFDM", "1T", "120", "33",
-	"ACMA", "5G", "20M", "OFDM", "1T", "120", "32",
+	"ACMA", "5G", "20M", "OFDM", "1T", "120", "63",
 	"CHILE", "5G", "20M", "OFDM", "1T", "120", "30",
+	"UKRAINE", "5G", "20M", "OFDM", "1T", "120", "27",
 	"FCC", "5G", "20M", "OFDM", "1T", "124", "33",
 	"ETSI", "5G", "20M", "OFDM", "1T", "124", "32",
 	"MKK", "5G", "20M", "OFDM", "1T", "124", "33",
 	"IC", "5G", "20M", "OFDM", "1T", "124", "63",
 	"KCC", "5G", "20M", "OFDM", "1T", "124", "33",
-	"ACMA", "5G", "20M", "OFDM", "1T", "124", "32",
+	"ACMA", "5G", "20M", "OFDM", "1T", "124", "63",
 	"CHILE", "5G", "20M", "OFDM", "1T", "124", "30",
+	"UKRAINE", "5G", "20M", "OFDM", "1T", "124", "27",
 	"FCC", "5G", "20M", "OFDM", "1T", "128", "33",
 	"ETSI", "5G", "20M", "OFDM", "1T", "128", "32",
 	"MKK", "5G", "20M", "OFDM", "1T", "128", "33",
 	"IC", "5G", "20M", "OFDM", "1T", "128", "63",
-	"KCC", "5G", "20M", "OFDM", "1T", "128", "63",
-	"ACMA", "5G", "20M", "OFDM", "1T", "128", "32",
+	"KCC", "5G", "20M", "OFDM", "1T", "128", "-63",
+	"ACMA", "5G", "20M", "OFDM", "1T", "128", "63",
 	"CHILE", "5G", "20M", "OFDM", "1T", "128", "30",
+	"UKRAINE", "5G", "20M", "OFDM", "1T", "128", "27",
 	"FCC", "5G", "20M", "OFDM", "1T", "132", "33",
 	"ETSI", "5G", "20M", "OFDM", "1T", "132", "32",
 	"MKK", "5G", "20M", "OFDM", "1T", "132", "33",
 	"IC", "5G", "20M", "OFDM", "1T", "132", "33",
-	"KCC", "5G", "20M", "OFDM", "1T", "132", "63",
+	"KCC", "5G", "20M", "OFDM", "1T", "132", "-63",
 	"ACMA", "5G", "20M", "OFDM", "1T", "132", "32",
 	"CHILE", "5G", "20M", "OFDM", "1T", "132", "30",
+	"UKRAINE", "5G", "20M", "OFDM", "1T", "132", "27",
 	"FCC", "5G", "20M", "OFDM", "1T", "136", "33",
 	"ETSI", "5G", "20M", "OFDM", "1T", "136", "32",
 	"MKK", "5G", "20M", "OFDM", "1T", "136", "33",
 	"IC", "5G", "20M", "OFDM", "1T", "136", "33",
-	"KCC", "5G", "20M", "OFDM", "1T", "136", "63",
+	"KCC", "5G", "20M", "OFDM", "1T", "136", "-63",
 	"ACMA", "5G", "20M", "OFDM", "1T", "136", "32",
 	"CHILE", "5G", "20M", "OFDM", "1T", "136", "30",
+	"UKRAINE", "5G", "20M", "OFDM", "1T", "136", "63",
 	"FCC", "5G", "20M", "OFDM", "1T", "140", "31",
 	"ETSI", "5G", "20M", "OFDM", "1T", "140", "32",
 	"MKK", "5G", "20M", "OFDM", "1T", "140", "33",
 	"IC", "5G", "20M", "OFDM", "1T", "140", "31",
-	"KCC", "5G", "20M", "OFDM", "1T", "140", "63",
+	"KCC", "5G", "20M", "OFDM", "1T", "140", "-63",
 	"ACMA", "5G", "20M", "OFDM", "1T", "140", "32",
 	"CHILE", "5G", "20M", "OFDM", "1T", "140", "30",
+	"UKRAINE", "5G", "20M", "OFDM", "1T", "140", "63",
 	"FCC", "5G", "20M", "OFDM", "1T", "144", "30",
 	"ETSI", "5G", "20M", "OFDM", "1T", "144", "63",
 	"MKK", "5G", "20M", "OFDM", "1T", "144", "63",
 	"IC", "5G", "20M", "OFDM", "1T", "144", "30",
-	"KCC", "5G", "20M", "OFDM", "1T", "144", "63",
+	"KCC", "5G", "20M", "OFDM", "1T", "144", "-63",
 	"ACMA", "5G", "20M", "OFDM", "1T", "144", "63",
 	"CHILE", "5G", "20M", "OFDM", "1T", "144", "30",
+	"UKRAINE", "5G", "20M", "OFDM", "1T", "144", "63",
 	"FCC", "5G", "20M", "OFDM", "1T", "149", "33",
-	"ETSI", "5G", "20M", "OFDM", "1T", "149", "63",
+	"ETSI", "5G", "20M", "OFDM", "1T", "149", "-63",
 	"MKK", "5G", "20M", "OFDM", "1T", "149", "63",
 	"IC", "5G", "20M", "OFDM", "1T", "149", "30",
 	"KCC", "5G", "20M", "OFDM", "1T", "149", "33",
 	"ACMA", "5G", "20M", "OFDM", "1T", "149", "33",
 	"CHILE", "5G", "20M", "OFDM", "1T", "149", "30",
+	"UKRAINE", "5G", "20M", "OFDM", "1T", "149", "27",
 	"FCC", "5G", "20M", "OFDM", "1T", "153", "33",
-	"ETSI", "5G", "20M", "OFDM", "1T", "153", "63",
+	"ETSI", "5G", "20M", "OFDM", "1T", "153", "-63",
 	"MKK", "5G", "20M", "OFDM", "1T", "153", "63",
 	"IC", "5G", "20M", "OFDM", "1T", "153", "33",
 	"KCC", "5G", "20M", "OFDM", "1T", "153", "33",
 	"ACMA", "5G", "20M", "OFDM", "1T", "153", "33",
 	"CHILE", "5G", "20M", "OFDM", "1T", "153", "30",
+	"UKRAINE", "5G", "20M", "OFDM", "1T", "153", "27",
 	"FCC", "5G", "20M", "OFDM", "1T", "157", "33",
-	"ETSI", "5G", "20M", "OFDM", "1T", "157", "63",
+	"ETSI", "5G", "20M", "OFDM", "1T", "157", "-63",
 	"MKK", "5G", "20M", "OFDM", "1T", "157", "63",
 	"IC", "5G", "20M", "OFDM", "1T", "157", "33",
 	"KCC", "5G", "20M", "OFDM", "1T", "157", "33",
 	"ACMA", "5G", "20M", "OFDM", "1T", "157", "33",
 	"CHILE", "5G", "20M", "OFDM", "1T", "157", "30",
+	"UKRAINE", "5G", "20M", "OFDM", "1T", "157", "27",
 	"FCC", "5G", "20M", "OFDM", "1T", "161", "33",
-	"ETSI", "5G", "20M", "OFDM", "1T", "161", "63",
+	"ETSI", "5G", "20M", "OFDM", "1T", "161", "-63",
 	"MKK", "5G", "20M", "OFDM", "1T", "161", "63",
 	"IC", "5G", "20M", "OFDM", "1T", "161", "33",
 	"KCC", "5G", "20M", "OFDM", "1T", "161", "31",
 	"ACMA", "5G", "20M", "OFDM", "1T", "161", "33",
 	"CHILE", "5G", "20M", "OFDM", "1T", "161", "30",
+	"UKRAINE", "5G", "20M", "OFDM", "1T", "161", "27",
 	"FCC", "5G", "20M", "OFDM", "1T", "165", "33",
-	"ETSI", "5G", "20M", "OFDM", "1T", "165", "63",
+	"ETSI", "5G", "20M", "OFDM", "1T", "165", "-63",
 	"MKK", "5G", "20M", "OFDM", "1T", "165", "63",
 	"IC", "5G", "20M", "OFDM", "1T", "165", "33",
-	"KCC", "5G", "20M", "OFDM", "1T", "165", "63",
+	"KCC", "5G", "20M", "OFDM", "1T", "165", "-63",
 	"ACMA", "5G", "20M", "OFDM", "1T", "165", "33",
 	"CHILE", "5G", "20M", "OFDM", "1T", "165", "30",
+	"UKRAINE", "5G", "20M", "OFDM", "1T", "165", "27",
 	"FCC", "5G", "20M", "HT", "1T", "36", "30",
 	"ETSI", "5G", "20M", "HT", "1T", "36", "32",
 	"MKK", "5G", "20M", "HT", "1T", "36", "33",
@@ -3489,6 +3768,7 @@ const char *array_mp_8821c_txpwr_lmt[] = {
 	"KCC", "5G", "20M", "HT", "1T", "36", "27",
 	"ACMA", "5G", "20M", "HT", "1T", "36", "32",
 	"CHILE", "5G", "20M", "HT", "1T", "36", "30",
+	"UKRAINE", "5G", "20M", "HT", "1T", "36", "27",
 	"FCC", "5G", "20M", "HT", "1T", "40", "33",
 	"ETSI", "5G", "20M", "HT", "1T", "40", "32",
 	"MKK", "5G", "20M", "HT", "1T", "40", "33",
@@ -3496,6 +3776,7 @@ const char *array_mp_8821c_txpwr_lmt[] = {
 	"KCC", "5G", "20M", "HT", "1T", "40", "29",
 	"ACMA", "5G", "20M", "HT", "1T", "40", "32",
 	"CHILE", "5G", "20M", "HT", "1T", "40", "30",
+	"UKRAINE", "5G", "20M", "HT", "1T", "40", "27",
 	"FCC", "5G", "20M", "HT", "1T", "44", "33",
 	"ETSI", "5G", "20M", "HT", "1T", "44", "32",
 	"MKK", "5G", "20M", "HT", "1T", "44", "33",
@@ -3503,6 +3784,7 @@ const char *array_mp_8821c_txpwr_lmt[] = {
 	"KCC", "5G", "20M", "HT", "1T", "44", "29",
 	"ACMA", "5G", "20M", "HT", "1T", "44", "32",
 	"CHILE", "5G", "20M", "HT", "1T", "44", "30",
+	"UKRAINE", "5G", "20M", "HT", "1T", "44", "27",
 	"FCC", "5G", "20M", "HT", "1T", "48", "33",
 	"ETSI", "5G", "20M", "HT", "1T", "48", "32",
 	"MKK", "5G", "20M", "HT", "1T", "48", "33",
@@ -3510,6 +3792,7 @@ const char *array_mp_8821c_txpwr_lmt[] = {
 	"KCC", "5G", "20M", "HT", "1T", "48", "26",
 	"ACMA", "5G", "20M", "HT", "1T", "48", "32",
 	"CHILE", "5G", "20M", "HT", "1T", "48", "30",
+	"UKRAINE", "5G", "20M", "HT", "1T", "48", "27",
 	"FCC", "5G", "20M", "HT", "1T", "52", "33",
 	"ETSI", "5G", "20M", "HT", "1T", "52", "32",
 	"MKK", "5G", "20M", "HT", "1T", "52", "33",
@@ -3517,6 +3800,7 @@ const char *array_mp_8821c_txpwr_lmt[] = {
 	"KCC", "5G", "20M", "HT", "1T", "52", "7",
 	"ACMA", "5G", "20M", "HT", "1T", "52", "32",
 	"CHILE", "5G", "20M", "HT", "1T", "52", "30",
+	"UKRAINE", "5G", "20M", "HT", "1T", "52", "27",
 	"FCC", "5G", "20M", "HT", "1T", "56", "33",
 	"ETSI", "5G", "20M", "HT", "1T", "56", "32",
 	"MKK", "5G", "20M", "HT", "1T", "56", "33",
@@ -3524,6 +3808,7 @@ const char *array_mp_8821c_txpwr_lmt[] = {
 	"KCC", "5G", "20M", "HT", "1T", "56", "33",
 	"ACMA", "5G", "20M", "HT", "1T", "56", "32",
 	"CHILE", "5G", "20M", "HT", "1T", "56", "30",
+	"UKRAINE", "5G", "20M", "HT", "1T", "56", "27",
 	"FCC", "5G", "20M", "HT", "1T", "60", "33",
 	"ETSI", "5G", "20M", "HT", "1T", "60", "32",
 	"MKK", "5G", "20M", "HT", "1T", "60", "33",
@@ -3531,6 +3816,7 @@ const char *array_mp_8821c_txpwr_lmt[] = {
 	"KCC", "5G", "20M", "HT", "1T", "60", "33",
 	"ACMA", "5G", "20M", "HT", "1T", "60", "32",
 	"CHILE", "5G", "20M", "HT", "1T", "60", "30",
+	"UKRAINE", "5G", "20M", "HT", "1T", "60", "27",
 	"FCC", "5G", "20M", "HT", "1T", "64", "30",
 	"ETSI", "5G", "20M", "HT", "1T", "64", "32",
 	"MKK", "5G", "20M", "HT", "1T", "64", "33",
@@ -3538,6 +3824,7 @@ const char *array_mp_8821c_txpwr_lmt[] = {
 	"KCC", "5G", "20M", "HT", "1T", "64", "33",
 	"ACMA", "5G", "20M", "HT", "1T", "64", "32",
 	"CHILE", "5G", "20M", "HT", "1T", "64", "30",
+	"UKRAINE", "5G", "20M", "HT", "1T", "64", "27",
 	"FCC", "5G", "20M", "HT", "1T", "100", "30",
 	"ETSI", "5G", "20M", "HT", "1T", "100", "32",
 	"MKK", "5G", "20M", "HT", "1T", "100", "33",
@@ -3545,6 +3832,7 @@ const char *array_mp_8821c_txpwr_lmt[] = {
 	"KCC", "5G", "20M", "HT", "1T", "100", "33",
 	"ACMA", "5G", "20M", "HT", "1T", "100", "32",
 	"CHILE", "5G", "20M", "HT", "1T", "100", "30",
+	"UKRAINE", "5G", "20M", "HT", "1T", "100", "27",
 	"FCC", "5G", "20M", "HT", "1T", "104", "33",
 	"ETSI", "5G", "20M", "HT", "1T", "104", "32",
 	"MKK", "5G", "20M", "HT", "1T", "104", "33",
@@ -3552,6 +3840,7 @@ const char *array_mp_8821c_txpwr_lmt[] = {
 	"KCC", "5G", "20M", "HT", "1T", "104", "33",
 	"ACMA", "5G", "20M", "HT", "1T", "104", "32",
 	"CHILE", "5G", "20M", "HT", "1T", "104", "30",
+	"UKRAINE", "5G", "20M", "HT", "1T", "104", "27",
 	"FCC", "5G", "20M", "HT", "1T", "108", "33",
 	"ETSI", "5G", "20M", "HT", "1T", "108", "32",
 	"MKK", "5G", "20M", "HT", "1T", "108", "33",
@@ -3559,6 +3848,7 @@ const char *array_mp_8821c_txpwr_lmt[] = {
 	"KCC", "5G", "20M", "HT", "1T", "108", "33",
 	"ACMA", "5G", "20M", "HT", "1T", "108", "32",
 	"CHILE", "5G", "20M", "HT", "1T", "108", "30",
+	"UKRAINE", "5G", "20M", "HT", "1T", "108", "27",
 	"FCC", "5G", "20M", "HT", "1T", "112", "33",
 	"ETSI", "5G", "20M", "HT", "1T", "112", "32",
 	"MKK", "5G", "20M", "HT", "1T", "112", "33",
@@ -3566,6 +3856,7 @@ const char *array_mp_8821c_txpwr_lmt[] = {
 	"KCC", "5G", "20M", "HT", "1T", "112", "33",
 	"ACMA", "5G", "20M", "HT", "1T", "112", "32",
 	"CHILE", "5G", "20M", "HT", "1T", "112", "30",
+	"UKRAINE", "5G", "20M", "HT", "1T", "112", "27",
 	"FCC", "5G", "20M", "HT", "1T", "116", "33",
 	"ETSI", "5G", "20M", "HT", "1T", "116", "32",
 	"MKK", "5G", "20M", "HT", "1T", "116", "33",
@@ -3573,90 +3864,103 @@ const char *array_mp_8821c_txpwr_lmt[] = {
 	"KCC", "5G", "20M", "HT", "1T", "116", "33",
 	"ACMA", "5G", "20M", "HT", "1T", "116", "32",
 	"CHILE", "5G", "20M", "HT", "1T", "116", "30",
+	"UKRAINE", "5G", "20M", "HT", "1T", "116", "27",
 	"FCC", "5G", "20M", "HT", "1T", "120", "33",
 	"ETSI", "5G", "20M", "HT", "1T", "120", "32",
 	"MKK", "5G", "20M", "HT", "1T", "120", "33",
 	"IC", "5G", "20M", "HT", "1T", "120", "63",
 	"KCC", "5G", "20M", "HT", "1T", "120", "33",
-	"ACMA", "5G", "20M", "HT", "1T", "120", "32",
+	"ACMA", "5G", "20M", "HT", "1T", "120", "63",
 	"CHILE", "5G", "20M", "HT", "1T", "120", "30",
+	"UKRAINE", "5G", "20M", "HT", "1T", "120", "27",
 	"FCC", "5G", "20M", "HT", "1T", "124", "33",
 	"ETSI", "5G", "20M", "HT", "1T", "124", "32",
 	"MKK", "5G", "20M", "HT", "1T", "124", "33",
 	"IC", "5G", "20M", "HT", "1T", "124", "63",
 	"KCC", "5G", "20M", "HT", "1T", "124", "33",
-	"ACMA", "5G", "20M", "HT", "1T", "124", "32",
+	"ACMA", "5G", "20M", "HT", "1T", "124", "63",
 	"CHILE", "5G", "20M", "HT", "1T", "124", "30",
+	"UKRAINE", "5G", "20M", "HT", "1T", "124", "27",
 	"FCC", "5G", "20M", "HT", "1T", "128", "33",
 	"ETSI", "5G", "20M", "HT", "1T", "128", "32",
 	"MKK", "5G", "20M", "HT", "1T", "128", "33",
 	"IC", "5G", "20M", "HT", "1T", "128", "63",
-	"KCC", "5G", "20M", "HT", "1T", "128", "63",
-	"ACMA", "5G", "20M", "HT", "1T", "128", "32",
+	"KCC", "5G", "20M", "HT", "1T", "128", "-63",
+	"ACMA", "5G", "20M", "HT", "1T", "128", "63",
 	"CHILE", "5G", "20M", "HT", "1T", "128", "30",
+	"UKRAINE", "5G", "20M", "HT", "1T", "128", "27",
 	"FCC", "5G", "20M", "HT", "1T", "132", "33",
 	"ETSI", "5G", "20M", "HT", "1T", "132", "32",
 	"MKK", "5G", "20M", "HT", "1T", "132", "33",
 	"IC", "5G", "20M", "HT", "1T", "132", "33",
-	"KCC", "5G", "20M", "HT", "1T", "132", "63",
+	"KCC", "5G", "20M", "HT", "1T", "132", "-63",
 	"ACMA", "5G", "20M", "HT", "1T", "132", "32",
 	"CHILE", "5G", "20M", "HT", "1T", "132", "30",
+	"UKRAINE", "5G", "20M", "HT", "1T", "132", "27",
 	"FCC", "5G", "20M", "HT", "1T", "136", "33",
 	"ETSI", "5G", "20M", "HT", "1T", "136", "32",
 	"MKK", "5G", "20M", "HT", "1T", "136", "33",
 	"IC", "5G", "20M", "HT", "1T", "136", "33",
-	"KCC", "5G", "20M", "HT", "1T", "136", "63",
+	"KCC", "5G", "20M", "HT", "1T", "136", "-63",
 	"ACMA", "5G", "20M", "HT", "1T", "136", "32",
 	"CHILE", "5G", "20M", "HT", "1T", "136", "30",
+	"UKRAINE", "5G", "20M", "HT", "1T", "136", "63",
 	"FCC", "5G", "20M", "HT", "1T", "140", "29",
 	"ETSI", "5G", "20M", "HT", "1T", "140", "32",
 	"MKK", "5G", "20M", "HT", "1T", "140", "33",
 	"IC", "5G", "20M", "HT", "1T", "140", "29",
-	"KCC", "5G", "20M", "HT", "1T", "140", "63",
+	"KCC", "5G", "20M", "HT", "1T", "140", "-63",
 	"ACMA", "5G", "20M", "HT", "1T", "140", "32",
 	"CHILE", "5G", "20M", "HT", "1T", "140", "30",
+	"UKRAINE", "5G", "20M", "HT", "1T", "140", "63",
 	"FCC", "5G", "20M", "HT", "1T", "144", "27",
 	"ETSI", "5G", "20M", "HT", "1T", "144", "63",
 	"MKK", "5G", "20M", "HT", "1T", "144", "63",
 	"IC", "5G", "20M", "HT", "1T", "144", "27",
-	"KCC", "5G", "20M", "HT", "1T", "144", "63",
+	"KCC", "5G", "20M", "HT", "1T", "144", "-63",
 	"ACMA", "5G", "20M", "HT", "1T", "144", "63",
 	"CHILE", "5G", "20M", "HT", "1T", "144", "30",
+	"UKRAINE", "5G", "20M", "HT", "1T", "144", "63",
 	"FCC", "5G", "20M", "HT", "1T", "149", "33",
-	"ETSI", "5G", "20M", "HT", "1T", "149", "63",
+	"ETSI", "5G", "20M", "HT", "1T", "149", "-63",
 	"MKK", "5G", "20M", "HT", "1T", "149", "63",
 	"IC", "5G", "20M", "HT", "1T", "149", "33",
 	"KCC", "5G", "20M", "HT", "1T", "149", "33",
 	"ACMA", "5G", "20M", "HT", "1T", "149", "33",
 	"CHILE", "5G", "20M", "HT", "1T", "149", "30",
+	"UKRAINE", "5G", "20M", "HT", "1T", "149", "27",
 	"FCC", "5G", "20M", "HT", "1T", "153", "33",
-	"ETSI", "5G", "20M", "HT", "1T", "153", "63",
+	"ETSI", "5G", "20M", "HT", "1T", "153", "-63",
 	"MKK", "5G", "20M", "HT", "1T", "153", "63",
 	"IC", "5G", "20M", "HT", "1T", "153", "33",
 	"KCC", "5G", "20M", "HT", "1T", "153", "33",
 	"ACMA", "5G", "20M", "HT", "1T", "153", "33",
 	"CHILE", "5G", "20M", "HT", "1T", "153", "30",
+	"UKRAINE", "5G", "20M", "HT", "1T", "153", "27",
 	"FCC", "5G", "20M", "HT", "1T", "157", "33",
-	"ETSI", "5G", "20M", "HT", "1T", "157", "63",
+	"ETSI", "5G", "20M", "HT", "1T", "157", "-63",
 	"MKK", "5G", "20M", "HT", "1T", "157", "63",
 	"IC", "5G", "20M", "HT", "1T", "157", "33",
 	"KCC", "5G", "20M", "HT", "1T", "157", "33",
 	"ACMA", "5G", "20M", "HT", "1T", "157", "33",
 	"CHILE", "5G", "20M", "HT", "1T", "157", "30",
+	"UKRAINE", "5G", "20M", "HT", "1T", "157", "27",
 	"FCC", "5G", "20M", "HT", "1T", "161", "33",
-	"ETSI", "5G", "20M", "HT", "1T", "161", "63",
+	"ETSI", "5G", "20M", "HT", "1T", "161", "-63",
 	"MKK", "5G", "20M", "HT", "1T", "161", "63",
 	"IC", "5G", "20M", "HT", "1T", "161", "33",
 	"KCC", "5G", "20M", "HT", "1T", "161", "31",
 	"ACMA", "5G", "20M", "HT", "1T", "161", "33",
 	"CHILE", "5G", "20M", "HT", "1T", "161", "30",
+	"UKRAINE", "5G", "20M", "HT", "1T", "161", "27",
 	"FCC", "5G", "20M", "HT", "1T", "165", "33",
-	"ETSI", "5G", "20M", "HT", "1T", "165", "63",
+	"ETSI", "5G", "20M", "HT", "1T", "165", "-63",
 	"MKK", "5G", "20M", "HT", "1T", "165", "63",
 	"IC", "5G", "20M", "HT", "1T", "165", "33",
-	"KCC", "5G", "20M", "HT", "1T", "165", "63",
+	"KCC", "5G", "20M", "HT", "1T", "165", "-63",
 	"ACMA", "5G", "20M", "HT", "1T", "165", "33",
 	"CHILE", "5G", "20M", "HT", "1T", "165", "30",
+	"UKRAINE", "5G", "20M", "HT", "1T", "165", "27",
 	"FCC", "5G", "40M", "HT", "1T", "38", "22",
 	"ETSI", "5G", "40M", "HT", "1T", "38", "32",
 	"MKK", "5G", "40M", "HT", "1T", "38", "32",
@@ -3664,6 +3968,7 @@ const char *array_mp_8821c_txpwr_lmt[] = {
 	"KCC", "5G", "40M", "HT", "1T", "38", "26",
 	"ACMA", "5G", "40M", "HT", "1T", "38", "32",
 	"CHILE", "5G", "40M", "HT", "1T", "38", "22",
+	"UKRAINE", "5G", "40M", "HT", "1T", "38", "27",
 	"FCC", "5G", "40M", "HT", "1T", "46", "32",
 	"ETSI", "5G", "40M", "HT", "1T", "46", "32",
 	"MKK", "5G", "40M", "HT", "1T", "46", "32",
@@ -3671,6 +3976,7 @@ const char *array_mp_8821c_txpwr_lmt[] = {
 	"KCC", "5G", "40M", "HT", "1T", "46", "28",
 	"ACMA", "5G", "40M", "HT", "1T", "46", "32",
 	"CHILE", "5G", "40M", "HT", "1T", "46", "30",
+	"UKRAINE", "5G", "40M", "HT", "1T", "46", "27",
 	"FCC", "5G", "40M", "HT", "1T", "54", "32",
 	"ETSI", "5G", "40M", "HT", "1T", "54", "32",
 	"MKK", "5G", "40M", "HT", "1T", "54", "32",
@@ -3678,6 +3984,7 @@ const char *array_mp_8821c_txpwr_lmt[] = {
 	"KCC", "5G", "40M", "HT", "1T", "54", "22",
 	"ACMA", "5G", "40M", "HT", "1T", "54", "32",
 	"CHILE", "5G", "40M", "HT", "1T", "54", "30",
+	"UKRAINE", "5G", "40M", "HT", "1T", "54", "27",
 	"FCC", "5G", "40M", "HT", "1T", "62", "23",
 	"ETSI", "5G", "40M", "HT", "1T", "62", "32",
 	"MKK", "5G", "40M", "HT", "1T", "62", "32",
@@ -3685,6 +3992,7 @@ const char *array_mp_8821c_txpwr_lmt[] = {
 	"KCC", "5G", "40M", "HT", "1T", "62", "31",
 	"ACMA", "5G", "40M", "HT", "1T", "62", "32",
 	"CHILE", "5G", "40M", "HT", "1T", "62", "23",
+	"UKRAINE", "5G", "40M", "HT", "1T", "62", "27",
 	"FCC", "5G", "40M", "HT", "1T", "102", "21",
 	"ETSI", "5G", "40M", "HT", "1T", "102", "32",
 	"MKK", "5G", "40M", "HT", "1T", "102", "32",
@@ -3692,6 +4000,7 @@ const char *array_mp_8821c_txpwr_lmt[] = {
 	"KCC", "5G", "40M", "HT", "1T", "102", "31",
 	"ACMA", "5G", "40M", "HT", "1T", "102", "32",
 	"CHILE", "5G", "40M", "HT", "1T", "102", "30",
+	"UKRAINE", "5G", "40M", "HT", "1T", "102", "27",
 	"FCC", "5G", "40M", "HT", "1T", "110", "32",
 	"ETSI", "5G", "40M", "HT", "1T", "110", "32",
 	"MKK", "5G", "40M", "HT", "1T", "110", "32",
@@ -3699,48 +4008,55 @@ const char *array_mp_8821c_txpwr_lmt[] = {
 	"KCC", "5G", "40M", "HT", "1T", "110", "32",
 	"ACMA", "5G", "40M", "HT", "1T", "110", "32",
 	"CHILE", "5G", "40M", "HT", "1T", "110", "30",
+	"UKRAINE", "5G", "40M", "HT", "1T", "110", "27",
 	"FCC", "5G", "40M", "HT", "1T", "118", "32",
 	"ETSI", "5G", "40M", "HT", "1T", "118", "32",
 	"MKK", "5G", "40M", "HT", "1T", "118", "32",
 	"IC", "5G", "40M", "HT", "1T", "118", "63",
 	"KCC", "5G", "40M", "HT", "1T", "118", "32",
-	"ACMA", "5G", "40M", "HT", "1T", "118", "32",
+	"ACMA", "5G", "40M", "HT", "1T", "118", "63",
 	"CHILE", "5G", "40M", "HT", "1T", "118", "30",
+	"UKRAINE", "5G", "40M", "HT", "1T", "118", "27",
 	"FCC", "5G", "40M", "HT", "1T", "126", "32",
 	"ETSI", "5G", "40M", "HT", "1T", "126", "32",
 	"MKK", "5G", "40M", "HT", "1T", "126", "32",
 	"IC", "5G", "40M", "HT", "1T", "126", "63",
-	"KCC", "5G", "40M", "HT", "1T", "126", "63",
-	"ACMA", "5G", "40M", "HT", "1T", "126", "32",
+	"KCC", "5G", "40M", "HT", "1T", "126", "-63",
+	"ACMA", "5G", "40M", "HT", "1T", "126", "63",
 	"CHILE", "5G", "40M", "HT", "1T", "126", "30",
+	"UKRAINE", "5G", "40M", "HT", "1T", "126", "27",
 	"FCC", "5G", "40M", "HT", "1T", "134", "32",
 	"ETSI", "5G", "40M", "HT", "1T", "134", "32",
 	"MKK", "5G", "40M", "HT", "1T", "134", "32",
 	"IC", "5G", "40M", "HT", "1T", "134", "32",
-	"KCC", "5G", "40M", "HT", "1T", "134", "63",
+	"KCC", "5G", "40M", "HT", "1T", "134", "-63",
 	"ACMA", "5G", "40M", "HT", "1T", "134", "32",
 	"CHILE", "5G", "40M", "HT", "1T", "134", "30",
+	"UKRAINE", "5G", "40M", "HT", "1T", "134", "63",
 	"FCC", "5G", "40M", "HT", "1T", "142", "29",
 	"ETSI", "5G", "40M", "HT", "1T", "142", "63",
 	"MKK", "5G", "40M", "HT", "1T", "142", "63",
 	"IC", "5G", "40M", "HT", "1T", "142", "29",
-	"KCC", "5G", "40M", "HT", "1T", "142", "63",
+	"KCC", "5G", "40M", "HT", "1T", "142", "-63",
 	"ACMA", "5G", "40M", "HT", "1T", "142", "63",
 	"CHILE", "5G", "40M", "HT", "1T", "142", "30",
+	"UKRAINE", "5G", "40M", "HT", "1T", "142", "63",
 	"FCC", "5G", "40M", "HT", "1T", "151", "32",
-	"ETSI", "5G", "40M", "HT", "1T", "151", "63",
+	"ETSI", "5G", "40M", "HT", "1T", "151", "-63",
 	"MKK", "5G", "40M", "HT", "1T", "151", "63",
 	"IC", "5G", "40M", "HT", "1T", "151", "32",
 	"KCC", "5G", "40M", "HT", "1T", "151", "27",
 	"ACMA", "5G", "40M", "HT", "1T", "151", "32",
 	"CHILE", "5G", "40M", "HT", "1T", "151", "30",
+	"UKRAINE", "5G", "40M", "HT", "1T", "151", "27",
 	"FCC", "5G", "40M", "HT", "1T", "159", "32",
-	"ETSI", "5G", "40M", "HT", "1T", "159", "63",
+	"ETSI", "5G", "40M", "HT", "1T", "159", "-63",
 	"MKK", "5G", "40M", "HT", "1T", "159", "63",
 	"IC", "5G", "40M", "HT", "1T", "159", "32",
 	"KCC", "5G", "40M", "HT", "1T", "159", "26",
 	"ACMA", "5G", "40M", "HT", "1T", "159", "32",
 	"CHILE", "5G", "40M", "HT", "1T", "159", "30",
+	"UKRAINE", "5G", "40M", "HT", "1T", "159", "27",
 	"FCC", "5G", "80M", "VHT", "1T", "42", "19",
 	"ETSI", "5G", "80M", "VHT", "1T", "42", "32",
 	"MKK", "5G", "80M", "VHT", "1T", "42", "28",
@@ -3748,6 +4064,7 @@ const char *array_mp_8821c_txpwr_lmt[] = {
 	"KCC", "5G", "80M", "VHT", "1T", "42", "25",
 	"ACMA", "5G", "80M", "VHT", "1T", "42", "32",
 	"CHILE", "5G", "80M", "VHT", "1T", "42", "19",
+	"UKRAINE", "5G", "80M", "VHT", "1T", "42", "27",
 	"FCC", "5G", "80M", "VHT", "1T", "58", "22",
 	"ETSI", "5G", "80M", "VHT", "1T", "58", "32",
 	"MKK", "5G", "80M", "VHT", "1T", "58", "28",
@@ -3755,6 +4072,7 @@ const char *array_mp_8821c_txpwr_lmt[] = {
 	"KCC", "5G", "80M", "VHT", "1T", "58", "28",
 	"ACMA", "5G", "80M", "VHT", "1T", "58", "32",
 	"CHILE", "5G", "80M", "VHT", "1T", "58", "22",
+	"UKRAINE", "5G", "80M", "VHT", "1T", "58", "27",
 	"FCC", "5G", "80M", "VHT", "1T", "106", "18",
 	"ETSI", "5G", "80M", "VHT", "1T", "106", "32",
 	"MKK", "5G", "80M", "VHT", "1T", "106", "32",
@@ -3762,38 +4080,47 @@ const char *array_mp_8821c_txpwr_lmt[] = {
 	"KCC", "5G", "80M", "VHT", "1T", "106", "30",
 	"ACMA", "5G", "80M", "VHT", "1T", "106", "32",
 	"CHILE", "5G", "80M", "VHT", "1T", "106", "30",
+	"UKRAINE", "5G", "80M", "VHT", "1T", "106", "27",
 	"FCC", "5G", "80M", "VHT", "1T", "122", "32",
 	"ETSI", "5G", "80M", "VHT", "1T", "122", "32",
 	"MKK", "5G", "80M", "VHT", "1T", "122", "32",
 	"IC", "5G", "80M", "VHT", "1T", "122", "63",
 	"KCC", "5G", "80M", "VHT", "1T", "122", "26",
-	"ACMA", "5G", "80M", "VHT", "1T", "122", "32",
+	"ACMA", "5G", "80M", "VHT", "1T", "122", "63",
 	"CHILE", "5G", "80M", "VHT", "1T", "122", "30",
+	"UKRAINE", "5G", "80M", "VHT", "1T", "122", "27",
 	"FCC", "5G", "80M", "VHT", "1T", "138", "28",
 	"ETSI", "5G", "80M", "VHT", "1T", "138", "63",
 	"MKK", "5G", "80M", "VHT", "1T", "138", "63",
 	"IC", "5G", "80M", "VHT", "1T", "138", "28",
-	"KCC", "5G", "80M", "VHT", "1T", "138", "63",
+	"KCC", "5G", "80M", "VHT", "1T", "138", "-63",
 	"ACMA", "5G", "80M", "VHT", "1T", "138", "63",
 	"CHILE", "5G", "80M", "VHT", "1T", "138", "30",
+	"UKRAINE", "5G", "80M", "VHT", "1T", "138", "63",
 	"FCC", "5G", "80M", "VHT", "1T", "155", "32",
-	"ETSI", "5G", "80M", "VHT", "1T", "155", "63",
+	"ETSI", "5G", "80M", "VHT", "1T", "155", "-63",
 	"MKK", "5G", "80M", "VHT", "1T", "155", "63",
 	"IC", "5G", "80M", "VHT", "1T", "155", "32",
 	"KCC", "5G", "80M", "VHT", "1T", "155", "27",
 	"ACMA", "5G", "80M", "VHT", "1T", "155", "32",
-	"CHILE", "5G", "80M", "VHT", "1T", "155", "30"
+	"CHILE", "5G", "80M", "VHT", "1T", "155", "30",
+	"UKRAINE", "5G", "80M", "VHT", "1T", "155", "27"
 };
+#endif
 
 void
 odm_read_and_config_mp_8821c_txpwr_lmt(struct dm_struct *dm)
 {
+#ifdef CONFIG_8821C
+
 	u32	i = 0;
 #if (DM_ODM_SUPPORT_TYPE == ODM_IOT)
-	u32	array_len = sizeof(array_mp_8821c_txpwr_lmt) / sizeof(u8);
+	u32	array_len =
+			sizeof(array_mp_8821c_txpwr_lmt) / sizeof(u8);
 	u8	*array = (u8 *)array_mp_8821c_txpwr_lmt;
 #else
-	u32	array_len = sizeof(array_mp_8821c_txpwr_lmt) / sizeof(u8 *);
+	u32	array_len =
+			sizeof(array_mp_8821c_txpwr_lmt) / sizeof(u8 *);
 	u8	**array = (u8 **)array_mp_8821c_txpwr_lmt;
 #endif
 
@@ -3801,7 +4128,9 @@ odm_read_and_config_mp_8821c_txpwr_lmt(struct dm_struct *dm)
 	void	*adapter = dm->adapter;
 	HAL_DATA_TYPE	*hal_data = GET_HAL_DATA(((PADAPTER)adapter));
 
-	PlatformZeroMemory(hal_data->BufOfLinesPwrLmt, MAX_LINES_HWCONFIG_TXT * MAX_BYTES_LINE_HWCONFIG_TXT);
+	odm_memory_set(dm, hal_data->BufOfLinesPwrLmt, 0,
+		       MAX_LINES_HWCONFIG_TXT *
+		       MAX_BYTES_LINE_HWCONFIG_TXT);
 	hal_data->nLinesReadPwrLmt = array_len / 7;
 #endif
 
@@ -3826,18 +4155,22 @@ odm_read_and_config_mp_8821c_txpwr_lmt(struct dm_struct *dm)
 		u8	*val = array[i + 6];
 #endif
 
-		odm_config_bb_txpwr_lmt_8821c(dm, regulation, band, bandwidth, rate, rf_path, chnl, val);
+		odm_config_bb_txpwr_lmt_8821c(dm, regulation, band, bandwidth,
+					      rate, rf_path, chnl, val);
 #if (DM_ODM_SUPPORT_TYPE == ODM_WIN)
 		rsprintf((char *)hal_data->BufOfLinesPwrLmt[i / 7], 100, "\"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\",",
-		regulation, band, bandwidth, rate, rf_path, chnl, val);
+			 regulation, band, bandwidth, rate, rf_path, chnl, val);
 #endif
 	}
+
+#endif
 }
 
 /******************************************************************************
-*                           txpwr_lmt_fccsar.TXT
-******************************************************************************/
+ *                           txpwr_lmt_fccsar.TXT
+ ******************************************************************************/
 
+#ifdef CONFIG_8821C_FCCSAR
 const char *array_mp_8821c_txpwr_lmt_fccsar[] = {
 	"FCC", "2.4G", "20M", "CCK", "1T", "01", "30",
 	"ETSI", "2.4G", "20M", "CCK", "1T", "01", "30",
@@ -3846,6 +4179,7 @@ const char *array_mp_8821c_txpwr_lmt_fccsar[] = {
 	"KCC", "2.4G", "20M", "CCK", "1T", "01", "34",
 	"ACMA", "2.4G", "20M", "CCK", "1T", "01", "30",
 	"CHILE", "2.4G", "20M", "CCK", "1T", "01", "30",
+	"UKRAINE", "2.4G", "20M", "CCK", "1T", "01", "30",
 	"FCC", "2.4G", "20M", "CCK", "1T", "02", "32",
 	"ETSI", "2.4G", "20M", "CCK", "1T", "02", "30",
 	"MKK", "2.4G", "20M", "CCK", "1T", "02", "34",
@@ -3853,6 +4187,7 @@ const char *array_mp_8821c_txpwr_lmt_fccsar[] = {
 	"KCC", "2.4G", "20M", "CCK", "1T", "02", "34",
 	"ACMA", "2.4G", "20M", "CCK", "1T", "02", "30",
 	"CHILE", "2.4G", "20M", "CCK", "1T", "02", "32",
+	"UKRAINE", "2.4G", "20M", "CCK", "1T", "02", "30",
 	"FCC", "2.4G", "20M", "CCK", "1T", "03", "32",
 	"ETSI", "2.4G", "20M", "CCK", "1T", "03", "30",
 	"MKK", "2.4G", "20M", "CCK", "1T", "03", "34",
@@ -3860,6 +4195,7 @@ const char *array_mp_8821c_txpwr_lmt_fccsar[] = {
 	"KCC", "2.4G", "20M", "CCK", "1T", "03", "34",
 	"ACMA", "2.4G", "20M", "CCK", "1T", "03", "30",
 	"CHILE", "2.4G", "20M", "CCK", "1T", "03", "32",
+	"UKRAINE", "2.4G", "20M", "CCK", "1T", "03", "30",
 	"FCC", "2.4G", "20M", "CCK", "1T", "04", "32",
 	"ETSI", "2.4G", "20M", "CCK", "1T", "04", "30",
 	"MKK", "2.4G", "20M", "CCK", "1T", "04", "34",
@@ -3867,6 +4203,7 @@ const char *array_mp_8821c_txpwr_lmt_fccsar[] = {
 	"KCC", "2.4G", "20M", "CCK", "1T", "04", "34",
 	"ACMA", "2.4G", "20M", "CCK", "1T", "04", "30",
 	"CHILE", "2.4G", "20M", "CCK", "1T", "04", "32",
+	"UKRAINE", "2.4G", "20M", "CCK", "1T", "04", "30",
 	"FCC", "2.4G", "20M", "CCK", "1T", "05", "32",
 	"ETSI", "2.4G", "20M", "CCK", "1T", "05", "30",
 	"MKK", "2.4G", "20M", "CCK", "1T", "05", "34",
@@ -3874,6 +4211,7 @@ const char *array_mp_8821c_txpwr_lmt_fccsar[] = {
 	"KCC", "2.4G", "20M", "CCK", "1T", "05", "34",
 	"ACMA", "2.4G", "20M", "CCK", "1T", "05", "30",
 	"CHILE", "2.4G", "20M", "CCK", "1T", "05", "32",
+	"UKRAINE", "2.4G", "20M", "CCK", "1T", "05", "30",
 	"FCC", "2.4G", "20M", "CCK", "1T", "06", "32",
 	"ETSI", "2.4G", "20M", "CCK", "1T", "06", "30",
 	"MKK", "2.4G", "20M", "CCK", "1T", "06", "34",
@@ -3881,6 +4219,7 @@ const char *array_mp_8821c_txpwr_lmt_fccsar[] = {
 	"KCC", "2.4G", "20M", "CCK", "1T", "06", "34",
 	"ACMA", "2.4G", "20M", "CCK", "1T", "06", "30",
 	"CHILE", "2.4G", "20M", "CCK", "1T", "06", "32",
+	"UKRAINE", "2.4G", "20M", "CCK", "1T", "06", "30",
 	"FCC", "2.4G", "20M", "CCK", "1T", "07", "32",
 	"ETSI", "2.4G", "20M", "CCK", "1T", "07", "30",
 	"MKK", "2.4G", "20M", "CCK", "1T", "07", "34",
@@ -3888,6 +4227,7 @@ const char *array_mp_8821c_txpwr_lmt_fccsar[] = {
 	"KCC", "2.4G", "20M", "CCK", "1T", "07", "34",
 	"ACMA", "2.4G", "20M", "CCK", "1T", "07", "30",
 	"CHILE", "2.4G", "20M", "CCK", "1T", "07", "32",
+	"UKRAINE", "2.4G", "20M", "CCK", "1T", "07", "30",
 	"FCC", "2.4G", "20M", "CCK", "1T", "08", "32",
 	"ETSI", "2.4G", "20M", "CCK", "1T", "08", "30",
 	"MKK", "2.4G", "20M", "CCK", "1T", "08", "34",
@@ -3895,6 +4235,7 @@ const char *array_mp_8821c_txpwr_lmt_fccsar[] = {
 	"KCC", "2.4G", "20M", "CCK", "1T", "08", "34",
 	"ACMA", "2.4G", "20M", "CCK", "1T", "08", "30",
 	"CHILE", "2.4G", "20M", "CCK", "1T", "08", "32",
+	"UKRAINE", "2.4G", "20M", "CCK", "1T", "08", "30",
 	"FCC", "2.4G", "20M", "CCK", "1T", "09", "32",
 	"ETSI", "2.4G", "20M", "CCK", "1T", "09", "30",
 	"MKK", "2.4G", "20M", "CCK", "1T", "09", "34",
@@ -3902,6 +4243,7 @@ const char *array_mp_8821c_txpwr_lmt_fccsar[] = {
 	"KCC", "2.4G", "20M", "CCK", "1T", "09", "34",
 	"ACMA", "2.4G", "20M", "CCK", "1T", "09", "30",
 	"CHILE", "2.4G", "20M", "CCK", "1T", "09", "32",
+	"UKRAINE", "2.4G", "20M", "CCK", "1T", "09", "30",
 	"FCC", "2.4G", "20M", "CCK", "1T", "10", "32",
 	"ETSI", "2.4G", "20M", "CCK", "1T", "10", "30",
 	"MKK", "2.4G", "20M", "CCK", "1T", "10", "34",
@@ -3909,6 +4251,7 @@ const char *array_mp_8821c_txpwr_lmt_fccsar[] = {
 	"KCC", "2.4G", "20M", "CCK", "1T", "10", "34",
 	"ACMA", "2.4G", "20M", "CCK", "1T", "10", "30",
 	"CHILE", "2.4G", "20M", "CCK", "1T", "10", "32",
+	"UKRAINE", "2.4G", "20M", "CCK", "1T", "10", "30",
 	"FCC", "2.4G", "20M", "CCK", "1T", "11", "32",
 	"ETSI", "2.4G", "20M", "CCK", "1T", "11", "30",
 	"MKK", "2.4G", "20M", "CCK", "1T", "11", "34",
@@ -3916,6 +4259,7 @@ const char *array_mp_8821c_txpwr_lmt_fccsar[] = {
 	"KCC", "2.4G", "20M", "CCK", "1T", "11", "34",
 	"ACMA", "2.4G", "20M", "CCK", "1T", "11", "30",
 	"CHILE", "2.4G", "20M", "CCK", "1T", "11", "32",
+	"UKRAINE", "2.4G", "20M", "CCK", "1T", "11", "30",
 	"FCC", "2.4G", "20M", "CCK", "1T", "12", "24",
 	"ETSI", "2.4G", "20M", "CCK", "1T", "12", "30",
 	"MKK", "2.4G", "20M", "CCK", "1T", "12", "34",
@@ -3923,6 +4267,7 @@ const char *array_mp_8821c_txpwr_lmt_fccsar[] = {
 	"KCC", "2.4G", "20M", "CCK", "1T", "12", "34",
 	"ACMA", "2.4G", "20M", "CCK", "1T", "12", "30",
 	"CHILE", "2.4G", "20M", "CCK", "1T", "12", "24",
+	"UKRAINE", "2.4G", "20M", "CCK", "1T", "12", "30",
 	"FCC", "2.4G", "20M", "CCK", "1T", "13", "16",
 	"ETSI", "2.4G", "20M", "CCK", "1T", "13", "30",
 	"MKK", "2.4G", "20M", "CCK", "1T", "13", "34",
@@ -3930,6 +4275,7 @@ const char *array_mp_8821c_txpwr_lmt_fccsar[] = {
 	"KCC", "2.4G", "20M", "CCK", "1T", "13", "34",
 	"ACMA", "2.4G", "20M", "CCK", "1T", "13", "30",
 	"CHILE", "2.4G", "20M", "CCK", "1T", "13", "16",
+	"UKRAINE", "2.4G", "20M", "CCK", "1T", "13", "30",
 	"FCC", "2.4G", "20M", "CCK", "1T", "14", "63",
 	"ETSI", "2.4G", "20M", "CCK", "1T", "14", "63",
 	"MKK", "2.4G", "20M", "CCK", "1T", "14", "34",
@@ -3937,6 +4283,7 @@ const char *array_mp_8821c_txpwr_lmt_fccsar[] = {
 	"KCC", "2.4G", "20M", "CCK", "1T", "14", "63",
 	"ACMA", "2.4G", "20M", "CCK", "1T", "14", "63",
 	"CHILE", "2.4G", "20M", "CCK", "1T", "14", "63",
+	"UKRAINE", "2.4G", "20M", "CCK", "1T", "14", "63",
 	"FCC", "2.4G", "20M", "OFDM", "1T", "01", "30",
 	"ETSI", "2.4G", "20M", "OFDM", "1T", "01", "30",
 	"MKK", "2.4G", "20M", "OFDM", "1T", "01", "34",
@@ -3944,6 +4291,7 @@ const char *array_mp_8821c_txpwr_lmt_fccsar[] = {
 	"KCC", "2.4G", "20M", "OFDM", "1T", "01", "32",
 	"ACMA", "2.4G", "20M", "OFDM", "1T", "01", "30",
 	"CHILE", "2.4G", "20M", "OFDM", "1T", "01", "30",
+	"UKRAINE", "2.4G", "20M", "OFDM", "1T", "01", "30",
 	"FCC", "2.4G", "20M", "OFDM", "1T", "02", "32",
 	"ETSI", "2.4G", "20M", "OFDM", "1T", "02", "30",
 	"MKK", "2.4G", "20M", "OFDM", "1T", "02", "34",
@@ -3951,6 +4299,7 @@ const char *array_mp_8821c_txpwr_lmt_fccsar[] = {
 	"KCC", "2.4G", "20M", "OFDM", "1T", "02", "34",
 	"ACMA", "2.4G", "20M", "OFDM", "1T", "02", "30",
 	"CHILE", "2.4G", "20M", "OFDM", "1T", "02", "32",
+	"UKRAINE", "2.4G", "20M", "OFDM", "1T", "02", "30",
 	"FCC", "2.4G", "20M", "OFDM", "1T", "03", "34",
 	"ETSI", "2.4G", "20M", "OFDM", "1T", "03", "30",
 	"MKK", "2.4G", "20M", "OFDM", "1T", "03", "34",
@@ -3958,6 +4307,7 @@ const char *array_mp_8821c_txpwr_lmt_fccsar[] = {
 	"KCC", "2.4G", "20M", "OFDM", "1T", "03", "34",
 	"ACMA", "2.4G", "20M", "OFDM", "1T", "03", "30",
 	"CHILE", "2.4G", "20M", "OFDM", "1T", "03", "34",
+	"UKRAINE", "2.4G", "20M", "OFDM", "1T", "03", "30",
 	"FCC", "2.4G", "20M", "OFDM", "1T", "04", "34",
 	"ETSI", "2.4G", "20M", "OFDM", "1T", "04", "30",
 	"MKK", "2.4G", "20M", "OFDM", "1T", "04", "34",
@@ -3965,6 +4315,7 @@ const char *array_mp_8821c_txpwr_lmt_fccsar[] = {
 	"KCC", "2.4G", "20M", "OFDM", "1T", "04", "34",
 	"ACMA", "2.4G", "20M", "OFDM", "1T", "04", "30",
 	"CHILE", "2.4G", "20M", "OFDM", "1T", "04", "34",
+	"UKRAINE", "2.4G", "20M", "OFDM", "1T", "04", "30",
 	"FCC", "2.4G", "20M", "OFDM", "1T", "05", "34",
 	"ETSI", "2.4G", "20M", "OFDM", "1T", "05", "30",
 	"MKK", "2.4G", "20M", "OFDM", "1T", "05", "34",
@@ -3972,6 +4323,7 @@ const char *array_mp_8821c_txpwr_lmt_fccsar[] = {
 	"KCC", "2.4G", "20M", "OFDM", "1T", "05", "34",
 	"ACMA", "2.4G", "20M", "OFDM", "1T", "05", "30",
 	"CHILE", "2.4G", "20M", "OFDM", "1T", "05", "34",
+	"UKRAINE", "2.4G", "20M", "OFDM", "1T", "05", "30",
 	"FCC", "2.4G", "20M", "OFDM", "1T", "06", "34",
 	"ETSI", "2.4G", "20M", "OFDM", "1T", "06", "30",
 	"MKK", "2.4G", "20M", "OFDM", "1T", "06", "34",
@@ -3979,6 +4331,7 @@ const char *array_mp_8821c_txpwr_lmt_fccsar[] = {
 	"KCC", "2.4G", "20M", "OFDM", "1T", "06", "34",
 	"ACMA", "2.4G", "20M", "OFDM", "1T", "06", "30",
 	"CHILE", "2.4G", "20M", "OFDM", "1T", "06", "34",
+	"UKRAINE", "2.4G", "20M", "OFDM", "1T", "06", "30",
 	"FCC", "2.4G", "20M", "OFDM", "1T", "07", "34",
 	"ETSI", "2.4G", "20M", "OFDM", "1T", "07", "30",
 	"MKK", "2.4G", "20M", "OFDM", "1T", "07", "34",
@@ -3986,6 +4339,7 @@ const char *array_mp_8821c_txpwr_lmt_fccsar[] = {
 	"KCC", "2.4G", "20M", "OFDM", "1T", "07", "34",
 	"ACMA", "2.4G", "20M", "OFDM", "1T", "07", "30",
 	"CHILE", "2.4G", "20M", "OFDM", "1T", "07", "34",
+	"UKRAINE", "2.4G", "20M", "OFDM", "1T", "07", "30",
 	"FCC", "2.4G", "20M", "OFDM", "1T", "08", "34",
 	"ETSI", "2.4G", "20M", "OFDM", "1T", "08", "30",
 	"MKK", "2.4G", "20M", "OFDM", "1T", "08", "34",
@@ -3993,6 +4347,7 @@ const char *array_mp_8821c_txpwr_lmt_fccsar[] = {
 	"KCC", "2.4G", "20M", "OFDM", "1T", "08", "34",
 	"ACMA", "2.4G", "20M", "OFDM", "1T", "08", "30",
 	"CHILE", "2.4G", "20M", "OFDM", "1T", "08", "34",
+	"UKRAINE", "2.4G", "20M", "OFDM", "1T", "08", "30",
 	"FCC", "2.4G", "20M", "OFDM", "1T", "09", "34",
 	"ETSI", "2.4G", "20M", "OFDM", "1T", "09", "30",
 	"MKK", "2.4G", "20M", "OFDM", "1T", "09", "34",
@@ -4000,6 +4355,7 @@ const char *array_mp_8821c_txpwr_lmt_fccsar[] = {
 	"KCC", "2.4G", "20M", "OFDM", "1T", "09", "34",
 	"ACMA", "2.4G", "20M", "OFDM", "1T", "09", "30",
 	"CHILE", "2.4G", "20M", "OFDM", "1T", "09", "34",
+	"UKRAINE", "2.4G", "20M", "OFDM", "1T", "09", "30",
 	"FCC", "2.4G", "20M", "OFDM", "1T", "10", "32",
 	"ETSI", "2.4G", "20M", "OFDM", "1T", "10", "30",
 	"MKK", "2.4G", "20M", "OFDM", "1T", "10", "34",
@@ -4007,6 +4363,7 @@ const char *array_mp_8821c_txpwr_lmt_fccsar[] = {
 	"KCC", "2.4G", "20M", "OFDM", "1T", "10", "34",
 	"ACMA", "2.4G", "20M", "OFDM", "1T", "10", "30",
 	"CHILE", "2.4G", "20M", "OFDM", "1T", "10", "32",
+	"UKRAINE", "2.4G", "20M", "OFDM", "1T", "10", "30",
 	"FCC", "2.4G", "20M", "OFDM", "1T", "11", "30",
 	"ETSI", "2.4G", "20M", "OFDM", "1T", "11", "30",
 	"MKK", "2.4G", "20M", "OFDM", "1T", "11", "34",
@@ -4014,6 +4371,7 @@ const char *array_mp_8821c_txpwr_lmt_fccsar[] = {
 	"KCC", "2.4G", "20M", "OFDM", "1T", "11", "34",
 	"ACMA", "2.4G", "20M", "OFDM", "1T", "11", "30",
 	"CHILE", "2.4G", "20M", "OFDM", "1T", "11", "30",
+	"UKRAINE", "2.4G", "20M", "OFDM", "1T", "11", "30",
 	"FCC", "2.4G", "20M", "OFDM", "1T", "12", "28",
 	"ETSI", "2.4G", "20M", "OFDM", "1T", "12", "30",
 	"MKK", "2.4G", "20M", "OFDM", "1T", "12", "34",
@@ -4021,6 +4379,7 @@ const char *array_mp_8821c_txpwr_lmt_fccsar[] = {
 	"KCC", "2.4G", "20M", "OFDM", "1T", "12", "34",
 	"ACMA", "2.4G", "20M", "OFDM", "1T", "12", "30",
 	"CHILE", "2.4G", "20M", "OFDM", "1T", "12", "28",
+	"UKRAINE", "2.4G", "20M", "OFDM", "1T", "12", "30",
 	"FCC", "2.4G", "20M", "OFDM", "1T", "13", "16",
 	"ETSI", "2.4G", "20M", "OFDM", "1T", "13", "30",
 	"MKK", "2.4G", "20M", "OFDM", "1T", "13", "34",
@@ -4028,6 +4387,7 @@ const char *array_mp_8821c_txpwr_lmt_fccsar[] = {
 	"KCC", "2.4G", "20M", "OFDM", "1T", "13", "32",
 	"ACMA", "2.4G", "20M", "OFDM", "1T", "13", "30",
 	"CHILE", "2.4G", "20M", "OFDM", "1T", "13", "16",
+	"UKRAINE", "2.4G", "20M", "OFDM", "1T", "13", "30",
 	"FCC", "2.4G", "20M", "OFDM", "1T", "14", "63",
 	"ETSI", "2.4G", "20M", "OFDM", "1T", "14", "63",
 	"MKK", "2.4G", "20M", "OFDM", "1T", "14", "63",
@@ -4035,6 +4395,7 @@ const char *array_mp_8821c_txpwr_lmt_fccsar[] = {
 	"KCC", "2.4G", "20M", "OFDM", "1T", "14", "63",
 	"ACMA", "2.4G", "20M", "OFDM", "1T", "14", "63",
 	"CHILE", "2.4G", "20M", "OFDM", "1T", "14", "63",
+	"UKRAINE", "2.4G", "20M", "OFDM", "1T", "14", "63",
 	"FCC", "2.4G", "20M", "HT", "1T", "01", "26",
 	"ETSI", "2.4G", "20M", "HT", "1T", "01", "30",
 	"MKK", "2.4G", "20M", "HT", "1T", "01", "34",
@@ -4042,6 +4403,7 @@ const char *array_mp_8821c_txpwr_lmt_fccsar[] = {
 	"KCC", "2.4G", "20M", "HT", "1T", "01", "32",
 	"ACMA", "2.4G", "20M", "HT", "1T", "01", "30",
 	"CHILE", "2.4G", "20M", "HT", "1T", "01", "26",
+	"UKRAINE", "2.4G", "20M", "HT", "1T", "01", "30",
 	"FCC", "2.4G", "20M", "HT", "1T", "02", "30",
 	"ETSI", "2.4G", "20M", "HT", "1T", "02", "30",
 	"MKK", "2.4G", "20M", "HT", "1T", "02", "34",
@@ -4049,6 +4411,7 @@ const char *array_mp_8821c_txpwr_lmt_fccsar[] = {
 	"KCC", "2.4G", "20M", "HT", "1T", "02", "34",
 	"ACMA", "2.4G", "20M", "HT", "1T", "02", "30",
 	"CHILE", "2.4G", "20M", "HT", "1T", "02", "30",
+	"UKRAINE", "2.4G", "20M", "HT", "1T", "02", "30",
 	"FCC", "2.4G", "20M", "HT", "1T", "03", "32",
 	"ETSI", "2.4G", "20M", "HT", "1T", "03", "30",
 	"MKK", "2.4G", "20M", "HT", "1T", "03", "34",
@@ -4056,6 +4419,7 @@ const char *array_mp_8821c_txpwr_lmt_fccsar[] = {
 	"KCC", "2.4G", "20M", "HT", "1T", "03", "34",
 	"ACMA", "2.4G", "20M", "HT", "1T", "03", "30",
 	"CHILE", "2.4G", "20M", "HT", "1T", "03", "32",
+	"UKRAINE", "2.4G", "20M", "HT", "1T", "03", "30",
 	"FCC", "2.4G", "20M", "HT", "1T", "04", "34",
 	"ETSI", "2.4G", "20M", "HT", "1T", "04", "30",
 	"MKK", "2.4G", "20M", "HT", "1T", "04", "34",
@@ -4063,6 +4427,7 @@ const char *array_mp_8821c_txpwr_lmt_fccsar[] = {
 	"KCC", "2.4G", "20M", "HT", "1T", "04", "34",
 	"ACMA", "2.4G", "20M", "HT", "1T", "04", "30",
 	"CHILE", "2.4G", "20M", "HT", "1T", "04", "34",
+	"UKRAINE", "2.4G", "20M", "HT", "1T", "04", "30",
 	"FCC", "2.4G", "20M", "HT", "1T", "05", "34",
 	"ETSI", "2.4G", "20M", "HT", "1T", "05", "30",
 	"MKK", "2.4G", "20M", "HT", "1T", "05", "34",
@@ -4070,6 +4435,7 @@ const char *array_mp_8821c_txpwr_lmt_fccsar[] = {
 	"KCC", "2.4G", "20M", "HT", "1T", "05", "34",
 	"ACMA", "2.4G", "20M", "HT", "1T", "05", "30",
 	"CHILE", "2.4G", "20M", "HT", "1T", "05", "34",
+	"UKRAINE", "2.4G", "20M", "HT", "1T", "05", "30",
 	"FCC", "2.4G", "20M", "HT", "1T", "06", "34",
 	"ETSI", "2.4G", "20M", "HT", "1T", "06", "30",
 	"MKK", "2.4G", "20M", "HT", "1T", "06", "34",
@@ -4077,6 +4443,7 @@ const char *array_mp_8821c_txpwr_lmt_fccsar[] = {
 	"KCC", "2.4G", "20M", "HT", "1T", "06", "34",
 	"ACMA", "2.4G", "20M", "HT", "1T", "06", "30",
 	"CHILE", "2.4G", "20M", "HT", "1T", "06", "34",
+	"UKRAINE", "2.4G", "20M", "HT", "1T", "06", "30",
 	"FCC", "2.4G", "20M", "HT", "1T", "07", "34",
 	"ETSI", "2.4G", "20M", "HT", "1T", "07", "30",
 	"MKK", "2.4G", "20M", "HT", "1T", "07", "34",
@@ -4084,6 +4451,7 @@ const char *array_mp_8821c_txpwr_lmt_fccsar[] = {
 	"KCC", "2.4G", "20M", "HT", "1T", "07", "34",
 	"ACMA", "2.4G", "20M", "HT", "1T", "07", "30",
 	"CHILE", "2.4G", "20M", "HT", "1T", "07", "34",
+	"UKRAINE", "2.4G", "20M", "HT", "1T", "07", "30",
 	"FCC", "2.4G", "20M", "HT", "1T", "08", "34",
 	"ETSI", "2.4G", "20M", "HT", "1T", "08", "30",
 	"MKK", "2.4G", "20M", "HT", "1T", "08", "34",
@@ -4091,6 +4459,7 @@ const char *array_mp_8821c_txpwr_lmt_fccsar[] = {
 	"KCC", "2.4G", "20M", "HT", "1T", "08", "34",
 	"ACMA", "2.4G", "20M", "HT", "1T", "08", "30",
 	"CHILE", "2.4G", "20M", "HT", "1T", "08", "34",
+	"UKRAINE", "2.4G", "20M", "HT", "1T", "08", "30",
 	"FCC", "2.4G", "20M", "HT", "1T", "09", "32",
 	"ETSI", "2.4G", "20M", "HT", "1T", "09", "30",
 	"MKK", "2.4G", "20M", "HT", "1T", "09", "34",
@@ -4098,6 +4467,7 @@ const char *array_mp_8821c_txpwr_lmt_fccsar[] = {
 	"KCC", "2.4G", "20M", "HT", "1T", "09", "34",
 	"ACMA", "2.4G", "20M", "HT", "1T", "09", "30",
 	"CHILE", "2.4G", "20M", "HT", "1T", "09", "32",
+	"UKRAINE", "2.4G", "20M", "HT", "1T", "09", "30",
 	"FCC", "2.4G", "20M", "HT", "1T", "10", "30",
 	"ETSI", "2.4G", "20M", "HT", "1T", "10", "30",
 	"MKK", "2.4G", "20M", "HT", "1T", "10", "34",
@@ -4105,6 +4475,7 @@ const char *array_mp_8821c_txpwr_lmt_fccsar[] = {
 	"KCC", "2.4G", "20M", "HT", "1T", "10", "34",
 	"ACMA", "2.4G", "20M", "HT", "1T", "10", "30",
 	"CHILE", "2.4G", "20M", "HT", "1T", "10", "30",
+	"UKRAINE", "2.4G", "20M", "HT", "1T", "10", "30",
 	"FCC", "2.4G", "20M", "HT", "1T", "11", "28",
 	"ETSI", "2.4G", "20M", "HT", "1T", "11", "30",
 	"MKK", "2.4G", "20M", "HT", "1T", "11", "34",
@@ -4112,6 +4483,7 @@ const char *array_mp_8821c_txpwr_lmt_fccsar[] = {
 	"KCC", "2.4G", "20M", "HT", "1T", "11", "34",
 	"ACMA", "2.4G", "20M", "HT", "1T", "11", "30",
 	"CHILE", "2.4G", "20M", "HT", "1T", "11", "28",
+	"UKRAINE", "2.4G", "20M", "HT", "1T", "11", "30",
 	"FCC", "2.4G", "20M", "HT", "1T", "12", "26",
 	"ETSI", "2.4G", "20M", "HT", "1T", "12", "30",
 	"MKK", "2.4G", "20M", "HT", "1T", "12", "34",
@@ -4119,6 +4491,7 @@ const char *array_mp_8821c_txpwr_lmt_fccsar[] = {
 	"KCC", "2.4G", "20M", "HT", "1T", "12", "34",
 	"ACMA", "2.4G", "20M", "HT", "1T", "12", "30",
 	"CHILE", "2.4G", "20M", "HT", "1T", "12", "26",
+	"UKRAINE", "2.4G", "20M", "HT", "1T", "12", "30",
 	"FCC", "2.4G", "20M", "HT", "1T", "13", "12",
 	"ETSI", "2.4G", "20M", "HT", "1T", "13", "30",
 	"MKK", "2.4G", "20M", "HT", "1T", "13", "34",
@@ -4126,6 +4499,7 @@ const char *array_mp_8821c_txpwr_lmt_fccsar[] = {
 	"KCC", "2.4G", "20M", "HT", "1T", "13", "32",
 	"ACMA", "2.4G", "20M", "HT", "1T", "13", "30",
 	"CHILE", "2.4G", "20M", "HT", "1T", "13", "12",
+	"UKRAINE", "2.4G", "20M", "HT", "1T", "13", "30",
 	"FCC", "2.4G", "20M", "HT", "1T", "14", "63",
 	"ETSI", "2.4G", "20M", "HT", "1T", "14", "63",
 	"MKK", "2.4G", "20M", "HT", "1T", "14", "63",
@@ -4133,6 +4507,7 @@ const char *array_mp_8821c_txpwr_lmt_fccsar[] = {
 	"KCC", "2.4G", "20M", "HT", "1T", "14", "63",
 	"ACMA", "2.4G", "20M", "HT", "1T", "14", "63",
 	"CHILE", "2.4G", "20M", "HT", "1T", "14", "63",
+	"UKRAINE", "2.4G", "20M", "HT", "1T", "14", "63",
 	"FCC", "2.4G", "40M", "HT", "1T", "01", "63",
 	"ETSI", "2.4G", "40M", "HT", "1T", "01", "63",
 	"MKK", "2.4G", "40M", "HT", "1T", "01", "63",
@@ -4140,6 +4515,7 @@ const char *array_mp_8821c_txpwr_lmt_fccsar[] = {
 	"KCC", "2.4G", "40M", "HT", "1T", "01", "63",
 	"ACMA", "2.4G", "40M", "HT", "1T", "01", "63",
 	"CHILE", "2.4G", "40M", "HT", "1T", "01", "63",
+	"UKRAINE", "2.4G", "40M", "HT", "1T", "01", "63",
 	"FCC", "2.4G", "40M", "HT", "1T", "02", "63",
 	"ETSI", "2.4G", "40M", "HT", "1T", "02", "63",
 	"MKK", "2.4G", "40M", "HT", "1T", "02", "63",
@@ -4147,6 +4523,7 @@ const char *array_mp_8821c_txpwr_lmt_fccsar[] = {
 	"KCC", "2.4G", "40M", "HT", "1T", "02", "63",
 	"ACMA", "2.4G", "40M", "HT", "1T", "02", "63",
 	"CHILE", "2.4G", "40M", "HT", "1T", "02", "63",
+	"UKRAINE", "2.4G", "40M", "HT", "1T", "02", "63",
 	"FCC", "2.4G", "40M", "HT", "1T", "03", "26",
 	"ETSI", "2.4G", "40M", "HT", "1T", "03", "30",
 	"MKK", "2.4G", "40M", "HT", "1T", "03", "30",
@@ -4154,6 +4531,7 @@ const char *array_mp_8821c_txpwr_lmt_fccsar[] = {
 	"KCC", "2.4G", "40M", "HT", "1T", "03", "30",
 	"ACMA", "2.4G", "40M", "HT", "1T", "03", "30",
 	"CHILE", "2.4G", "40M", "HT", "1T", "03", "26",
+	"UKRAINE", "2.4G", "40M", "HT", "1T", "03", "30",
 	"FCC", "2.4G", "40M", "HT", "1T", "04", "26",
 	"ETSI", "2.4G", "40M", "HT", "1T", "04", "30",
 	"MKK", "2.4G", "40M", "HT", "1T", "04", "30",
@@ -4161,6 +4539,7 @@ const char *array_mp_8821c_txpwr_lmt_fccsar[] = {
 	"KCC", "2.4G", "40M", "HT", "1T", "04", "30",
 	"ACMA", "2.4G", "40M", "HT", "1T", "04", "30",
 	"CHILE", "2.4G", "40M", "HT", "1T", "04", "26",
+	"UKRAINE", "2.4G", "40M", "HT", "1T", "04", "30",
 	"FCC", "2.4G", "40M", "HT", "1T", "05", "30",
 	"ETSI", "2.4G", "40M", "HT", "1T", "05", "30",
 	"MKK", "2.4G", "40M", "HT", "1T", "05", "30",
@@ -4168,6 +4547,7 @@ const char *array_mp_8821c_txpwr_lmt_fccsar[] = {
 	"KCC", "2.4G", "40M", "HT", "1T", "05", "30",
 	"ACMA", "2.4G", "40M", "HT", "1T", "05", "30",
 	"CHILE", "2.4G", "40M", "HT", "1T", "05", "30",
+	"UKRAINE", "2.4G", "40M", "HT", "1T", "05", "30",
 	"FCC", "2.4G", "40M", "HT", "1T", "06", "30",
 	"ETSI", "2.4G", "40M", "HT", "1T", "06", "30",
 	"MKK", "2.4G", "40M", "HT", "1T", "06", "30",
@@ -4175,6 +4555,7 @@ const char *array_mp_8821c_txpwr_lmt_fccsar[] = {
 	"KCC", "2.4G", "40M", "HT", "1T", "06", "30",
 	"ACMA", "2.4G", "40M", "HT", "1T", "06", "30",
 	"CHILE", "2.4G", "40M", "HT", "1T", "06", "30",
+	"UKRAINE", "2.4G", "40M", "HT", "1T", "06", "30",
 	"FCC", "2.4G", "40M", "HT", "1T", "07", "30",
 	"ETSI", "2.4G", "40M", "HT", "1T", "07", "30",
 	"MKK", "2.4G", "40M", "HT", "1T", "07", "30",
@@ -4182,6 +4563,7 @@ const char *array_mp_8821c_txpwr_lmt_fccsar[] = {
 	"KCC", "2.4G", "40M", "HT", "1T", "07", "30",
 	"ACMA", "2.4G", "40M", "HT", "1T", "07", "30",
 	"CHILE", "2.4G", "40M", "HT", "1T", "07", "30",
+	"UKRAINE", "2.4G", "40M", "HT", "1T", "07", "30",
 	"FCC", "2.4G", "40M", "HT", "1T", "08", "26",
 	"ETSI", "2.4G", "40M", "HT", "1T", "08", "30",
 	"MKK", "2.4G", "40M", "HT", "1T", "08", "30",
@@ -4189,6 +4571,7 @@ const char *array_mp_8821c_txpwr_lmt_fccsar[] = {
 	"KCC", "2.4G", "40M", "HT", "1T", "08", "30",
 	"ACMA", "2.4G", "40M", "HT", "1T", "08", "30",
 	"CHILE", "2.4G", "40M", "HT", "1T", "08", "26",
+	"UKRAINE", "2.4G", "40M", "HT", "1T", "08", "30",
 	"FCC", "2.4G", "40M", "HT", "1T", "09", "26",
 	"ETSI", "2.4G", "40M", "HT", "1T", "09", "30",
 	"MKK", "2.4G", "40M", "HT", "1T", "09", "30",
@@ -4196,6 +4579,7 @@ const char *array_mp_8821c_txpwr_lmt_fccsar[] = {
 	"KCC", "2.4G", "40M", "HT", "1T", "09", "30",
 	"ACMA", "2.4G", "40M", "HT", "1T", "09", "30",
 	"CHILE", "2.4G", "40M", "HT", "1T", "09", "26",
+	"UKRAINE", "2.4G", "40M", "HT", "1T", "09", "30",
 	"FCC", "2.4G", "40M", "HT", "1T", "10", "28",
 	"ETSI", "2.4G", "40M", "HT", "1T", "10", "30",
 	"MKK", "2.4G", "40M", "HT", "1T", "10", "30",
@@ -4203,6 +4587,7 @@ const char *array_mp_8821c_txpwr_lmt_fccsar[] = {
 	"KCC", "2.4G", "40M", "HT", "1T", "10", "30",
 	"ACMA", "2.4G", "40M", "HT", "1T", "10", "30",
 	"CHILE", "2.4G", "40M", "HT", "1T", "10", "28",
+	"UKRAINE", "2.4G", "40M", "HT", "1T", "10", "30",
 	"FCC", "2.4G", "40M", "HT", "1T", "11", "20",
 	"ETSI", "2.4G", "40M", "HT", "1T", "11", "30",
 	"MKK", "2.4G", "40M", "HT", "1T", "11", "30",
@@ -4210,6 +4595,7 @@ const char *array_mp_8821c_txpwr_lmt_fccsar[] = {
 	"KCC", "2.4G", "40M", "HT", "1T", "11", "30",
 	"ACMA", "2.4G", "40M", "HT", "1T", "11", "30",
 	"CHILE", "2.4G", "40M", "HT", "1T", "11", "20",
+	"UKRAINE", "2.4G", "40M", "HT", "1T", "11", "30",
 	"FCC", "2.4G", "40M", "HT", "1T", "12", "63",
 	"ETSI", "2.4G", "40M", "HT", "1T", "12", "63",
 	"MKK", "2.4G", "40M", "HT", "1T", "12", "63",
@@ -4217,6 +4603,7 @@ const char *array_mp_8821c_txpwr_lmt_fccsar[] = {
 	"KCC", "2.4G", "40M", "HT", "1T", "12", "63",
 	"ACMA", "2.4G", "40M", "HT", "1T", "12", "63",
 	"CHILE", "2.4G", "40M", "HT", "1T", "12", "63",
+	"UKRAINE", "2.4G", "40M", "HT", "1T", "12", "63",
 	"FCC", "2.4G", "40M", "HT", "1T", "13", "63",
 	"ETSI", "2.4G", "40M", "HT", "1T", "13", "63",
 	"MKK", "2.4G", "40M", "HT", "1T", "13", "63",
@@ -4224,6 +4611,7 @@ const char *array_mp_8821c_txpwr_lmt_fccsar[] = {
 	"KCC", "2.4G", "40M", "HT", "1T", "13", "63",
 	"ACMA", "2.4G", "40M", "HT", "1T", "13", "63",
 	"CHILE", "2.4G", "40M", "HT", "1T", "13", "63",
+	"UKRAINE", "2.4G", "40M", "HT", "1T", "13", "63",
 	"FCC", "2.4G", "40M", "HT", "1T", "14", "63",
 	"ETSI", "2.4G", "40M", "HT", "1T", "14", "63",
 	"MKK", "2.4G", "40M", "HT", "1T", "14", "63",
@@ -4231,6 +4619,7 @@ const char *array_mp_8821c_txpwr_lmt_fccsar[] = {
 	"KCC", "2.4G", "40M", "HT", "1T", "14", "63",
 	"ACMA", "2.4G", "40M", "HT", "1T", "14", "63",
 	"CHILE", "2.4G", "40M", "HT", "1T", "14", "63",
+	"UKRAINE", "2.4G", "40M", "HT", "1T", "14", "63",
 	"FCC", "5G", "20M", "OFDM", "1T", "36", "27",
 	"ETSI", "5G", "20M", "OFDM", "1T", "36", "32",
 	"MKK", "5G", "20M", "OFDM", "1T", "36", "33",
@@ -4238,6 +4627,7 @@ const char *array_mp_8821c_txpwr_lmt_fccsar[] = {
 	"KCC", "5G", "20M", "OFDM", "1T", "36", "29",
 	"ACMA", "5G", "20M", "OFDM", "1T", "36", "32",
 	"CHILE", "5G", "20M", "OFDM", "1T", "36", "29",
+	"UKRAINE", "5G", "20M", "OFDM", "1T", "36", "27",
 	"FCC", "5G", "20M", "OFDM", "1T", "40", "27",
 	"ETSI", "5G", "20M", "OFDM", "1T", "40", "32",
 	"MKK", "5G", "20M", "OFDM", "1T", "40", "33",
@@ -4245,6 +4635,7 @@ const char *array_mp_8821c_txpwr_lmt_fccsar[] = {
 	"KCC", "5G", "20M", "OFDM", "1T", "40", "28",
 	"ACMA", "5G", "20M", "OFDM", "1T", "40", "32",
 	"CHILE", "5G", "20M", "OFDM", "1T", "40", "29",
+	"UKRAINE", "5G", "20M", "OFDM", "1T", "40", "27",
 	"FCC", "5G", "20M", "OFDM", "1T", "44", "27",
 	"ETSI", "5G", "20M", "OFDM", "1T", "44", "32",
 	"MKK", "5G", "20M", "OFDM", "1T", "44", "33",
@@ -4252,6 +4643,7 @@ const char *array_mp_8821c_txpwr_lmt_fccsar[] = {
 	"KCC", "5G", "20M", "OFDM", "1T", "44", "28",
 	"ACMA", "5G", "20M", "OFDM", "1T", "44", "32",
 	"CHILE", "5G", "20M", "OFDM", "1T", "44", "30",
+	"UKRAINE", "5G", "20M", "OFDM", "1T", "44", "27",
 	"FCC", "5G", "20M", "OFDM", "1T", "48", "27",
 	"ETSI", "5G", "20M", "OFDM", "1T", "48", "32",
 	"MKK", "5G", "20M", "OFDM", "1T", "48", "33",
@@ -4259,6 +4651,7 @@ const char *array_mp_8821c_txpwr_lmt_fccsar[] = {
 	"KCC", "5G", "20M", "OFDM", "1T", "48", "27",
 	"ACMA", "5G", "20M", "OFDM", "1T", "48", "32",
 	"CHILE", "5G", "20M", "OFDM", "1T", "48", "30",
+	"UKRAINE", "5G", "20M", "OFDM", "1T", "48", "27",
 	"FCC", "5G", "20M", "OFDM", "1T", "52", "27",
 	"ETSI", "5G", "20M", "OFDM", "1T", "52", "32",
 	"MKK", "5G", "20M", "OFDM", "1T", "52", "33",
@@ -4266,6 +4659,7 @@ const char *array_mp_8821c_txpwr_lmt_fccsar[] = {
 	"KCC", "5G", "20M", "OFDM", "1T", "52", "16",
 	"ACMA", "5G", "20M", "OFDM", "1T", "52", "32",
 	"CHILE", "5G", "20M", "OFDM", "1T", "52", "30",
+	"UKRAINE", "5G", "20M", "OFDM", "1T", "52", "27",
 	"FCC", "5G", "20M", "OFDM", "1T", "56", "27",
 	"ETSI", "5G", "20M", "OFDM", "1T", "56", "32",
 	"MKK", "5G", "20M", "OFDM", "1T", "56", "33",
@@ -4273,6 +4667,7 @@ const char *array_mp_8821c_txpwr_lmt_fccsar[] = {
 	"KCC", "5G", "20M", "OFDM", "1T", "56", "33",
 	"ACMA", "5G", "20M", "OFDM", "1T", "56", "32",
 	"CHILE", "5G", "20M", "OFDM", "1T", "56", "30",
+	"UKRAINE", "5G", "20M", "OFDM", "1T", "56", "27",
 	"FCC", "5G", "20M", "OFDM", "1T", "60", "27",
 	"ETSI", "5G", "20M", "OFDM", "1T", "60", "32",
 	"MKK", "5G", "20M", "OFDM", "1T", "60", "33",
@@ -4280,6 +4675,7 @@ const char *array_mp_8821c_txpwr_lmt_fccsar[] = {
 	"KCC", "5G", "20M", "OFDM", "1T", "60", "33",
 	"ACMA", "5G", "20M", "OFDM", "1T", "60", "32",
 	"CHILE", "5G", "20M", "OFDM", "1T", "60", "30",
+	"UKRAINE", "5G", "20M", "OFDM", "1T", "60", "27",
 	"FCC", "5G", "20M", "OFDM", "1T", "64", "27",
 	"ETSI", "5G", "20M", "OFDM", "1T", "64", "32",
 	"MKK", "5G", "20M", "OFDM", "1T", "64", "33",
@@ -4287,6 +4683,7 @@ const char *array_mp_8821c_txpwr_lmt_fccsar[] = {
 	"KCC", "5G", "20M", "OFDM", "1T", "64", "33",
 	"ACMA", "5G", "20M", "OFDM", "1T", "64", "32",
 	"CHILE", "5G", "20M", "OFDM", "1T", "64", "29",
+	"UKRAINE", "5G", "20M", "OFDM", "1T", "64", "27",
 	"FCC", "5G", "20M", "OFDM", "1T", "100", "27",
 	"ETSI", "5G", "20M", "OFDM", "1T", "100", "32",
 	"MKK", "5G", "20M", "OFDM", "1T", "100", "33",
@@ -4294,6 +4691,7 @@ const char *array_mp_8821c_txpwr_lmt_fccsar[] = {
 	"KCC", "5G", "20M", "OFDM", "1T", "100", "33",
 	"ACMA", "5G", "20M", "OFDM", "1T", "100", "32",
 	"CHILE", "5G", "20M", "OFDM", "1T", "100", "30",
+	"UKRAINE", "5G", "20M", "OFDM", "1T", "100", "27",
 	"FCC", "5G", "20M", "OFDM", "1T", "104", "27",
 	"ETSI", "5G", "20M", "OFDM", "1T", "104", "32",
 	"MKK", "5G", "20M", "OFDM", "1T", "104", "33",
@@ -4301,6 +4699,7 @@ const char *array_mp_8821c_txpwr_lmt_fccsar[] = {
 	"KCC", "5G", "20M", "OFDM", "1T", "104", "33",
 	"ACMA", "5G", "20M", "OFDM", "1T", "104", "32",
 	"CHILE", "5G", "20M", "OFDM", "1T", "104", "30",
+	"UKRAINE", "5G", "20M", "OFDM", "1T", "104", "27",
 	"FCC", "5G", "20M", "OFDM", "1T", "108", "27",
 	"ETSI", "5G", "20M", "OFDM", "1T", "108", "32",
 	"MKK", "5G", "20M", "OFDM", "1T", "108", "33",
@@ -4308,6 +4707,7 @@ const char *array_mp_8821c_txpwr_lmt_fccsar[] = {
 	"KCC", "5G", "20M", "OFDM", "1T", "108", "33",
 	"ACMA", "5G", "20M", "OFDM", "1T", "108", "32",
 	"CHILE", "5G", "20M", "OFDM", "1T", "108", "30",
+	"UKRAINE", "5G", "20M", "OFDM", "1T", "108", "27",
 	"FCC", "5G", "20M", "OFDM", "1T", "112", "27",
 	"ETSI", "5G", "20M", "OFDM", "1T", "112", "32",
 	"MKK", "5G", "20M", "OFDM", "1T", "112", "33",
@@ -4315,6 +4715,7 @@ const char *array_mp_8821c_txpwr_lmt_fccsar[] = {
 	"KCC", "5G", "20M", "OFDM", "1T", "112", "33",
 	"ACMA", "5G", "20M", "OFDM", "1T", "112", "32",
 	"CHILE", "5G", "20M", "OFDM", "1T", "112", "30",
+	"UKRAINE", "5G", "20M", "OFDM", "1T", "112", "27",
 	"FCC", "5G", "20M", "OFDM", "1T", "116", "27",
 	"ETSI", "5G", "20M", "OFDM", "1T", "116", "32",
 	"MKK", "5G", "20M", "OFDM", "1T", "116", "33",
@@ -4322,90 +4723,103 @@ const char *array_mp_8821c_txpwr_lmt_fccsar[] = {
 	"KCC", "5G", "20M", "OFDM", "1T", "116", "33",
 	"ACMA", "5G", "20M", "OFDM", "1T", "116", "32",
 	"CHILE", "5G", "20M", "OFDM", "1T", "116", "30",
+	"UKRAINE", "5G", "20M", "OFDM", "1T", "116", "27",
 	"FCC", "5G", "20M", "OFDM", "1T", "120", "27",
 	"ETSI", "5G", "20M", "OFDM", "1T", "120", "32",
 	"MKK", "5G", "20M", "OFDM", "1T", "120", "33",
 	"IC", "5G", "20M", "OFDM", "1T", "120", "63",
 	"KCC", "5G", "20M", "OFDM", "1T", "120", "33",
-	"ACMA", "5G", "20M", "OFDM", "1T", "120", "32",
+	"ACMA", "5G", "20M", "OFDM", "1T", "120", "63",
 	"CHILE", "5G", "20M", "OFDM", "1T", "120", "30",
+	"UKRAINE", "5G", "20M", "OFDM", "1T", "120", "27",
 	"FCC", "5G", "20M", "OFDM", "1T", "124", "27",
 	"ETSI", "5G", "20M", "OFDM", "1T", "124", "32",
 	"MKK", "5G", "20M", "OFDM", "1T", "124", "33",
 	"IC", "5G", "20M", "OFDM", "1T", "124", "63",
 	"KCC", "5G", "20M", "OFDM", "1T", "124", "33",
-	"ACMA", "5G", "20M", "OFDM", "1T", "124", "32",
+	"ACMA", "5G", "20M", "OFDM", "1T", "124", "63",
 	"CHILE", "5G", "20M", "OFDM", "1T", "124", "30",
+	"UKRAINE", "5G", "20M", "OFDM", "1T", "124", "27",
 	"FCC", "5G", "20M", "OFDM", "1T", "128", "27",
 	"ETSI", "5G", "20M", "OFDM", "1T", "128", "32",
 	"MKK", "5G", "20M", "OFDM", "1T", "128", "33",
 	"IC", "5G", "20M", "OFDM", "1T", "128", "63",
-	"KCC", "5G", "20M", "OFDM", "1T", "128", "63",
-	"ACMA", "5G", "20M", "OFDM", "1T", "128", "32",
+	"KCC", "5G", "20M", "OFDM", "1T", "128", "-63",
+	"ACMA", "5G", "20M", "OFDM", "1T", "128", "63",
 	"CHILE", "5G", "20M", "OFDM", "1T", "128", "30",
+	"UKRAINE", "5G", "20M", "OFDM", "1T", "128", "27",
 	"FCC", "5G", "20M", "OFDM", "1T", "132", "27",
 	"ETSI", "5G", "20M", "OFDM", "1T", "132", "32",
 	"MKK", "5G", "20M", "OFDM", "1T", "132", "33",
 	"IC", "5G", "20M", "OFDM", "1T", "132", "33",
-	"KCC", "5G", "20M", "OFDM", "1T", "132", "63",
+	"KCC", "5G", "20M", "OFDM", "1T", "132", "-63",
 	"ACMA", "5G", "20M", "OFDM", "1T", "132", "32",
 	"CHILE", "5G", "20M", "OFDM", "1T", "132", "30",
+	"UKRAINE", "5G", "20M", "OFDM", "1T", "132", "27",
 	"FCC", "5G", "20M", "OFDM", "1T", "136", "27",
 	"ETSI", "5G", "20M", "OFDM", "1T", "136", "32",
 	"MKK", "5G", "20M", "OFDM", "1T", "136", "33",
 	"IC", "5G", "20M", "OFDM", "1T", "136", "33",
-	"KCC", "5G", "20M", "OFDM", "1T", "136", "63",
+	"KCC", "5G", "20M", "OFDM", "1T", "136", "-63",
 	"ACMA", "5G", "20M", "OFDM", "1T", "136", "32",
 	"CHILE", "5G", "20M", "OFDM", "1T", "136", "30",
+	"UKRAINE", "5G", "20M", "OFDM", "1T", "136", "63",
 	"FCC", "5G", "20M", "OFDM", "1T", "140", "27",
 	"ETSI", "5G", "20M", "OFDM", "1T", "140", "32",
 	"MKK", "5G", "20M", "OFDM", "1T", "140", "33",
 	"IC", "5G", "20M", "OFDM", "1T", "140", "31",
-	"KCC", "5G", "20M", "OFDM", "1T", "140", "63",
+	"KCC", "5G", "20M", "OFDM", "1T", "140", "-63",
 	"ACMA", "5G", "20M", "OFDM", "1T", "140", "32",
 	"CHILE", "5G", "20M", "OFDM", "1T", "140", "30",
+	"UKRAINE", "5G", "20M", "OFDM", "1T", "140", "63",
 	"FCC", "5G", "20M", "OFDM", "1T", "144", "27",
 	"ETSI", "5G", "20M", "OFDM", "1T", "144", "63",
 	"MKK", "5G", "20M", "OFDM", "1T", "144", "63",
 	"IC", "5G", "20M", "OFDM", "1T", "144", "30",
-	"KCC", "5G", "20M", "OFDM", "1T", "144", "63",
+	"KCC", "5G", "20M", "OFDM", "1T", "144", "-63",
 	"ACMA", "5G", "20M", "OFDM", "1T", "144", "63",
 	"CHILE", "5G", "20M", "OFDM", "1T", "144", "30",
+	"UKRAINE", "5G", "20M", "OFDM", "1T", "144", "63",
 	"FCC", "5G", "20M", "OFDM", "1T", "149", "28",
-	"ETSI", "5G", "20M", "OFDM", "1T", "149", "63",
+	"ETSI", "5G", "20M", "OFDM", "1T", "149", "-63",
 	"MKK", "5G", "20M", "OFDM", "1T", "149", "63",
 	"IC", "5G", "20M", "OFDM", "1T", "149", "30",
 	"KCC", "5G", "20M", "OFDM", "1T", "149", "33",
 	"ACMA", "5G", "20M", "OFDM", "1T", "149", "33",
 	"CHILE", "5G", "20M", "OFDM", "1T", "149", "30",
+	"UKRAINE", "5G", "20M", "OFDM", "1T", "149", "27",
 	"FCC", "5G", "20M", "OFDM", "1T", "153", "28",
-	"ETSI", "5G", "20M", "OFDM", "1T", "153", "63",
+	"ETSI", "5G", "20M", "OFDM", "1T", "153", "-63",
 	"MKK", "5G", "20M", "OFDM", "1T", "153", "63",
 	"IC", "5G", "20M", "OFDM", "1T", "153", "33",
 	"KCC", "5G", "20M", "OFDM", "1T", "153", "33",
 	"ACMA", "5G", "20M", "OFDM", "1T", "153", "33",
 	"CHILE", "5G", "20M", "OFDM", "1T", "153", "30",
+	"UKRAINE", "5G", "20M", "OFDM", "1T", "153", "27",
 	"FCC", "5G", "20M", "OFDM", "1T", "157", "28",
-	"ETSI", "5G", "20M", "OFDM", "1T", "157", "63",
+	"ETSI", "5G", "20M", "OFDM", "1T", "157", "-63",
 	"MKK", "5G", "20M", "OFDM", "1T", "157", "63",
 	"IC", "5G", "20M", "OFDM", "1T", "157", "33",
 	"KCC", "5G", "20M", "OFDM", "1T", "157", "33",
 	"ACMA", "5G", "20M", "OFDM", "1T", "157", "33",
 	"CHILE", "5G", "20M", "OFDM", "1T", "157", "30",
+	"UKRAINE", "5G", "20M", "OFDM", "1T", "157", "27",
 	"FCC", "5G", "20M", "OFDM", "1T", "161", "28",
-	"ETSI", "5G", "20M", "OFDM", "1T", "161", "63",
+	"ETSI", "5G", "20M", "OFDM", "1T", "161", "-63",
 	"MKK", "5G", "20M", "OFDM", "1T", "161", "63",
 	"IC", "5G", "20M", "OFDM", "1T", "161", "33",
 	"KCC", "5G", "20M", "OFDM", "1T", "161", "31",
 	"ACMA", "5G", "20M", "OFDM", "1T", "161", "33",
 	"CHILE", "5G", "20M", "OFDM", "1T", "161", "30",
+	"UKRAINE", "5G", "20M", "OFDM", "1T", "161", "27",
 	"FCC", "5G", "20M", "OFDM", "1T", "165", "28",
-	"ETSI", "5G", "20M", "OFDM", "1T", "165", "63",
+	"ETSI", "5G", "20M", "OFDM", "1T", "165", "-63",
 	"MKK", "5G", "20M", "OFDM", "1T", "165", "63",
 	"IC", "5G", "20M", "OFDM", "1T", "165", "33",
-	"KCC", "5G", "20M", "OFDM", "1T", "165", "63",
+	"KCC", "5G", "20M", "OFDM", "1T", "165", "-63",
 	"ACMA", "5G", "20M", "OFDM", "1T", "165", "33",
 	"CHILE", "5G", "20M", "OFDM", "1T", "165", "30",
+	"UKRAINE", "5G", "20M", "OFDM", "1T", "165", "27",
 	"FCC", "5G", "20M", "HT", "1T", "36", "27",
 	"ETSI", "5G", "20M", "HT", "1T", "36", "32",
 	"MKK", "5G", "20M", "HT", "1T", "36", "33",
@@ -4413,6 +4827,7 @@ const char *array_mp_8821c_txpwr_lmt_fccsar[] = {
 	"KCC", "5G", "20M", "HT", "1T", "36", "27",
 	"ACMA", "5G", "20M", "HT", "1T", "36", "32",
 	"CHILE", "5G", "20M", "HT", "1T", "36", "30",
+	"UKRAINE", "5G", "20M", "HT", "1T", "36", "27",
 	"FCC", "5G", "20M", "HT", "1T", "40", "27",
 	"ETSI", "5G", "20M", "HT", "1T", "40", "32",
 	"MKK", "5G", "20M", "HT", "1T", "40", "33",
@@ -4420,6 +4835,7 @@ const char *array_mp_8821c_txpwr_lmt_fccsar[] = {
 	"KCC", "5G", "20M", "HT", "1T", "40", "29",
 	"ACMA", "5G", "20M", "HT", "1T", "40", "32",
 	"CHILE", "5G", "20M", "HT", "1T", "40", "30",
+	"UKRAINE", "5G", "20M", "HT", "1T", "40", "27",
 	"FCC", "5G", "20M", "HT", "1T", "44", "27",
 	"ETSI", "5G", "20M", "HT", "1T", "44", "32",
 	"MKK", "5G", "20M", "HT", "1T", "44", "33",
@@ -4427,6 +4843,7 @@ const char *array_mp_8821c_txpwr_lmt_fccsar[] = {
 	"KCC", "5G", "20M", "HT", "1T", "44", "29",
 	"ACMA", "5G", "20M", "HT", "1T", "44", "32",
 	"CHILE", "5G", "20M", "HT", "1T", "44", "30",
+	"UKRAINE", "5G", "20M", "HT", "1T", "44", "27",
 	"FCC", "5G", "20M", "HT", "1T", "48", "27",
 	"ETSI", "5G", "20M", "HT", "1T", "48", "32",
 	"MKK", "5G", "20M", "HT", "1T", "48", "33",
@@ -4434,6 +4851,7 @@ const char *array_mp_8821c_txpwr_lmt_fccsar[] = {
 	"KCC", "5G", "20M", "HT", "1T", "48", "26",
 	"ACMA", "5G", "20M", "HT", "1T", "48", "32",
 	"CHILE", "5G", "20M", "HT", "1T", "48", "30",
+	"UKRAINE", "5G", "20M", "HT", "1T", "48", "27",
 	"FCC", "5G", "20M", "HT", "1T", "52", "27",
 	"ETSI", "5G", "20M", "HT", "1T", "52", "32",
 	"MKK", "5G", "20M", "HT", "1T", "52", "33",
@@ -4441,6 +4859,7 @@ const char *array_mp_8821c_txpwr_lmt_fccsar[] = {
 	"KCC", "5G", "20M", "HT", "1T", "52", "7",
 	"ACMA", "5G", "20M", "HT", "1T", "52", "32",
 	"CHILE", "5G", "20M", "HT", "1T", "52", "30",
+	"UKRAINE", "5G", "20M", "HT", "1T", "52", "27",
 	"FCC", "5G", "20M", "HT", "1T", "56", "27",
 	"ETSI", "5G", "20M", "HT", "1T", "56", "32",
 	"MKK", "5G", "20M", "HT", "1T", "56", "33",
@@ -4448,6 +4867,7 @@ const char *array_mp_8821c_txpwr_lmt_fccsar[] = {
 	"KCC", "5G", "20M", "HT", "1T", "56", "33",
 	"ACMA", "5G", "20M", "HT", "1T", "56", "32",
 	"CHILE", "5G", "20M", "HT", "1T", "56", "30",
+	"UKRAINE", "5G", "20M", "HT", "1T", "56", "27",
 	"FCC", "5G", "20M", "HT", "1T", "60", "27",
 	"ETSI", "5G", "20M", "HT", "1T", "60", "32",
 	"MKK", "5G", "20M", "HT", "1T", "60", "33",
@@ -4455,6 +4875,7 @@ const char *array_mp_8821c_txpwr_lmt_fccsar[] = {
 	"KCC", "5G", "20M", "HT", "1T", "60", "33",
 	"ACMA", "5G", "20M", "HT", "1T", "60", "32",
 	"CHILE", "5G", "20M", "HT", "1T", "60", "30",
+	"UKRAINE", "5G", "20M", "HT", "1T", "60", "27",
 	"FCC", "5G", "20M", "HT", "1T", "64", "27",
 	"ETSI", "5G", "20M", "HT", "1T", "64", "32",
 	"MKK", "5G", "20M", "HT", "1T", "64", "33",
@@ -4462,6 +4883,7 @@ const char *array_mp_8821c_txpwr_lmt_fccsar[] = {
 	"KCC", "5G", "20M", "HT", "1T", "64", "33",
 	"ACMA", "5G", "20M", "HT", "1T", "64", "32",
 	"CHILE", "5G", "20M", "HT", "1T", "64", "30",
+	"UKRAINE", "5G", "20M", "HT", "1T", "64", "27",
 	"FCC", "5G", "20M", "HT", "1T", "100", "27",
 	"ETSI", "5G", "20M", "HT", "1T", "100", "32",
 	"MKK", "5G", "20M", "HT", "1T", "100", "33",
@@ -4469,6 +4891,7 @@ const char *array_mp_8821c_txpwr_lmt_fccsar[] = {
 	"KCC", "5G", "20M", "HT", "1T", "100", "33",
 	"ACMA", "5G", "20M", "HT", "1T", "100", "32",
 	"CHILE", "5G", "20M", "HT", "1T", "100", "30",
+	"UKRAINE", "5G", "20M", "HT", "1T", "100", "27",
 	"FCC", "5G", "20M", "HT", "1T", "104", "27",
 	"ETSI", "5G", "20M", "HT", "1T", "104", "32",
 	"MKK", "5G", "20M", "HT", "1T", "104", "33",
@@ -4476,6 +4899,7 @@ const char *array_mp_8821c_txpwr_lmt_fccsar[] = {
 	"KCC", "5G", "20M", "HT", "1T", "104", "33",
 	"ACMA", "5G", "20M", "HT", "1T", "104", "32",
 	"CHILE", "5G", "20M", "HT", "1T", "104", "30",
+	"UKRAINE", "5G", "20M", "HT", "1T", "104", "27",
 	"FCC", "5G", "20M", "HT", "1T", "108", "27",
 	"ETSI", "5G", "20M", "HT", "1T", "108", "32",
 	"MKK", "5G", "20M", "HT", "1T", "108", "33",
@@ -4483,6 +4907,7 @@ const char *array_mp_8821c_txpwr_lmt_fccsar[] = {
 	"KCC", "5G", "20M", "HT", "1T", "108", "33",
 	"ACMA", "5G", "20M", "HT", "1T", "108", "32",
 	"CHILE", "5G", "20M", "HT", "1T", "108", "30",
+	"UKRAINE", "5G", "20M", "HT", "1T", "108", "27",
 	"FCC", "5G", "20M", "HT", "1T", "112", "27",
 	"ETSI", "5G", "20M", "HT", "1T", "112", "32",
 	"MKK", "5G", "20M", "HT", "1T", "112", "33",
@@ -4490,6 +4915,7 @@ const char *array_mp_8821c_txpwr_lmt_fccsar[] = {
 	"KCC", "5G", "20M", "HT", "1T", "112", "33",
 	"ACMA", "5G", "20M", "HT", "1T", "112", "32",
 	"CHILE", "5G", "20M", "HT", "1T", "112", "30",
+	"UKRAINE", "5G", "20M", "HT", "1T", "112", "27",
 	"FCC", "5G", "20M", "HT", "1T", "116", "27",
 	"ETSI", "5G", "20M", "HT", "1T", "116", "32",
 	"MKK", "5G", "20M", "HT", "1T", "116", "33",
@@ -4497,90 +4923,103 @@ const char *array_mp_8821c_txpwr_lmt_fccsar[] = {
 	"KCC", "5G", "20M", "HT", "1T", "116", "33",
 	"ACMA", "5G", "20M", "HT", "1T", "116", "32",
 	"CHILE", "5G", "20M", "HT", "1T", "116", "30",
+	"UKRAINE", "5G", "20M", "HT", "1T", "116", "27",
 	"FCC", "5G", "20M", "HT", "1T", "120", "27",
 	"ETSI", "5G", "20M", "HT", "1T", "120", "32",
 	"MKK", "5G", "20M", "HT", "1T", "120", "33",
 	"IC", "5G", "20M", "HT", "1T", "120", "63",
 	"KCC", "5G", "20M", "HT", "1T", "120", "33",
-	"ACMA", "5G", "20M", "HT", "1T", "120", "32",
+	"ACMA", "5G", "20M", "HT", "1T", "120", "63",
 	"CHILE", "5G", "20M", "HT", "1T", "120", "30",
+	"UKRAINE", "5G", "20M", "HT", "1T", "120", "27",
 	"FCC", "5G", "20M", "HT", "1T", "124", "27",
 	"ETSI", "5G", "20M", "HT", "1T", "124", "32",
 	"MKK", "5G", "20M", "HT", "1T", "124", "33",
 	"IC", "5G", "20M", "HT", "1T", "124", "63",
 	"KCC", "5G", "20M", "HT", "1T", "124", "33",
-	"ACMA", "5G", "20M", "HT", "1T", "124", "32",
+	"ACMA", "5G", "20M", "HT", "1T", "124", "63",
 	"CHILE", "5G", "20M", "HT", "1T", "124", "30",
+	"UKRAINE", "5G", "20M", "HT", "1T", "124", "27",
 	"FCC", "5G", "20M", "HT", "1T", "128", "27",
 	"ETSI", "5G", "20M", "HT", "1T", "128", "32",
 	"MKK", "5G", "20M", "HT", "1T", "128", "33",
 	"IC", "5G", "20M", "HT", "1T", "128", "63",
-	"KCC", "5G", "20M", "HT", "1T", "128", "63",
-	"ACMA", "5G", "20M", "HT", "1T", "128", "32",
+	"KCC", "5G", "20M", "HT", "1T", "128", "-63",
+	"ACMA", "5G", "20M", "HT", "1T", "128", "63",
 	"CHILE", "5G", "20M", "HT", "1T", "128", "30",
+	"UKRAINE", "5G", "20M", "HT", "1T", "128", "27",
 	"FCC", "5G", "20M", "HT", "1T", "132", "27",
 	"ETSI", "5G", "20M", "HT", "1T", "132", "32",
 	"MKK", "5G", "20M", "HT", "1T", "132", "33",
 	"IC", "5G", "20M", "HT", "1T", "132", "33",
-	"KCC", "5G", "20M", "HT", "1T", "132", "63",
+	"KCC", "5G", "20M", "HT", "1T", "132", "-63",
 	"ACMA", "5G", "20M", "HT", "1T", "132", "32",
 	"CHILE", "5G", "20M", "HT", "1T", "132", "30",
+	"UKRAINE", "5G", "20M", "HT", "1T", "132", "27",
 	"FCC", "5G", "20M", "HT", "1T", "136", "27",
 	"ETSI", "5G", "20M", "HT", "1T", "136", "32",
 	"MKK", "5G", "20M", "HT", "1T", "136", "33",
 	"IC", "5G", "20M", "HT", "1T", "136", "33",
-	"KCC", "5G", "20M", "HT", "1T", "136", "63",
+	"KCC", "5G", "20M", "HT", "1T", "136", "-63",
 	"ACMA", "5G", "20M", "HT", "1T", "136", "32",
 	"CHILE", "5G", "20M", "HT", "1T", "136", "30",
+	"UKRAINE", "5G", "20M", "HT", "1T", "136", "63",
 	"FCC", "5G", "20M", "HT", "1T", "140", "27",
 	"ETSI", "5G", "20M", "HT", "1T", "140", "32",
 	"MKK", "5G", "20M", "HT", "1T", "140", "33",
 	"IC", "5G", "20M", "HT", "1T", "140", "29",
-	"KCC", "5G", "20M", "HT", "1T", "140", "63",
+	"KCC", "5G", "20M", "HT", "1T", "140", "-63",
 	"ACMA", "5G", "20M", "HT", "1T", "140", "32",
 	"CHILE", "5G", "20M", "HT", "1T", "140", "30",
+	"UKRAINE", "5G", "20M", "HT", "1T", "140", "63",
 	"FCC", "5G", "20M", "HT", "1T", "144", "27",
 	"ETSI", "5G", "20M", "HT", "1T", "144", "63",
 	"MKK", "5G", "20M", "HT", "1T", "144", "63",
 	"IC", "5G", "20M", "HT", "1T", "144", "27",
-	"KCC", "5G", "20M", "HT", "1T", "144", "63",
+	"KCC", "5G", "20M", "HT", "1T", "144", "-63",
 	"ACMA", "5G", "20M", "HT", "1T", "144", "63",
 	"CHILE", "5G", "20M", "HT", "1T", "144", "30",
+	"UKRAINE", "5G", "20M", "HT", "1T", "144", "63",
 	"FCC", "5G", "20M", "HT", "1T", "149", "28",
-	"ETSI", "5G", "20M", "HT", "1T", "149", "63",
+	"ETSI", "5G", "20M", "HT", "1T", "149", "-63",
 	"MKK", "5G", "20M", "HT", "1T", "149", "63",
 	"IC", "5G", "20M", "HT", "1T", "149", "33",
 	"KCC", "5G", "20M", "HT", "1T", "149", "33",
 	"ACMA", "5G", "20M", "HT", "1T", "149", "33",
 	"CHILE", "5G", "20M", "HT", "1T", "149", "30",
+	"UKRAINE", "5G", "20M", "HT", "1T", "149", "27",
 	"FCC", "5G", "20M", "HT", "1T", "153", "28",
-	"ETSI", "5G", "20M", "HT", "1T", "153", "63",
+	"ETSI", "5G", "20M", "HT", "1T", "153", "-63",
 	"MKK", "5G", "20M", "HT", "1T", "153", "63",
 	"IC", "5G", "20M", "HT", "1T", "153", "33",
 	"KCC", "5G", "20M", "HT", "1T", "153", "33",
 	"ACMA", "5G", "20M", "HT", "1T", "153", "33",
 	"CHILE", "5G", "20M", "HT", "1T", "153", "30",
+	"UKRAINE", "5G", "20M", "HT", "1T", "153", "27",
 	"FCC", "5G", "20M", "HT", "1T", "157", "28",
-	"ETSI", "5G", "20M", "HT", "1T", "157", "63",
+	"ETSI", "5G", "20M", "HT", "1T", "157", "-63",
 	"MKK", "5G", "20M", "HT", "1T", "157", "63",
 	"IC", "5G", "20M", "HT", "1T", "157", "33",
 	"KCC", "5G", "20M", "HT", "1T", "157", "33",
 	"ACMA", "5G", "20M", "HT", "1T", "157", "33",
 	"CHILE", "5G", "20M", "HT", "1T", "157", "30",
+	"UKRAINE", "5G", "20M", "HT", "1T", "157", "27",
 	"FCC", "5G", "20M", "HT", "1T", "161", "28",
-	"ETSI", "5G", "20M", "HT", "1T", "161", "63",
+	"ETSI", "5G", "20M", "HT", "1T", "161", "-63",
 	"MKK", "5G", "20M", "HT", "1T", "161", "63",
 	"IC", "5G", "20M", "HT", "1T", "161", "33",
 	"KCC", "5G", "20M", "HT", "1T", "161", "31",
 	"ACMA", "5G", "20M", "HT", "1T", "161", "33",
 	"CHILE", "5G", "20M", "HT", "1T", "161", "30",
+	"UKRAINE", "5G", "20M", "HT", "1T", "161", "27",
 	"FCC", "5G", "20M", "HT", "1T", "165", "28",
-	"ETSI", "5G", "20M", "HT", "1T", "165", "63",
+	"ETSI", "5G", "20M", "HT", "1T", "165", "-63",
 	"MKK", "5G", "20M", "HT", "1T", "165", "63",
 	"IC", "5G", "20M", "HT", "1T", "165", "33",
-	"KCC", "5G", "20M", "HT", "1T", "165", "63",
+	"KCC", "5G", "20M", "HT", "1T", "165", "-63",
 	"ACMA", "5G", "20M", "HT", "1T", "165", "33",
 	"CHILE", "5G", "20M", "HT", "1T", "165", "30",
+	"UKRAINE", "5G", "20M", "HT", "1T", "165", "27",
 	"FCC", "5G", "40M", "HT", "1T", "38", "22",
 	"ETSI", "5G", "40M", "HT", "1T", "38", "32",
 	"MKK", "5G", "40M", "HT", "1T", "38", "32",
@@ -4588,6 +5027,7 @@ const char *array_mp_8821c_txpwr_lmt_fccsar[] = {
 	"KCC", "5G", "40M", "HT", "1T", "38", "26",
 	"ACMA", "5G", "40M", "HT", "1T", "38", "32",
 	"CHILE", "5G", "40M", "HT", "1T", "38", "22",
+	"UKRAINE", "5G", "40M", "HT", "1T", "38", "27",
 	"FCC", "5G", "40M", "HT", "1T", "46", "24",
 	"ETSI", "5G", "40M", "HT", "1T", "46", "32",
 	"MKK", "5G", "40M", "HT", "1T", "46", "32",
@@ -4595,6 +5035,7 @@ const char *array_mp_8821c_txpwr_lmt_fccsar[] = {
 	"KCC", "5G", "40M", "HT", "1T", "46", "28",
 	"ACMA", "5G", "40M", "HT", "1T", "46", "32",
 	"CHILE", "5G", "40M", "HT", "1T", "46", "30",
+	"UKRAINE", "5G", "40M", "HT", "1T", "46", "27",
 	"FCC", "5G", "40M", "HT", "1T", "54", "27",
 	"ETSI", "5G", "40M", "HT", "1T", "54", "32",
 	"MKK", "5G", "40M", "HT", "1T", "54", "32",
@@ -4602,6 +5043,7 @@ const char *array_mp_8821c_txpwr_lmt_fccsar[] = {
 	"KCC", "5G", "40M", "HT", "1T", "54", "22",
 	"ACMA", "5G", "40M", "HT", "1T", "54", "32",
 	"CHILE", "5G", "40M", "HT", "1T", "54", "30",
+	"UKRAINE", "5G", "40M", "HT", "1T", "54", "27",
 	"FCC", "5G", "40M", "HT", "1T", "62", "23",
 	"ETSI", "5G", "40M", "HT", "1T", "62", "32",
 	"MKK", "5G", "40M", "HT", "1T", "62", "32",
@@ -4609,6 +5051,7 @@ const char *array_mp_8821c_txpwr_lmt_fccsar[] = {
 	"KCC", "5G", "40M", "HT", "1T", "62", "31",
 	"ACMA", "5G", "40M", "HT", "1T", "62", "32",
 	"CHILE", "5G", "40M", "HT", "1T", "62", "23",
+	"UKRAINE", "5G", "40M", "HT", "1T", "62", "27",
 	"FCC", "5G", "40M", "HT", "1T", "102", "21",
 	"ETSI", "5G", "40M", "HT", "1T", "102", "32",
 	"MKK", "5G", "40M", "HT", "1T", "102", "32",
@@ -4616,6 +5059,7 @@ const char *array_mp_8821c_txpwr_lmt_fccsar[] = {
 	"KCC", "5G", "40M", "HT", "1T", "102", "31",
 	"ACMA", "5G", "40M", "HT", "1T", "102", "32",
 	"CHILE", "5G", "40M", "HT", "1T", "102", "30",
+	"UKRAINE", "5G", "40M", "HT", "1T", "102", "27",
 	"FCC", "5G", "40M", "HT", "1T", "110", "27",
 	"ETSI", "5G", "40M", "HT", "1T", "110", "32",
 	"MKK", "5G", "40M", "HT", "1T", "110", "32",
@@ -4623,48 +5067,55 @@ const char *array_mp_8821c_txpwr_lmt_fccsar[] = {
 	"KCC", "5G", "40M", "HT", "1T", "110", "32",
 	"ACMA", "5G", "40M", "HT", "1T", "110", "32",
 	"CHILE", "5G", "40M", "HT", "1T", "110", "30",
+	"UKRAINE", "5G", "40M", "HT", "1T", "110", "27",
 	"FCC", "5G", "40M", "HT", "1T", "118", "27",
 	"ETSI", "5G", "40M", "HT", "1T", "118", "32",
 	"MKK", "5G", "40M", "HT", "1T", "118", "32",
 	"IC", "5G", "40M", "HT", "1T", "118", "63",
 	"KCC", "5G", "40M", "HT", "1T", "118", "32",
-	"ACMA", "5G", "40M", "HT", "1T", "118", "32",
+	"ACMA", "5G", "40M", "HT", "1T", "118", "63",
 	"CHILE", "5G", "40M", "HT", "1T", "118", "30",
+	"UKRAINE", "5G", "40M", "HT", "1T", "118", "27",
 	"FCC", "5G", "40M", "HT", "1T", "126", "27",
 	"ETSI", "5G", "40M", "HT", "1T", "126", "32",
 	"MKK", "5G", "40M", "HT", "1T", "126", "32",
 	"IC", "5G", "40M", "HT", "1T", "126", "63",
-	"KCC", "5G", "40M", "HT", "1T", "126", "63",
-	"ACMA", "5G", "40M", "HT", "1T", "126", "32",
+	"KCC", "5G", "40M", "HT", "1T", "126", "-63",
+	"ACMA", "5G", "40M", "HT", "1T", "126", "63",
 	"CHILE", "5G", "40M", "HT", "1T", "126", "30",
+	"UKRAINE", "5G", "40M", "HT", "1T", "126", "27",
 	"FCC", "5G", "40M", "HT", "1T", "134", "27",
 	"ETSI", "5G", "40M", "HT", "1T", "134", "32",
 	"MKK", "5G", "40M", "HT", "1T", "134", "32",
 	"IC", "5G", "40M", "HT", "1T", "134", "32",
-	"KCC", "5G", "40M", "HT", "1T", "134", "63",
+	"KCC", "5G", "40M", "HT", "1T", "134", "-63",
 	"ACMA", "5G", "40M", "HT", "1T", "134", "32",
 	"CHILE", "5G", "40M", "HT", "1T", "134", "30",
+	"UKRAINE", "5G", "40M", "HT", "1T", "134", "63",
 	"FCC", "5G", "40M", "HT", "1T", "142", "27",
 	"ETSI", "5G", "40M", "HT", "1T", "142", "63",
 	"MKK", "5G", "40M", "HT", "1T", "142", "63",
 	"IC", "5G", "40M", "HT", "1T", "142", "29",
-	"KCC", "5G", "40M", "HT", "1T", "142", "63",
+	"KCC", "5G", "40M", "HT", "1T", "142", "-63",
 	"ACMA", "5G", "40M", "HT", "1T", "142", "63",
 	"CHILE", "5G", "40M", "HT", "1T", "142", "30",
+	"UKRAINE", "5G", "40M", "HT", "1T", "142", "63",
 	"FCC", "5G", "40M", "HT", "1T", "151", "28",
-	"ETSI", "5G", "40M", "HT", "1T", "151", "63",
+	"ETSI", "5G", "40M", "HT", "1T", "151", "-63",
 	"MKK", "5G", "40M", "HT", "1T", "151", "63",
 	"IC", "5G", "40M", "HT", "1T", "151", "32",
 	"KCC", "5G", "40M", "HT", "1T", "151", "27",
 	"ACMA", "5G", "40M", "HT", "1T", "151", "32",
 	"CHILE", "5G", "40M", "HT", "1T", "151", "30",
+	"UKRAINE", "5G", "40M", "HT", "1T", "151", "27",
 	"FCC", "5G", "40M", "HT", "1T", "159", "28",
-	"ETSI", "5G", "40M", "HT", "1T", "159", "63",
+	"ETSI", "5G", "40M", "HT", "1T", "159", "-63",
 	"MKK", "5G", "40M", "HT", "1T", "159", "63",
 	"IC", "5G", "40M", "HT", "1T", "159", "32",
 	"KCC", "5G", "40M", "HT", "1T", "159", "26",
 	"ACMA", "5G", "40M", "HT", "1T", "159", "32",
 	"CHILE", "5G", "40M", "HT", "1T", "159", "30",
+	"UKRAINE", "5G", "40M", "HT", "1T", "159", "27",
 	"FCC", "5G", "80M", "VHT", "1T", "42", "19",
 	"ETSI", "5G", "80M", "VHT", "1T", "42", "32",
 	"MKK", "5G", "80M", "VHT", "1T", "42", "28",
@@ -4672,6 +5123,7 @@ const char *array_mp_8821c_txpwr_lmt_fccsar[] = {
 	"KCC", "5G", "80M", "VHT", "1T", "42", "25",
 	"ACMA", "5G", "80M", "VHT", "1T", "42", "32",
 	"CHILE", "5G", "80M", "VHT", "1T", "42", "19",
+	"UKRAINE", "5G", "80M", "VHT", "1T", "42", "27",
 	"FCC", "5G", "80M", "VHT", "1T", "58", "22",
 	"ETSI", "5G", "80M", "VHT", "1T", "58", "32",
 	"MKK", "5G", "80M", "VHT", "1T", "58", "28",
@@ -4679,6 +5131,7 @@ const char *array_mp_8821c_txpwr_lmt_fccsar[] = {
 	"KCC", "5G", "80M", "VHT", "1T", "58", "28",
 	"ACMA", "5G", "80M", "VHT", "1T", "58", "32",
 	"CHILE", "5G", "80M", "VHT", "1T", "58", "22",
+	"UKRAINE", "5G", "80M", "VHT", "1T", "58", "27",
 	"FCC", "5G", "80M", "VHT", "1T", "106", "18",
 	"ETSI", "5G", "80M", "VHT", "1T", "106", "32",
 	"MKK", "5G", "80M", "VHT", "1T", "106", "32",
@@ -4686,38 +5139,47 @@ const char *array_mp_8821c_txpwr_lmt_fccsar[] = {
 	"KCC", "5G", "80M", "VHT", "1T", "106", "30",
 	"ACMA", "5G", "80M", "VHT", "1T", "106", "32",
 	"CHILE", "5G", "80M", "VHT", "1T", "106", "30",
+	"UKRAINE", "5G", "80M", "VHT", "1T", "106", "27",
 	"FCC", "5G", "80M", "VHT", "1T", "122", "27",
 	"ETSI", "5G", "80M", "VHT", "1T", "122", "32",
 	"MKK", "5G", "80M", "VHT", "1T", "122", "32",
 	"IC", "5G", "80M", "VHT", "1T", "122", "63",
 	"KCC", "5G", "80M", "VHT", "1T", "122", "26",
-	"ACMA", "5G", "80M", "VHT", "1T", "122", "32",
+	"ACMA", "5G", "80M", "VHT", "1T", "122", "63",
 	"CHILE", "5G", "80M", "VHT", "1T", "122", "30",
+	"UKRAINE", "5G", "80M", "VHT", "1T", "122", "27",
 	"FCC", "5G", "80M", "VHT", "1T", "138", "27",
 	"ETSI", "5G", "80M", "VHT", "1T", "138", "63",
 	"MKK", "5G", "80M", "VHT", "1T", "138", "63",
 	"IC", "5G", "80M", "VHT", "1T", "138", "28",
-	"KCC", "5G", "80M", "VHT", "1T", "138", "63",
+	"KCC", "5G", "80M", "VHT", "1T", "138", "-63",
 	"ACMA", "5G", "80M", "VHT", "1T", "138", "63",
 	"CHILE", "5G", "80M", "VHT", "1T", "138", "30",
+	"UKRAINE", "5G", "80M", "VHT", "1T", "138", "63",
 	"FCC", "5G", "80M", "VHT", "1T", "155", "28",
-	"ETSI", "5G", "80M", "VHT", "1T", "155", "63",
+	"ETSI", "5G", "80M", "VHT", "1T", "155", "-63",
 	"MKK", "5G", "80M", "VHT", "1T", "155", "63",
 	"IC", "5G", "80M", "VHT", "1T", "155", "32",
 	"KCC", "5G", "80M", "VHT", "1T", "155", "27",
 	"ACMA", "5G", "80M", "VHT", "1T", "155", "32",
-	"CHILE", "5G", "80M", "VHT", "1T", "155", "30"
+	"CHILE", "5G", "80M", "VHT", "1T", "155", "30",
+	"UKRAINE", "5G", "80M", "VHT", "1T", "155", "27"
 };
+#endif
 
 void
 odm_read_and_config_mp_8821c_txpwr_lmt_fccsar(struct dm_struct *dm)
 {
+#ifdef CONFIG_8821C_FCCSAR
+
 	u32	i = 0;
 #if (DM_ODM_SUPPORT_TYPE == ODM_IOT)
-	u32	array_len = sizeof(array_mp_8821c_txpwr_lmt_fccsar) / sizeof(u8);
+	u32	array_len =
+			sizeof(array_mp_8821c_txpwr_lmt_fccsar) / sizeof(u8);
 	u8	*array = (u8 *)array_mp_8821c_txpwr_lmt_fccsar;
 #else
-	u32	array_len = sizeof(array_mp_8821c_txpwr_lmt_fccsar) / sizeof(u8 *);
+	u32	array_len =
+			sizeof(array_mp_8821c_txpwr_lmt_fccsar) / sizeof(u8 *);
 	u8	**array = (u8 **)array_mp_8821c_txpwr_lmt_fccsar;
 #endif
 
@@ -4725,7 +5187,9 @@ odm_read_and_config_mp_8821c_txpwr_lmt_fccsar(struct dm_struct *dm)
 	void	*adapter = dm->adapter;
 	HAL_DATA_TYPE	*hal_data = GET_HAL_DATA(((PADAPTER)adapter));
 
-	PlatformZeroMemory(hal_data->BufOfLinesPwrLmt, MAX_LINES_HWCONFIG_TXT * MAX_BYTES_LINE_HWCONFIG_TXT);
+	odm_memory_set(dm, hal_data->BufOfLinesPwrLmt, 0,
+		       MAX_LINES_HWCONFIG_TXT *
+		       MAX_BYTES_LINE_HWCONFIG_TXT);
 	hal_data->nLinesReadPwrLmt = array_len / 7;
 #endif
 
@@ -4750,12 +5214,15 @@ odm_read_and_config_mp_8821c_txpwr_lmt_fccsar(struct dm_struct *dm)
 		u8	*val = array[i + 6];
 #endif
 
-		odm_config_bb_txpwr_lmt_8821c(dm, regulation, band, bandwidth, rate, rf_path, chnl, val);
+		odm_config_bb_txpwr_lmt_8821c(dm, regulation, band, bandwidth,
+					      rate, rf_path, chnl, val);
 #if (DM_ODM_SUPPORT_TYPE == ODM_WIN)
 		rsprintf((char *)hal_data->BufOfLinesPwrLmt[i / 7], 100, "\"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\",",
-		regulation, band, bandwidth, rate, rf_path, chnl, val);
+			 regulation, band, bandwidth, rate, rf_path, chnl, val);
 #endif
 	}
+
+#endif
 }
 
 #endif /* end of HWIMG_SUPPORT*/
