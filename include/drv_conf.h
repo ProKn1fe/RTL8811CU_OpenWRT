@@ -560,10 +560,7 @@ defined(CONFIG_RTL8723B) || defined(CONFIG_RTL8703B) || defined(CONFIG_RTL8723D)
 	#endif
 #endif /* !RTW_WOW_LPS_MODE */
 
-#define RTW_WOW_LPS_MODE_VALUE1 3
-#define RTW_WOW_LPS_MODE_VALUE2 0
-
-#if (RTW_WOW_LPS_MODE > RTW_WOW_LPS_MODE_VALUE1 || RTW_WOW_LPS_MODE < RTW_WOW_LPS_MODE_VALUE2)
+#if (RTW_WOW_LPS_MODE > 3 || RTW_WOW_LPS_MODE < 0)
 	#error "The RTW_WOW_LPS_MODE value is wrong. Please follow HowTo_enable_the_power_saving_functionality.pdf.\n"
 #endif
 
