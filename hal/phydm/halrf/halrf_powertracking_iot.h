@@ -36,10 +36,6 @@
 /* JJ ADD 20161014 */
 #define CCK_TABLE_SIZE_8710B	41
 #define	CCK_TABLE_SIZE_8192F   41
-#define	CCK_TABLE_SIZE_8721D   41
-#define	CCK_TABLE_SIZE_8710C   41
-#define	CCK_03DB_TABLE_SIZE_8710C   81
-#define	OFDM_03DB_TABLE_SIZE_8710C	81
 
 
 #define TXPWR_TRACK_TABLE_SIZE	30
@@ -76,10 +72,6 @@ extern	u32 cck_swing_table_ch1_ch14_8723d[CCK_TABLE_SIZE_8723D];
 /* JJ ADD 20161014 */
 extern	u32 cck_swing_table_ch1_ch14_8710b[CCK_TABLE_SIZE_8710B];
 extern	u32 cck_swing_table_ch1_ch14_8192f[CCK_TABLE_SIZE_8192F];
-extern	u32 cck_swing_table_ch1_ch14_8721d[CCK_TABLE_SIZE_8721D];
-extern  u32 cck_swing_table_ch1_ch14_8710c[CCK_TABLE_SIZE_8710C];
-extern  u32 cck_swing_table_03db_ch1_ch14_8710c[CCK_03DB_TABLE_SIZE_8710C];
-extern  u32 ofdm_swing_table_03DB_8710c[OFDM_03DB_TABLE_SIZE_8710C];
 
 extern  u32 tx_scaling_table_jaguar[TXSCALE_TABLE_SIZE];
 
@@ -264,10 +256,10 @@ struct dm_rf_calibration_struct {
 
 
 	/* <James> IQK time measurement */
-	u32	iqk_start_time;
-	u32	iqk_progressing_time;
-	u32	iqk_total_progressing_time;
-	u32	lck_progressing_time;
+	u64	iqk_start_time;
+	u64	iqk_progressing_time;
+	u64	iqk_total_progressing_time;
+	u64 lck_progressing_time;
 
 	u32  lok_result;
 
