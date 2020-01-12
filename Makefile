@@ -821,7 +821,7 @@ endif
 
 ########### HAL_RTL8821C #################################
 ifeq ($(CONFIG_RTL8821C), y)
-include $(TopDIR)/rtl8821c.mk
+include $(src)/rtl8821c.mk
 endif
 
 ########### AUTO_CFG  #################################
