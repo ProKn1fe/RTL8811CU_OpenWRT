@@ -32,6 +32,10 @@
 #define	ODM_ADSL		0x10	/*BIT(4)*/		/*already combine with ODM_AP, and is nouse now*/
 #define	ODM_IOT		0x20	/*BIT(5)*/
 
+#ifndef DM_ODM_SUPPORT_TYPE
+#  define DM_ODM_SUPPORT_TYPE ODM_CE
+#endif
+
 /*For FW API*/
 #define	__iram_odm_func__
 
