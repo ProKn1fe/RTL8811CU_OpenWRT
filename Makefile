@@ -99,7 +99,7 @@ CONFIG_MP_VHT_HW_TX_MODE = n
 ###################### Platform Related #######################
 # Jeston Nano Headers
 # /usr/src/linux-headers-4.9.140-tegra-ubuntu18.04_aarch64/kernel-4.9
-CONFIG_PLATFORM_I386_PC = n
+CONFIG_PLATFORM_I386_PC = y
 CONFIG_PLATFORM_ARM_RPI = n
 CONFIG_PLATFORM_ARM_JET_NANO = n
 CONFIG_PLATFORM_ANDROID_X86 = n
