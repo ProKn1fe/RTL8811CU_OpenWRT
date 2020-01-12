@@ -84,13 +84,18 @@ CONFIG_RTW_DEBUG = y
 CONFIG_RTW_LOG_LEVEL = 6
 ######################## Wake On Lan ##########################
 CONFIG_WOWLAN = n
+CONFIG_WAKEUP_TYPE = 0x7 #bit2: deauth, bit1: unicast, bit0: magic pkt.
 CONFIG_GPIO_WAKEUP = n
 CONFIG_WAKEUP_GPIO_IDX = default
+######### only for USB #########
+CONFIG_HIGH_ACTIVE_HST2DEV = n
 CONFIG_PNO_SUPPORT = n
 CONFIG_PNO_SET_DEBUG = n
 CONFIG_AP_WOWLAN = n
 ######### Notify SDIO Host Keep Power During Syspend ##########
 CONFIG_RTW_SDIO_PM_KEEP_POWER = y
+###################### MP HW TX MODE FOR VHT #######################
+CONFIG_MP_VHT_HW_TX_MODE = n
 ###################### Platform Related #######################
 # Jeston Nano Headers
 # /usr/src/linux-headers-4.9.140-tegra-ubuntu18.04_aarch64/kernel-4.9
@@ -849,6 +854,17 @@ EXTRA_CFLAGS += -DCONFIG_LOAD_PHY_PARA_FROM_FILE
 EXTRA_CFLAGS += -DREALTEK_CONFIG_PATH=\"/lib/firmware/\"
 endif
 
+ifeq ($(CONFIG_MP_VHT_HW_TX_MODE), y)
+EXTRA_CFLAGS += -DCONFIG_MP_VHT_HW_TX_MODE
+ifeq ($(CONFIG_PLATFORM_I386_PC), y)
+## For I386 X86 ToolChain use Hardware FLOATING
+EXTRA_CFLAGS += -mhard-float
+else
+## For ARM ToolChain use Hardware FLOATING
+EXTRA_CFLAGS += -mfloat-abi=hard
+endif
+endif
+
 #END OWN
 
 ifeq ($(CONFIG_EXT_CLK), y)
@@ -888,7 +904,7 @@ EXTRA_CFLAGS += -DCONFIG_IEEE80211W
 endif
 
 ifeq ($(CONFIG_WOWLAN), y)
-EXTRA_CFLAGS += -DCONFIG_WOWLAN
+EXTRA_CFLAGS += -DCONFIG_WOWLAN -DRTW_WAKEUP_EVENT=$(CONFIG_WAKEUP_TYPE)
 ifeq ($(CONFIG_SDIO_HCI), y)
 EXTRA_CFLAGS += -DCONFIG_RTW_SDIO_PM_KEEP_POWER
 endif
@@ -910,6 +926,33 @@ endif
 
 ifeq ($(CONFIG_GPIO_WAKEUP), y)
 EXTRA_CFLAGS += -DCONFIG_GPIO_WAKEUP
+endif
+
+ifeq ($(CONFIG_HIGH_ACTIVE_HST2DEV), y)
+EXTRA_CFLAGS += -DHIGH_ACTIVE_HST2DEV=1
+else
+EXTRA_CFLAGS += -DHIGH_ACTIVE_HST2DEV=0
+endif
+
+ifeq ($(CONFIG_PNO_SUPPORT), y)
+EXTRA_CFLAGS += -DCONFIG_PNO_SUPPORT
+ifeq ($(CONFIG_PNO_SET_DEBUG), y)
+EXTRA_CFLAGS += -DCONFIG_PNO_SET_DEBUG
+endif
+endif
+
+ifeq ($(CONFIG_PNO_SUPPORT), y)
+EXTRA_CFLAGS += -DCONFIG_PNO_SUPPORT
+ifeq ($(CONFIG_PNO_SET_DEBUG), y)
+EXTRA_CFLAGS += -DCONFIG_PNO_SET_DEBUG
+endif
+endif
+
+ifeq ($(CONFIG_AP_WOWLAN), y)
+EXTRA_CFLAGS += -DCONFIG_AP_WOWLAN
+ifeq ($(CONFIG_SDIO_HCI), y)
+EXTRA_CFLAGS += -DCONFIG_RTW_SDIO_PM_KEEP_POWER
+endif
 endif
 
 ifneq ($(CONFIG_WAKEUP_GPIO_IDX), default)
