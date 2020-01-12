@@ -1,6 +1,6 @@
 /******************************************************************************
  *
- * Copyright(c) 2007 - 2017 Realtek Corporation.
+ * Copyright(c) 2007 - 2011 Realtek Corporation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -11,7 +11,12 @@
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
  * more details.
  *
- *****************************************************************************/
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
+ *
+ *
+ ******************************************************************************/
 #ifndef __RTL8814A_XMIT_H__
 #define __RTL8814A_XMIT_H__
 
@@ -218,10 +223,9 @@ typedef struct txdescriptor_8814 {
 
 
 /* Dword 7 */
-#ifdef CONFIG_PCI_HCI
+#if (DEV_BUS_TYPE == RT_PCI_INTERFACE)
 	#define SET_TX_DESC_TX_BUFFER_SIZE_8814A(__pTxDesc, __Value)		SET_BITS_TO_LE_4BYTE(__pTxDesc+28, 0, 16, __Value)
-#endif
-#if defined(CONFIG_SDIO_HCI)|| defined(CONFIG_USB_HCI)
+#else
 	#define SET_TX_DESC_TX_DESC_CHECKSUM_8814A(__pTxDesc, __Value) SET_BITS_TO_LE_4BYTE(__pTxDesc+28, 0, 16, __Value)
 #endif
 #define SET_TX_DESC_NTX_MAP_8814A(__pTxDesc, __Value) SET_BITS_TO_LE_4BYTE(__pTxDesc+28, 20, 4, __Value)
@@ -234,10 +238,9 @@ typedef struct txdescriptor_8814 {
 #define SET_TX_DESC_DATA_RC_8814A(__pTxDesc, __Value)			SET_BITS_TO_LE_4BYTE(__pTxDesc+32, 8, 6, __Value)
 #define SET_TX_DESC_EN_HWEXSEQ_8814A(__pTxDesc, __Value)			SET_BITS_TO_LE_4BYTE(__pTxDesc+32, 14, 1, __Value)
 #define SET_TX_DESC_HWSEQ_EN_8814A(__pTxDesc, __Value)			SET_BITS_TO_LE_4BYTE(__pTxDesc+32, 15, 1, __Value)
-#if defined(CONFIG_PCI_HCI)|| defined(CONFIG_USB_HCI)
+#if (DEV_BUS_TYPE != RT_SDIO_INTERFACE)
 	#define SET_TX_DESC_NEXT_HEAD_PAGE_L_8814A(__pTxDesc, __Value)(__pTxDesc, __Value)	SET_BITS_TO_LE_4BYTE(__pTxDesc+32, 16, 8, __Value)
-#endif
-#ifdef CONFIG_SDIO_HCI
+#else
 	#define SET_TX_DESC_SDIO_SEQ_8814A(__pTxDesc, __Value)(__pTxDesc, __Value) 			SET_BITS_TO_LE_4BYTE(__pTxDesc+32, 16, 8, __Value) /* 20130415 KaiYuan add for 8814AS */
 #endif
 #define SET_TX_DESC_TAIL_PAGE_L_8814A(__pTxDesc, __Value)(__pTxDesc, __Value)			SET_BITS_TO_LE_4BYTE(__pTxDesc+32, 24, 8, __Value)
@@ -267,7 +270,6 @@ void rtl8814a_fill_txdesc_phy(PADAPTER padapter, struct pkt_attrib *pattrib, u8 
 #if defined(CONFIG_CONCURRENT_MODE)
 	void fill_txdesc_force_bmc_camid(struct pkt_attrib *pattrib, u8 *ptxdesc);
 #endif
-void fill_txdesc_bmc_tx_rate(struct pkt_attrib *pattrib, u8 *ptxdesc);
 
 #ifdef CONFIG_USB_HCI
 	s32 rtl8814au_init_xmit_priv(PADAPTER padapter);

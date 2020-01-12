@@ -1,6 +1,6 @@
 /******************************************************************************
  *
- * Copyright(c) 2007 - 2017 Realtek Corporation.
+ * Copyright(c) 2007 - 2011 Realtek Corporation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -11,7 +11,12 @@
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
  * more details.
  *
- *****************************************************************************/
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
+ *
+ *
+ ******************************************************************************/
 
 #ifndef __RTW_ANDROID_H__
 #define __RTW_ANDROID_H__
@@ -69,7 +74,6 @@ enum ANDROID_WIFI_CMD {
 	ANDROID_WIFI_CMD_GTK_REKEY_OFFLOAD,
 #endif /* CONFIG_GTK_OL */
 	ANDROID_WIFI_CMD_P2P_DISABLE,
-	ANDROID_WIFI_CMD_SET_AEK,
 	ANDROID_WIFI_CMD_DRIVERVERSION,
 	ANDROID_WIFI_CMD_MAX
 };
@@ -93,11 +97,11 @@ int wifi_set_power(int on, unsigned long msec);
 int wifi_get_mac_addr(unsigned char *buf);
 void *wifi_get_country_code(char *ccode);
 #else
-static inline int rtw_android_wifictrl_func_add(void)
+static int rtw_android_wifictrl_func_add(void)
 {
 	return 0;
 }
-static inline void rtw_android_wifictrl_func_del(void) {}
+static void rtw_android_wifictrl_func_del(void) {}
 #endif /* defined(RTW_ENABLE_WIFI_CONTROL_FUNC) */
 
 #ifdef CONFIG_GPIO_WAKEUP

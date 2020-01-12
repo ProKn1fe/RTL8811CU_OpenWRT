@@ -1,6 +1,6 @@
 /******************************************************************************
  *
- * Copyright(c) 2015 - 2017 Realtek Corporation.
+ * Copyright(c) 2015 - 2016 Realtek Corporation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -11,7 +11,12 @@
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
  * more details.
  *
- *****************************************************************************/
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
+ *
+ *
+ ******************************************************************************/
 #ifndef _RTL8822BS_HAL_H_
 #define _RTL8822BS_HAL_H_
 
@@ -19,10 +24,6 @@
 
 /* rtl8822bs_ops.c */
 void rtl8822bs_set_hal_ops(PADAPTER);
-
-#if defined(CONFIG_WOWLAN) || defined(CONFIG_AP_WOWLAN)
-void rtl8822bs_disable_interrupt_but_cpwm2(PADAPTER adapter);
-#endif
 
 /* rtl8822bs_xmit.c */
 s32 rtl8822bs_dequeue_writeport(PADAPTER);

@@ -1,6 +1,6 @@
 /******************************************************************************
  *
- * Copyright(c) 2007 - 2017 Realtek Corporation.
+ * Copyright(c) 2007 - 2011 Realtek Corporation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -11,7 +11,12 @@
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
  * more details.
  *
- *****************************************************************************/
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
+ *
+ *
+ ******************************************************************************/
 #ifndef __RTL8812A_HAL_H__
 #define __RTL8812A_HAL_H__
 
@@ -135,18 +140,12 @@ typedef struct _RT_FIRMWARE_8812 {
 #endif
 #define RX_DMA_BOUNDARY_8812		(MAX_RX_DMA_BUFFER_SIZE_8812 - RX_DMA_RESERVED_SIZE_8812 - 1)
 
-#define PAGE_SIZE_TX_8812A PAGE_SIZE_512
-
-/* Beacon:MAX_BEACON_LEN/PAGE_SIZE_TX_8812A
- * PS-Poll:1, Null Data:1,Qos Null Data:1,BT Qos Null Data:1,CTS-2-SELF,LTE QoS Null*/
-#define BCNQ_PAGE_NUM_8812		(MAX_BEACON_LEN / PAGE_SIZE_TX_8812A + 6) /*0x07*/
+#define BCNQ_PAGE_NUM_8812		0x07
 
 /* For WoWLan , more reserved page
- * ARP Rsp:1, RWC:1, GTK Info:1,GTK RSP:1,GTK EXT MEM:1, AOAC rpt: 1,PNO: 6
- * NS offload: 1 NDP info: 1
- */
+ * ARP Rsp:1, RWC:1, GTK Info:1,GTK RSP:1,GTK EXT MEM:1, AOAC rpt: 1,PNO: 6 */
 #ifdef CONFIG_WOWLAN
-	#define WOWLAN_PAGE_NUM_8812	0x08
+	#define WOWLAN_PAGE_NUM_8812	0x06
 #else
 	#define WOWLAN_PAGE_NUM_8812	0x00
 #endif
@@ -158,13 +157,7 @@ typedef struct _RT_FIRMWARE_8812 {
 	#define FW_NDPA_PAGE_NUM	0x00
 #endif
 
-#ifdef DBG_FW_DEBUG_MSG_PKT
-	#define FW_DBG_MSG_PKT_PAGE_NUM_8812	0x01
-#else
-	#define FW_DBG_MSG_PKT_PAGE_NUM_8812	0x00
-#endif /*DBG_FW_DEBUG_MSG_PKT*/
-
-#define TX_TOTAL_PAGE_NUMBER_8812	(0xFF - BCNQ_PAGE_NUM_8812 - WOWLAN_PAGE_NUM_8812 - FW_NDPA_PAGE_NUM - FW_DBG_MSG_PKT_PAGE_NUM_8812)
+#define TX_TOTAL_PAGE_NUMBER_8812	(0xFF - BCNQ_PAGE_NUM_8812 - WOWLAN_PAGE_NUM_8812-FW_NDPA_PAGE_NUM)
 #define TX_PAGE_BOUNDARY_8812			(TX_TOTAL_PAGE_NUMBER_8812 + 1)
 
 #define TX_PAGE_BOUNDARY_WOWLAN_8812		(0xFF - BCNQ_PAGE_NUM_8812 - WOWLAN_PAGE_NUM_8812 + 1)
@@ -197,11 +190,12 @@ typedef struct _RT_FIRMWARE_8812 {
 #endif
 #define RX_DMA_BOUNDARY_8821		(MAX_RX_DMA_BUFFER_SIZE_8821 - RX_DMA_RESERVED_SIZE_8821 - 1)
 
-/* Beacon:MAX_BEACON_LEN/PAGE_SIZE_TX_8821A
- * PS-Poll:1, Null Data:1,Qos Null Data:1,BT Qos Null Data:1,CTS-2-SELF,LTE QoS Null*/
-
-#define BCNQ_PAGE_NUM_8821		(MAX_BEACON_LEN / PAGE_SIZE_TX_8821A + 6) /*0x08*/
-
+#define BCNQ_PAGE_NUM_8821		0x08
+#ifdef CONFIG_CONCURRENT_MODE
+	#define BCNQ1_PAGE_NUM_8821		0x04
+#else
+	#define BCNQ1_PAGE_NUM_8821		0x00
+#endif
 
 /* For WoWLan , more reserved page
  * ARP Rsp:1, RWC:1, GTK Info:1,GTK RSP:1,GTK EXT MEM:1, PNO: 6 */
@@ -211,7 +205,7 @@ typedef struct _RT_FIRMWARE_8812 {
 	#define WOWLAN_PAGE_NUM_8821	0x00
 #endif
 
-#define TX_TOTAL_PAGE_NUMBER_8821	(0xFF - BCNQ_PAGE_NUM_8821 - WOWLAN_PAGE_NUM_8821)
+#define TX_TOTAL_PAGE_NUMBER_8821	(0xFF - BCNQ_PAGE_NUM_8821 - BCNQ1_PAGE_NUM_8821 - WOWLAN_PAGE_NUM_8821)
 #define TX_PAGE_BOUNDARY_8821				(TX_TOTAL_PAGE_NUMBER_8821 + 1)
 /* #define TX_PAGE_BOUNDARY_WOWLAN_8821		0xE0 */
 
@@ -223,12 +217,10 @@ typedef struct _RT_FIRMWARE_8812 {
 #define NORMAL_PAGE_NUM_LPQ_8821			0x08/* 0x10 */
 #define NORMAL_PAGE_NUM_HPQ_8821		0x08/* 0x10 */
 #define NORMAL_PAGE_NUM_NPQ_8821		0x00
-#define NORMAL_PAGE_NUM_EPQ_8821			0x04
 
 #define WMM_NORMAL_PAGE_NUM_HPQ_8821		0x30
 #define WMM_NORMAL_PAGE_NUM_LPQ_8821		0x20
 #define WMM_NORMAL_PAGE_NUM_NPQ_8821		0x20
-#define WMM_NORMAL_PAGE_NUM_EPQ_8821		0x00
 
 #define MCC_NORMAL_PAGE_NUM_HPQ_8821		0x10
 #define MCC_NORMAL_PAGE_NUM_LPQ_8821		0x10
@@ -337,7 +329,7 @@ void SetBeaconRelatedRegisters8812A(PADAPTER padapter);
 void ReadRFType8812A(PADAPTER padapter);
 void InitDefaultValue8821A(PADAPTER padapter);
 
-u8 SetHwReg8812A(PADAPTER padapter, u8 variable, u8 *pval);
+void SetHwReg8812A(PADAPTER padapter, u8 variable, u8 *pval);
 void GetHwReg8812A(PADAPTER padapter, u8 variable, u8 *pval);
 u8 SetHalDefVar8812A(PADAPTER padapter, HAL_DEF_VARIABLE variable, void *pval);
 u8 GetHalDefVar8812A(PADAPTER padapter, HAL_DEF_VARIABLE variable, void *pval);
@@ -346,6 +338,9 @@ void init_hal_spec_8812a(_adapter *adapter);
 void init_hal_spec_8821a(_adapter *adapter);
 
 u32 upload_txpktbuf_8812au(_adapter *adapter, u8 *buf, u32 buflen);
+
+/* register */
+void SetBcnCtrlReg(PADAPTER padapter, u8 SetBits, u8 ClearBits);
 
 void rtl8812_start_thread(PADAPTER padapter);
 void rtl8812_stop_thread(PADAPTER padapter);

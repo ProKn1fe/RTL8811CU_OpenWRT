@@ -1,7 +1,7 @@
 /******************************************************************************
  *
- * Copyright(c) 2007 - 2017 Realtek Corporation.
- *
+ * Copyright(c) 2007 - 2013 Realtek Corporation. All rights reserved.
+ *                                        
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
  * published by the Free Software Foundation.
@@ -11,7 +11,12 @@
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
  * more details.
  *
- *****************************************************************************/
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
+ *
+ *
+ ******************************************************************************/
 #ifndef __OSDEP_BSD_SERVICE_H_
 #define __OSDEP_BSD_SERVICE_H_
 
@@ -77,7 +82,7 @@
 //	typedef	spinlock_t	_lock;
 	typedef	struct mtx	_lock;
 	typedef struct mtx 		_mutex;
-	typedef struct rtw_timer_list _timer;
+	typedef struct timer_list _timer;
 	struct list_head {
 	struct list_head *next, *prev;
 	};
@@ -86,7 +91,8 @@
 		_lock	lock;
 	};
 
-	typedef	struct mbuf _pkt;
+	//typedef	struct sk_buff	_pkt;
+	typedef	struct mbuf	_pkt;
 	typedef struct mbuf	_buffer;
 	
 	typedef struct	__queue	_queue;
@@ -128,7 +134,7 @@
  * See (linux_compat) processes.c
  *
  */
-struct rtw_timer_list {
+struct timer_list {
 	struct callout callout;
 	void (*function)(void *);
 	void *arg;

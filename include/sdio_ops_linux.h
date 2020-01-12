@@ -1,6 +1,6 @@
 /******************************************************************************
  *
- * Copyright(c) 2007 - 2017 Realtek Corporation.
+ * Copyright(c) 2007 - 2011 Realtek Corporation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -11,7 +11,12 @@
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
  * more details.
  *
- *****************************************************************************/
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
+ *
+ *
+ ******************************************************************************/
 #ifndef __SDIO_OPS_LINUX_H__
 #define __SDIO_OPS_LINUX_H__
 
@@ -36,12 +41,7 @@ void sd_write32(struct intf_hdl *pintfhdl, u32 addr, u32 v, s32 *err);
 #endif /* RTW_HALMAC */
 
 bool rtw_is_sdio30(_adapter *adapter);
-
-/* The unit of return value is Hz */
-static inline u32 rtw_sdio_get_clock(struct dvobj_priv *d)
-{
-	return d->intf_data.clock;
-}
+inline u32 rtw_sdio_get_clock(struct dvobj_priv *d);
 
 s32 _sd_read(struct intf_hdl *pintfhdl, u32 addr, u32 cnt, void *pdata);
 s32 sd_read(struct intf_hdl *pintfhdl, u32 addr, u32 cnt, void *pdata);
@@ -53,6 +53,4 @@ int __must_check rtw_sdio_raw_read(struct dvobj_priv *d, unsigned int addr,
 				void *buf, size_t len, bool fixed);
 int __must_check rtw_sdio_raw_write(struct dvobj_priv *d, unsigned int addr,
 				void *buf, size_t len, bool fixed);
-
-#endif /* __SDIO_OPS_LINUX_H__ */
-
+#endif
