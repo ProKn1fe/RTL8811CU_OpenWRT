@@ -28,6 +28,8 @@
 #define	ODM_ADSL		0x10	/*BIT4*/
 #define	ODM_IOT		0x20	/*BIT5*/
 
+#define	DM_ODM_SUPPORT_TYPE			ODM_CE
+
 /*Deifne HW endian support*/
 #define	ODM_ENDIAN_BIG	0
 #define	ODM_ENDIAN_LITTLE	1
